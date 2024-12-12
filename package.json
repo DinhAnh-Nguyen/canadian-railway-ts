@@ -11,6 +11,8 @@
   "dependencies": {
     "@material-tailwind/react": "^2.1.10",
     "@neondatabase/serverless": "^0.10.4",
+    "encoding": "^0.1.13",
+    "firebase": "^11.0.2",
     "next": "15.1.0",
     "pgshims": "github:neondatabase/serverless",
     "react": "^19.0.0",
