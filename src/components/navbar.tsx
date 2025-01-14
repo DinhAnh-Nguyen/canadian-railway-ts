@@ -40,7 +40,7 @@ export default function Nav() {
         </Link>
         <button
           type="button"
-          onClick={() => router.push("/manageusers")}
+          onClick={() => router.push("/schedule")}
           className="hover:underline"
         >
           Schedule
