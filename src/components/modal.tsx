@@ -1,5 +1,12 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
+interface User {
+    id: number;
+    name: string;
+    email: string;
+    role: string;
+    // Add other fields as necessary
+}
 
 interface ModalProps {
     isOpen: boolean;
@@ -7,13 +14,14 @@ interface ModalProps {
     onClose: () => void;
 }
 
-export default function Modal({isOpen, onSave, onClose}: ModalProps) {
+export default function Modal({isOpen, onClose}: ModalProps) {
     if (!isOpen) {
         return null;
     }
     const [inputValue, setInputValue] = useState("");
     const [textareaValue, setTextareaValue] = useState("");
     const [error, setError] = useState("");
+    const [users, setUsers] = useState<User[]>([]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -22,15 +30,27 @@ export default function Modal({isOpen, onSave, onClose}: ModalProps) {
             return;
         }
         setError("");
-        onSave(inputValue, textareaValue);
+        //onSave(inputValue, textareaValue);
     };
-
+    const getUsers = async (): Promise<User[]> => {
+        const response = await fetch("/api/users");
+        const data = await response.json();
+        return data;
+      };
+     useEffect(() => {
+        const fetchUsers = async () => {
+          const users = await getUsers();
+          setUsers(users);
+        };
+    
+        fetchUsers();
+      }, []);
   return (
     <form onSubmit={handleSubmit}>
       <div className="space-y-12 bg-gray-800 p-8 rounded-lg">
         <div className="border-b border-gray-900/10 pb-12">
           <h2 className="font-medium text-center text-xl text-white">
-            Write Review
+            Add Task
           </h2>
           {error && (
             <div className="text-red-500 text-sm text-center">{error}</div>
@@ -62,15 +82,48 @@ export default function Modal({isOpen, onSave, onClose}: ModalProps) {
                   defaultValue={""}
                   value={textareaValue}
                   onChange={(e) => setTextareaValue(e.target.value)}
-                  placeholder="Write your review here"
+                  placeholder="Add task description"
                 />
               </div>
+            </div>
+          </div>
+          <div className="col-span-full mt-4">
+            <label className="block text-sm font-medium leading-6 text-white">
+              Date and Time
+            </label>
+            <div className="mt-2 flex gap-4">
+              <input
+                type="date"
+                className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 placeholder:text-gray-800 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+              />
+              <input
+                type="time"
+                className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 placeholder:text-gray-800 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+              />
+            </div>
+          </div>
+          <div className="col-span-full mt-4">
+            <label htmlFor="users" className="block text-sm font-medium leading-6 text-white">
+              Assign User
+            </label>
+            <div className="mt-2">
+              <select
+                name="users"
+                id="users"
+                className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+              >
+                {users.map((user) => (
+                  <option key={user.id} value={user.id}>
+                    {user.name}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
           <div className="mt-6 flex items-center justify-end gap-x-6">
             <button
               type="button"
-              
+              onClick={onClose}
               className="rounded-md bg-gray-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
               Cancel
