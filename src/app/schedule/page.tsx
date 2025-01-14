@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 
 export default function Schedule() {
-    const handleSchedule = () => {
-        
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const handleSchedule = (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsModalOpen(true);
     }
   return (
     <div>
