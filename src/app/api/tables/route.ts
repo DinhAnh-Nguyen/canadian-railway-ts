@@ -8,26 +8,20 @@ export async function POST() {
     //Can be used to create tables
 
     //Create a users table containing id, email, name, role.
-    const response1 = await sql`CREATE TABLE users (
+    const response1 = await sql`CREATE TABLE IF NOT EXISTS users (
             id SERIAL PRIMARY KEY,
             name VARCHAR(255) NOT NULL,
             email VARCHAR(255) NOT NULL,
             role VARCHAR(255) NOT NULL
         );`;
-    //Create a products table containing id, name, description, price
-    // const response2 = await sql `CREATE TABLE products (
-    //   id SERIAL PRIMARY KEY,
-    //   name VARCHAR(255) NOT NULL,
-    //   description VARCHAR(255) NOT NULL,
-    //   price DECIMAL(10, 2) NOT NULL
-    // )`;
-    // return Response.json({ response: [response1, response2] }, { status: 200 });
 
     //Create a schedules table containing id, description, status, due_date, piroty
-    const response2 = await sql `CREATE TABLE schedules (
+    const response2 = await sql `CREATE TABLE IF NOT EXISTS schedules (
       id SERIAL PRIMARY KEY,
       description VARCHAR(255) NOT NULL,
       status VARCHAR(255) NOT NULL,
+      Assigned_to VARCHAR(255) NOT NULL,
+      created_by VARCHAR(255) NOT NULL,
       due_date DATE NOT NULL,
       piroty VARCHAR(255) NOT NULL
     );`;
