@@ -14,6 +14,24 @@ interface ModalProps {
     onClose: () => void;
 }
 
+/**
+ * Modal component for adding a task.
+ *
+ * @param {ModalProps} props - The properties for the Modal component.
+ * @param {boolean} props.isOpen - Determines if the modal is open.
+ * @param {() => void} props.onClose - Function to close the modal.
+ *
+ * @returns {JSX.Element | null} The rendered modal component or null if not open.
+ *
+ * @component
+ * @example
+ * const [isOpen, setIsOpen] = useState(false);
+ * const handleClose = () => setIsOpen(false);
+ * 
+ * return (
+ *   <Modal isOpen={isOpen} onClose={handleClose} />
+ * );
+ */
 export default function Modal({isOpen, onClose}: ModalProps) {
     if (!isOpen) {
         return null;

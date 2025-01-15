@@ -22,6 +22,9 @@ export async function POST() {
     //   price DECIMAL(10, 2) NOT NULL
     // )`;
     // return Response.json({ response: [response1, response2] }, { status: 200 });
+
+    //Create a schedules table containing id, name, description, price
+
     return Response.json( {response1}, { status: 200 });
   } catch (error) {
     return Response.json({ error }, { status: 500 });
