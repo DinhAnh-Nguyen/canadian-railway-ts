@@ -9,7 +9,7 @@ export async function GET() {
     return new Response(JSON.stringify(response), { status: 200 });
 }
 
-//Create a user
+//Add a user
 export async function POST(request: Request) {
     const resquestData = await request.json();
     const databaseUrl = process.env.DATABASE_URL || ""; // Set a default value if DATABASE_URL is not defined
