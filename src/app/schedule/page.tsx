@@ -2,7 +2,17 @@
 import Modal from "@/components/modal";
 import React, { useState } from "react";
 
+type Schedule = {
+  id: number;
+  description: string;
+  status: string;
+  assigned_to: string;
+  created_by: string;
+  due_date: string;
+  piroty: string;
+}
 export default function Schedule() {
+  const [schedules, setSchedules] = useState<Schedule[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const handleSchedule = (e: React.FormEvent) => {
     e.preventDefault();

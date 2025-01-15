@@ -8,18 +8,12 @@ type User = {
   email: string;
   role: string;
 };
-type Schedule = {
-  id: number;
-  name: string;
-  description: string;
-  price: number;
-};
+
 
 export default function page() {
   const [users, setUsers] = useState([] as User[]);
   const [selectedUser, setSelectedUser] = useState({} as User);
   const [newUser, setNewUser] = useState({ name: "", email: "", role: "" });
-  const [schedules, setSchedules] = useState([] as Schedule[]);
 
   // Fetch all users
   const getUsers = async (): Promise<User[]> => {
