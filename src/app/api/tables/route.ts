@@ -23,9 +23,16 @@ export async function POST() {
     // )`;
     // return Response.json({ response: [response1, response2] }, { status: 200 });
 
-    //Create a schedules table containing id, name, description, price
+    //Create a schedules table containing id, description, status, due_date, piroty
+    const response2 = await sql `CREATE TABLE schedules (
+      id SERIAL PRIMARY KEY,
+      description VARCHAR(255) NOT NULL,
+      status VARCHAR(255) NOT NULL,
+      due_date DATE NOT NULL,
+      piroty VARCHAR(255) NOT NULL
+    );`;
 
-    return Response.json( {response1}, { status: 200 });
+    return Response.json( {response1, response2}, { status: 200 });
   } catch (error) {
     return Response.json({ error }, { status: 500 });
   }
