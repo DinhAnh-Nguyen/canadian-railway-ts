@@ -16,6 +16,7 @@ export async function POST() {
         );`;
 
     //Create a schedules table containing id, description, status, due_date, piroty
+
     const response2 = await sql `CREATE TABLE IF NOT EXISTS tasks (
       id SERIAL PRIMARY KEY,
       description VARCHAR(255) NOT NULL,
@@ -23,10 +24,11 @@ export async function POST() {
       Assigned_to VARCHAR(255) NOT NULL,
       created_by VARCHAR(255) NOT NULL,
       due_date DATE NOT NULL,
-      piroty VARCHAR(255) NOT NULL
+      priority VARCHAR(255) NOT NULL
     );`;
 
-    return Response.json( {response1, response2}, { status: 200 });
+    return Response.json({ response1, response2 }, { status: 200 });
+    
   } catch (error) {
     return Response.json({ error }, { status: 500 });
   }
@@ -37,8 +39,9 @@ export async function DELETE() {
     const databaseUrl = process.env.DATABASE_URL || ""; // Set a default value if DATABASE_URL is not defined
     const sql = neon(databaseUrl);
     //PostgresQL
-    const response = await sql`DROP TABLE users;`;
-    return Response.json({ response }, { status: 200 });
+    const response1 = await sql`DROP TABLE users;`;
+    const response2 = await sql`DROP TABLE tasks;`;
+    return Response.json({ response1, response2 }, { status: 200 });
   } catch (error) {
     return Response.json({ error }, { status: 500 });
   }

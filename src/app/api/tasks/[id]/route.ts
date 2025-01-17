@@ -1,6 +1,20 @@
 import { neon } from "@neondatabase/serverless";
+// Add a task - Daniel
+export async function GET({ params }: { params: { id: Number | String } }) {
+    const databaseUrl = process.env.DATABASE_URL || ""; // Set a default value if DATABASE_URL is not defined
+    const sql = neon(databaseUrl);
+    //PostgresQL
+    const id = Number(params.id);
+    const response = await sql`SELECT * FROM tasks WHERE id = ${id};`;
+    const user = response[0];
 
-//Add a task - Daniel
+    if (!user) {
+        return new Response(null, { status: 404 });
+    }
+
+    return new Response(JSON.stringify(response), { status: 200 });
+}
+
 
 //Modify a task - Chris
 export async function PUT( request : Request, { params }: { params: { id: Number | String} }) {
@@ -13,7 +27,7 @@ export async function PUT( request : Request, { params }: { params: { id: Number
     return new Response(JSON.stringify(response), { status: 200 });
 }
 
-//Delete a Schedule - Nathan
+//Delete a task - Nathan
 export async function DELETE(request: Request, { params }: { params: { id: number } }) {
     const databaseUrl = process.env.DATABASE_URL || ""; // Set a default value if DATABASE_URL is not defined
     const sql = neon(databaseUrl);
