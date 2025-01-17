@@ -1,8 +1,8 @@
 "use client";
 import Modal from "@/components/modal";
-import React, { useState } from "react";
+import React, { useState, FormEvent } from "react";
 
-type Schedule = {
+type task = {
   id: number;
   description: string;
   status: string;
@@ -12,7 +12,8 @@ type Schedule = {
   piroty: string;
 }
 export default function Schedule() {
-  const [schedules, setSchedules] = useState<Schedule[]>([]);
+  const [tasks, setTasks] = useState<task[]>([]);
+  const [newTask, setNewTask] = useState<task>({ id: 0, description: "", status: "", assigned_to: "", created_by: "", due_date: "", piroty: "" });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const handleSchedule = (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,6 +23,31 @@ export default function Schedule() {
     console.log("Modal closed");
     setIsModalOpen(false);
   };
+  //Will fetch all tasks
+  const getTasks = async (): Promise<task[]> => {
+    const response = await fetch("/api/tasks");
+    const data = await response.json();
+    return data;
+  }
+
+  //Will add a task
+  const addTask = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    // Send a POST request to add a new task
+    await fetch("/api/tasks", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        ...newTask,
+      }),
+    });
+    const tasks = await getTasks();
+    setTasks(tasks);
+    setNewTask({ id: 0, description: "", status: "", assigned_to: "", created_by: "", due_date: "", piroty: "" });
+  }
+
   return (
     <div>
       <div className="flex justify-end ">

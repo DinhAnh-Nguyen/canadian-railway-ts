@@ -49,6 +49,7 @@ export default function Modal({isOpen, onClose}: ModalProps) {
         }
         setError("");
         //onSave(inputValue, textareaValue);
+        
     };
     const getUsers = async (): Promise<User[]> => {
         const response = await fetch("/api/users");

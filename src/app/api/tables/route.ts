@@ -16,7 +16,7 @@ export async function POST() {
         );`;
 
     //Create a schedules table containing id, description, status, due_date, piroty
-    const response2 = await sql `CREATE TABLE IF NOT EXISTS schedules (
+    const response2 = await sql `CREATE TABLE IF NOT EXISTS tasks (
       id SERIAL PRIMARY KEY,
       description VARCHAR(255) NOT NULL,
       status VARCHAR(255) NOT NULL,
