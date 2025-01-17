@@ -1,5 +1,6 @@
 import { neon } from "@neondatabase/serverless";
 
+
 //Fetch All tasks - Mark
 export async function GET() {
     const databaseUrl = process.env.DATABASE_URL || ""; // Set a default value if DATABASE_URL is not defined
@@ -19,7 +20,16 @@ export async function POST(request: Request) {
     return new Response(JSON.stringify(response), { status: 200 });
 }
 
-//Modify task - Chris
+//Modify task - Mark 
 
 
-//Delete all tasks - Nathan
+//Delete all tasks - Nathan Delete all tasks from table. Keep table.
+
+export async function DELETE() {
+    const databaseUrl = process.env.DATABASE_URL || "";  // Set a default value if DATABASE_URL is not defined
+    const sql = neon(databaseUrl);
+
+    const response = await sql`DELETE FROM schedules;`;
+
+    return new Response(null, { status: 200 }); 
+}
