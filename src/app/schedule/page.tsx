@@ -16,7 +16,7 @@ export default function Schedule() {
   const [tasks, setTasks] = useState<task[]>([]);
   const [newTask, setNewTask] = useState<task>({ id: 0, description: "", status: "", assigned_to: "", created_by: "", due_date: "", piroty: "" });
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [tasks, setTasks] = useState([] as Task[]);
+
 
   // Delete a task
   const deleteTask = async (id: number) => {
@@ -97,7 +97,7 @@ export default function Schedule() {
             /* handle save */
           }}
         />
-      
+
       </div>
 
       <div className="mt-8">
@@ -117,10 +117,10 @@ export default function Schedule() {
             {tasks.map((task) => (
               <tr key={task.id}>
                 <td>{task.id}</td>
-                <td>{task.title}</td>
+                <td>{task.status}</td>
                 <td>{task.description}</td>
-                <td>{task.date}</td>
-                <td>{task.assignedTo}</td>
+                <td>{task.due_date}</td>
+                <td>{task.assigned_to}</td>
                 <td>
                   <button
                     className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
