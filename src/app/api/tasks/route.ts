@@ -12,21 +12,29 @@ export async function GET() {
 
 // Add task - Daniel
 export async function POST(request: Request) {
-    const resquestData = await request.json();
+    const requestData = await request.json();
     const databaseUrl = process.env.DATABASE_URL || ""; // Set a default value if DATABASE_URL is not defined
     const sql = neon(databaseUrl);
     //PostgresQL
-    const response = await sql`INSERT INTO schedules (description, status, due_date, priority) VALUES (${resquestData.description}, ${resquestData.status}, ${resquestData.due_date}, ${resquestData.piroty});`;
+    const response = await sql`INSERT INTO schedules (description, status, due_date, priority) VALUES (${requestData.description}, ${requestData.status}, ${requestData.due_date}, ${requestData.piroty});`;
     return new Response(JSON.stringify(response), { status: 200 });
 }
 
-//Modify task - Mark 
+// Modify task - Mark 
 export async function PUT(request: Request) {
     const databaseUrl = process.env.DATABASE_URL || ""; // Set a default value if DATABASE_URL is not defined
     const sql = neon(databaseUrl);
     //PostgresQL
-    const resquestData = await request.json();
-    const response = await sql`UPDATE schedules SET description = ${resquestData.description}, status = ${resquestData.status}, due_date = ${resquestData.due_date}, priotity = ${resquestData.priotity} WHERE id = ${resquestData.id};`;
+    const requestData = await request.json();
+    const response = await sql`
+
+        UPDATE schedules SET
+            description = ${requestData.description}, 
+            status = ${requestData.status}, 
+            due_date = ${requestData.due_date}, 
+            priotity = ${requestData.priotity} 
+            WHERE id = ${requestData.id};`;
+
     return new Response(JSON.stringify(response), { status: 200 });
 }
 
