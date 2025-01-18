@@ -38,7 +38,7 @@ body {
 
 /* Style the event blocks */
 .rbc-event {
-  background-color: #4a90e2; /* Blue for events */
+  background-color: #fa8a97 !important; /* Blue for events */
   border: none;
   border-radius: 4px;
   padding: 2px 5px;
@@ -71,11 +71,11 @@ body {
 }
 
 .rbc-off-range-bg {
-  background: #2d2d2d; /* Dark gray for off-range days */
+  background: #3d3d3d !important; /* Dark gray for off-range days */
 }
 
 .rbc-today {
-  background: #302d2d; /* Slightly lighter gray for today's cell */
+  background: #3c533e !important; /* Slightly lighter gray for today's cell */
 }
 
 /* Style the toolbar (month, week, day buttons) */
