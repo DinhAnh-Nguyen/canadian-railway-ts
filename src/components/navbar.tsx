@@ -38,6 +38,9 @@ export default function Nav() {
         <Link href="/dashboard" className="hover:underline">
           Dashboard
         </Link>
+        <Link href="/trackOverview">
+          <button className="hover:underline">Track Overview</button>
+        </Link>
         <button
           type="button"
           onClick={() => router.push("/schedule")}
