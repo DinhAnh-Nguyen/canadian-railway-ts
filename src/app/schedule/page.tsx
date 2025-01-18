@@ -16,8 +16,8 @@ type task = {
   created_by: string;
   due_date: string;
   priority: string;
-  start: Date; // Add this field
-  end: Date; // Add this field
+  start: Date; 
+  end: Date; 
 };
 
 export default function Schedule() {
@@ -106,9 +106,9 @@ export default function Schedule() {
   // Transform tasks for the calendar
   const calendarTasks = tasks.map((task) => ({
     id: task.id,
-    title: task.description, // Use description as the title
-    start: new Date(task.due_date), // Convert due_date to a Date object
-    end: new Date(task.due_date), // Use the same date for end (or adjust as needed)
+    title: task.description, //
+    start: new Date(task.due_date),
+    end: new Date(task.due_date), 
     description: task.description,
     assigned_to: task.assigned_to,
     status: task.status,
