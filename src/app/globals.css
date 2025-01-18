@@ -19,3 +19,17 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+/* Customize calendar styles */
+.rbc-calendar {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.rbc-event {
+  background-color: #3182ce; /* Blue */
+  border: none;
+  border-radius: 4px;
+  padding: 2px 5px;
+  color: white;
+}
