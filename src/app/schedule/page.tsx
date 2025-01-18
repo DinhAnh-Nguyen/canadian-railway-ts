@@ -12,11 +12,12 @@ type task = {
   due_date: string;
   piroty: string;
 }
+
 export default function Schedule() {
   const [tasks, setTasks] = useState<task[]>([]);
+  const [selectedTask, setSelectedTask] = useState<task | null>(null);
   const [newTask, setNewTask] = useState<task>({ id: 0, description: "", status: "", assigned_to: "", created_by: "", due_date: "", piroty: "" });
   const [isModalOpen, setIsModalOpen] = useState(false);
-
 
   // Delete a task
   const deleteTask = async (id: number) => {
