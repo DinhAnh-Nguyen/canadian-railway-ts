@@ -1,4 +1,5 @@
 import React from 'react';
+import fetchTasks from '../app/schedule/page';
 
 interface TaskDetailsModalProps {
   isOpen: boolean;
@@ -13,11 +14,22 @@ interface TaskDetailsModalProps {
   };
 }
 
+
 export default function TaskDetailsModal({ isOpen, onClose, task }: TaskDetailsModalProps) {
   if (!isOpen) {
     return null;
   }
-
+  const deleteTask = async () => {
+    const response = await fetch(`/api/tasks/${task.id}`, {
+      method: "DELETE",
+    });
+    if (response.status === 200) {
+      // Task deleted successfully Refresh the page
+      fetchTasks();
+    }
+    
+    onClose();
+  }
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-gray-800 p-8 rounded-lg w-1/3">
@@ -43,6 +55,14 @@ export default function TaskDetailsModal({ isOpen, onClose, task }: TaskDetailsM
             <label className="block text-sm font-medium text-gray-300">Priority</label>
             <p className="mt-1 text-white">{task.priority}</p>
           </div>
+        </div>
+        <div className="mt-6 flex justify-end">
+          <button
+            onClick={deleteTask}
+            className="rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-500"
+          >
+            Delete
+          </button>
         </div>
         <div className="mt-6 flex justify-end">
           <button

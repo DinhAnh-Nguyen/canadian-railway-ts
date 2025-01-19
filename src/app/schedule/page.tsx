@@ -38,15 +38,7 @@ export default function Schedule() {
     fetchTasks();
   }, []);
 
-  // Delete a task
-  const deleteTask = async (id: number) => {
-    await fetch(`/api/tasks/${id}`, {
-      method: "DELETE",
-    });
-    const updatedTasks = tasks.filter((task) => task.id !== id);
-    setTasks(updatedTasks);
-    console.log(`Task with ID ${id} deleted successfully.`);
-  };
+
 
   // Fetch all tasks
   const getTasks = async (): Promise<task[]> => {
