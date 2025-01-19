@@ -22,8 +22,8 @@ export async function PUT(request: Request, { params }: { params: { id: Number |
     const sql = neon(databaseUrl);
     //PostgresQL
     const id = Number(params.id);
-    const resquestData = await request.json();
-    const response = await sql`UPDATE schedules SET description = ${resquestData.description}, status = ${resquestData.status}, due_date = ${resquestData.due_date}, piroty = ${resquestData.piroty} WHERE id = ${id};`;
+    const requestData = await request.json();
+    const response = await sql`UPDATE schedules SET description = ${requestData.description}, status = ${requestData.status}, due_date = ${requestData.due_date}, priority = ${requestData.priority} WHERE id = ${id};`;
     return new Response(JSON.stringify(response), { status: 200 });
 }
 
