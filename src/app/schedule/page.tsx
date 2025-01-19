@@ -166,6 +166,7 @@ export default function Schedule() {
               <th>Description</th>
               <th>Date</th>
               <th>Assigned To</th>
+              <th>Priotity</th>
               <th>Progress</th>
             </tr>
           </thead>
