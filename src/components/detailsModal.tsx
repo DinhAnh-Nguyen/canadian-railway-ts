@@ -8,7 +8,7 @@ interface TaskDetailsModalProps {
     description: string;
     status: string;
     assigned_to: string;
-    due_date: string;
+    date: string;
     priority: string;
   };
 }
@@ -37,7 +37,7 @@ export default function TaskDetailsModal({ isOpen, onClose, task }: TaskDetailsM
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-300">Due Date</label>
-            <p className="mt-1 text-white">{task.due_date}</p>
+            <p className="mt-1 text-white">{task.date}</p>
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-300">Priority</label>

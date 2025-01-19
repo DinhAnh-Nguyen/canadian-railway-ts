@@ -21,7 +21,7 @@ export async function POST() {
       id SERIAL PRIMARY KEY,
       description VARCHAR(255) NOT NULL,
       status VARCHAR(255) NOT NULL,
-      Assigned_to VARCHAR(255) NOT NULL,
+      assigned_to VARCHAR(255) NOT NULL,
       created_by VARCHAR(255) NOT NULL,
       due_date DATE NOT NULL,
       priority VARCHAR(255) NOT NULL

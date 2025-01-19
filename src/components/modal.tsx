@@ -49,7 +49,6 @@ export default function Modal({ isOpen, onClose, onAddTask }: ModalProps) {
     setStatus("");
     onClose(); // Close the modal after saving
   };
-
   const getUsers = async (): Promise<User[]> => {
     const response = await fetch("/api/users");
     const data = await response.json();

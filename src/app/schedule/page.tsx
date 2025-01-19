@@ -19,6 +19,7 @@ type task = {
   priority: string;
   start: Date;
   end: Date;
+  date: string; // Add date property
 };
 
 export default function Schedule() {
@@ -75,9 +76,10 @@ export default function Schedule() {
       assigned_to: assignedTo.toString(),
       created_by: "Admin", // Replace with the actual creator
       due_date,
-      priority: priority, // Include the priority
       start: new Date(due_date), // Set start date
       end: new Date(due_date), // Set end date
+      date: date, // Assign date property
+      priority: priority, // Include priority property
     };
 
     // Add the task to the state
@@ -175,23 +177,23 @@ export default function Schedule() {
         <table className="border-collapse border border-gray-800 w-full">
           <thead>
             <tr>
-              <th>Order ID</th>
-              <th>Status</th>
-              <th>Description</th>
-              <th>Date</th>
-              <th>Assigned To</th>
-              <th>Priority</th>
+              <th className="border border-gray-800">Order ID</th>
+              <th className="border border-gray-800">Status</th>
+              <th className="border border-gray-800">Description</th>
+              <th className="border border-gray-800">Date</th>
+              <th className="border border-gray-800">Assigned To</th>
+              <th className="border border-gray-800">Priority</th>
             </tr>
           </thead>
           <tbody>
             {tasks.map((task) => (
               <tr key={task.id}>
-                <td>#{task.id}</td>
-                <td>{task.status}</td> 
-                <td>{task.description}</td>
-                <td>{task.due_date}</td>
-                <td>{task.assigned_to}</td>
-                <td>{task.priority}</td> 
+                <td className="border border-gray-300">#{task.id}</td>
+                <td className="border border-gray-300">{task.status}</td>
+                <td className="border border-gray-300">{task.description}</td>
+                <td className="border border-gray-300">{task.due_date}</td>
+                <td className="border border-gray-300">{task.assigned_to}</td>
+                <td className="border border-gray-300">{task.priority}</td>
               </tr>
             ))}
           </tbody>

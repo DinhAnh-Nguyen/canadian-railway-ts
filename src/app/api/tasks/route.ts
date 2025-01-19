@@ -17,7 +17,7 @@ export async function POST(request: Request) {
     const sql = neon(databaseUrl);
     //PostgresQL
 
-    const response = await sql`INSERT INTO tasks (description, status, due_date, priority) VALUES (${requestData.description}, ${requestData.status}, ${requestData.due_date}, ${requestData.piroty});`;
+    const response = await sql`INSERT INTO tasks (description, status, assigned_to, created_by, due_date, priority) VALUES (${requestData.description}, ${requestData.status}, ${requestData.assigned_to}, ${requestData.created_by}, ${requestData.due_date}, ${requestData.priority});`;
     return new Response(JSON.stringify(response), { status: 200 });
 }
 
