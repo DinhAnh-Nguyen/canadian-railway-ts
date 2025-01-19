@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 
 interface User {
   id: number;
@@ -10,12 +10,22 @@ interface User {
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onAddTask: (title: string, description: string, date: string, time: string, assignedTo: number) => void;
+  onAddTask: (
+    title: string,
+    description: string,
+    date: string,
+    time: string,
+    assignedTo: number,
+    priority: string,
+    status: string,
+  ) => void;
 }
 
 export default function Modal({ isOpen, onClose, onAddTask }: ModalProps) {
   const [inputValue, setInputValue] = useState("");
   const [textareaValue, setTextareaValue] = useState("");
+  const [priority, setPriority] = useState("");
+  const [status, setStatus] = useState("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [assignedTo, setAssignedTo] = useState<number>(0);
@@ -29,7 +39,14 @@ export default function Modal({ isOpen, onClose, onAddTask }: ModalProps) {
       return;
     }
     setError("");
-    onAddTask(inputValue, textareaValue, date, time, assignedTo);
+    onAddTask(inputValue, textareaValue, date, time, assignedTo, priority, status);
+    setInputValue("");
+    setTextareaValue("");
+    setDate("");
+    setTime("");
+    setAssignedTo(0);
+    setPriority("");
+    setStatus("");
     onClose(); // Close the modal after saving
   };
 
@@ -58,8 +75,12 @@ export default function Modal({ isOpen, onClose, onAddTask }: ModalProps) {
         <form onSubmit={handleSubmit}>
           <div className="space-y-12">
             <div className="border-b border-gray-900/10 pb-12">
-              <h2 className="font-medium text-center text-xl text-white">Add Task</h2>
-              {error && <div className="text-red-500 text-sm text-center">{error}</div>}
+              <h2 className="font-medium text-center text-xl text-white">
+                Add Task
+              </h2>
+              {error && (
+                <div className="text-red-500 text-sm text-center">{error}</div>
+              )}
               <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                 <div className="sm:col-span-4">
                   <div className="mt-2">
@@ -92,7 +113,9 @@ export default function Modal({ isOpen, onClose, onAddTask }: ModalProps) {
                 </div>
               </div>
               <div className="col-span-full mt-4">
-                <label className="block text-sm font-medium leading-6 text-white">Date and Time</label>
+                <label className="block text-sm font-medium leading-6 text-white">
+                  Date and Time
+                </label>
                 <div className="mt-2 flex gap-4">
                   <input
                     type="date"
@@ -109,7 +132,10 @@ export default function Modal({ isOpen, onClose, onAddTask }: ModalProps) {
                 </div>
               </div>
               <div className="col-span-full mt-4">
-                <label htmlFor="users" className="block text-sm font-medium leading-6 text-white">
+                <label
+                  htmlFor="users"
+                  className="block text-sm font-medium leading-6 text-white"
+                >
                   Assign User
                 </label>
                 <div className="mt-2">
@@ -126,6 +152,48 @@ export default function Modal({ isOpen, onClose, onAddTask }: ModalProps) {
                         {user.name}
                       </option>
                     ))}
+                  </select>
+                </div>
+              </div>
+              <div className="col-span-full mt-4">
+                <label
+                  htmlFor="priority"
+                  className="block text-sm font-medium leading-6 text-white"
+                >
+                  Priority
+                </label>
+                <div className="mt-2">
+                  <select
+                    id="priority"
+                    name="priority"
+                    className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                    value={priority}
+                    onChange={(e) => setPriority(e.target.value)}
+                  >
+                    <option value="Low">Low</option>
+                    <option value="Medium">Medium</option>
+                    <option value="High">High</option>
+                  </select>
+                </div>
+              </div>
+              <div className="col-span-full mt-4">
+                <label
+                  htmlFor="status"
+                  className="block text-sm font-medium leading-6 text-white"
+                >
+                  Status
+                </label>
+                <div className="mt-2">
+                  <select
+                    id="status"
+                    name="status"
+                    className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                    value={status}
+                    onChange={(e) => setStatus(e.target.value)}
+                  >
+                    <option value="Pending">Pending</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Completed">Completed</option>
                   </select>
                 </div>
               </div>
