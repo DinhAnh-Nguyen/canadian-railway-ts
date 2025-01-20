@@ -1,11 +1,31 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Bar, Line } from "react-chartjs-2";
+import { Loader } from "@googlemaps/js-api-loader";
 import "chart.js/auto";
 
 export default function TrackOverview() {
   const [selectedDate, setSelectedDate] = useState<string>("");
   const [selectedTrack, setSelectedTrack] = useState<string>("");
+
+  // Reference for the map container
+  const mapRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const loader = new Loader({
+      apiKey: "YOUR_GOOGLE_MAPS_API_KEY", // Replace with your actual API key
+      version: "weekly",
+    });
+
+    loader.load().then(() => {
+      if (mapRef.current) {
+        new google.maps.Map(mapRef.current, {
+          center: { lat: 51.0447, lng: -114.0719 }, // Coordinates for Calgary, Alberta
+          zoom: 10,
+        });
+      }
+    });
+  }, []);
 
   // Mock Data for Maintenance History (Bar Chart)
   const maintenanceHistoryData = {
@@ -71,7 +91,7 @@ export default function TrackOverview() {
     maintainAspectRatio: false,
   };
 
-   return (
+  return (
     <div className="p-6 bg-background text-foreground">
       {/* Filters */}
       <div className="mb-4 flex gap-4">
@@ -101,8 +121,8 @@ export default function TrackOverview() {
             <option value="Track 1">Track 1</option>
             <option value="Track 2">Track 2</option>
             <option value="Track 3">Track 3</option>
-            <option value="Track 3">Track 4</option>
-            <option value="Track 3">Track 5</option>
+            <option value="Track 4">Track 4</option>
+            <option value="Track 5">Track 5</option>
           </select>
         </div>
       </div>
@@ -111,11 +131,12 @@ export default function TrackOverview() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left Column */}
         <div className="lg:col-span-1 space-y-6">
-          <div className="h-80  rounded-md p-12 bg-[#393A3E]">
+          <div className="h-80 rounded-md p-12 bg-[#393A3E]">
             <h3 className="text-center text-lg font-bold mb-4">Track Maintenance History</h3>
             <Bar data={maintenanceHistoryData} options={chartOptions} />
           </div>
 
+ 
           <div className=" rounded-md p-4 bg-[#393A3E]">
             <h3 className="text-center text-lg font-bold mb-4">Selected Track Details</h3>
             <div className="overflow-hidden rounded-md border">
@@ -161,11 +182,11 @@ export default function TrackOverview() {
 
         {/* Right Column */}
         <div className="lg:col-span-2 space-y-6">
-          <div className="h-80  rounded-md flex items-center justify-center bg-gray-200">
-            <p className="text-gray-500">Map will be displayed here</p>
+          <div className="h-80 rounded-md bg-gray-200">
+            <div ref={mapRef} className="h-full w-full"></div>
           </div>
 
-          <div className="lg:col-span-1 space-y-6 rounded-md p-1 bg-[#393A3E] h-80">
+          <div className="space-y-6 rounded-md p-2 bg-[#393A3E] h-80">
             <h3 className="text-center text-lg font-bold mb-4">Track Capacity</h3>
             <Line data={trackCapacityData} options={chartOptions} />
           </div>
