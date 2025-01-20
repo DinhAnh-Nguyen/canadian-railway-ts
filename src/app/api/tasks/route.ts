@@ -31,7 +31,9 @@ export async function PUT(request: Request) {
 
         UPDATE tasks SET
             description = ${requestData.description}, 
-            status = ${requestData.status}, 
+            status = ${requestData.status},
+            assigned_to = ${requestData.assigned_to},
+            created_by = ${requestData.created_by}, 
             due_date = ${requestData.due_date}, 
             priotity = ${requestData.priotity} 
             WHERE id = ${requestData.id};`;

@@ -1,5 +1,5 @@
 import React from 'react';
-import fetchTasks from '../app/schedule/page';
+import getTasks from '../app/schedule/page';
 
 interface TaskDetailsModalProps {
   isOpen: boolean;
@@ -12,24 +12,19 @@ interface TaskDetailsModalProps {
     date: string;
     priority: string;
   };
+  onDelete: (id: number) => void;
 }
 
-
-export default function TaskDetailsModal({ isOpen, onClose, task }: TaskDetailsModalProps) {
+export default function TaskDetailsModal({ isOpen, onClose, task, onDelete }: TaskDetailsModalProps) {
   if (!isOpen) {
     return null;
   }
-  const deleteTask = async () => {
-    const response = await fetch(`/api/tasks/${task.id}`, {
-      method: "DELETE",
-    });
-    if (response.status === 200) {
-      // Task deleted successfully Refresh the page
-      fetchTasks();
-    }
-    
+
+  const handleDelete = () => {
+    onDelete(task.id);
     onClose();
-  }
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-gray-800 p-8 rounded-lg w-1/3">
@@ -58,7 +53,7 @@ export default function TaskDetailsModal({ isOpen, onClose, task }: TaskDetailsM
         </div>
         <div className="mt-6 flex justify-end">
           <button
-            onClick={deleteTask}
+            onClick={handleDelete}
             className="rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-500"
           >
             Delete

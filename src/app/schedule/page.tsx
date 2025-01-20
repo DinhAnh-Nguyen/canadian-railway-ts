@@ -90,6 +90,15 @@ export default function Schedule() {
     setIsModalOpen(false);
   };
 
+  const handleDeleteTask = async (taskId: number) => {
+    // Delete the task from the API
+    await fetch(`/api/tasks/${taskId}`, {
+      method: "DELETE",
+    });
+    
+    setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskId));
+  };
+
   // Handle task click on the calendar
   const handleSelectEvent = (task: any) => {
     setSelectedTask(task); // Set the selected task
@@ -144,6 +153,7 @@ export default function Schedule() {
             isOpen={isDetailsModalOpen}
             onClose={() => setIsDetailsModalOpen(false)}
             task={selectedTask}
+            onDelete={handleDeleteTask}
           />
         )}
       </div>
@@ -166,7 +176,7 @@ export default function Schedule() {
       {/* Task Table */}
       <div className="mt-8">
         <h1 className="text-lg font-bold">Scheduled Tasks</h1>
-        <table className="border-collapse border border-gray-800 w-full">
+        <table className="border-collapse border border-gray-800 w-full justify-items-center">
           <thead>
             <tr>
               <th className="border border-gray-800">Order ID</th>
