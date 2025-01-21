@@ -1,6 +1,6 @@
 import { neon } from "@neondatabase/serverless";
 // Add a task - Daniel
-export async function GET({ params }: { params: { id: Number | String } }) {
+export async function GET({ params }: { params: { id: number | string } }) {
     const databaseUrl = process.env.DATABASE_URL || ""; // Set a default value if DATABASE_URL is not defined
     const sql = neon(databaseUrl);
     //PostgresQL

@@ -17,7 +17,8 @@ export default function TrackOverview() {
 
   useEffect(() => {
     const loader = new Loader({
-      apiKey: googleMapsApiKey || "",
+      apiKey: process.env.GOOGLE_MAPS_API_KEY || "", // Replace with your actual API key
+      version: "weekly",
     });
 
     loader.load().then(() => {
