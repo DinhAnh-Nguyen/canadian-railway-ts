@@ -1,4 +1,5 @@
 "use client";
+import Nav from "@/components/navbar";
 import React from "react";
 import { useEffect, useState, FormEvent } from "react";
 
@@ -71,7 +72,9 @@ export default function page() {
   }, []);
 
   return (
+    
     <div>
+      <Nav />
       <h1>Manage Users</h1>
       <table className="border-collapse border border-gray-800 w-96">
         <thead>

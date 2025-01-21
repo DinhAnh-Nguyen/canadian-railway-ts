@@ -1,5 +1,6 @@
 "use client";
 import Modal from "@/components/modal";
+import Nav from "@/components/navbar";
 import React, { useState, FormEvent, useEffect } from "react";
 
 
@@ -75,6 +76,7 @@ export default function Schedule() {
 
   return (
     <div>
+      <Nav />
       <div className="flex justify-end">
         <div className="flex px-4">
           <button

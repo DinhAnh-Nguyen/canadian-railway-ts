@@ -3,6 +3,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Bar, Line } from "react-chartjs-2";
 import { Loader } from "@googlemaps/js-api-loader";
 import "chart.js/auto";
+import Nav from "@/components/navbar";
 
 export default function TrackOverview() {
   const [selectedDate, setSelectedDate] = useState<string>("");
@@ -92,6 +93,8 @@ export default function TrackOverview() {
   };
 
   return (
+    <div>
+      <Nav />
     <div className="p-6 bg-background text-foreground">
       {/* Filters */}
       <div className="mb-4 flex gap-4">
@@ -192,6 +195,7 @@ export default function TrackOverview() {
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 }
