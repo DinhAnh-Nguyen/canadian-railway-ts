@@ -12,6 +12,9 @@ export default function TrackOverview() {
   // Reference for the map container
   const mapRef = useRef<HTMLDivElement | null>(null);
 
+  // Retrieve the API key from the environment variable
+  const googleMapsApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+
   useEffect(() => {
     const loader = new Loader({
       apiKey: process.env.GOOGLE_MAPS_API_KEY || "", // Replace with your actual API key
@@ -19,16 +22,14 @@ export default function TrackOverview() {
     });
 
     loader.load().then(() => {
-      if (mapRef.current) {
         new google.maps.Map(mapRef.current, {
-          center: { lat: 51.0447, lng: -114.0719 }, // Coordinates for Calgary, Alberta
-          zoom: 10,
+          center: { lat: 51.0447, lng: -114.0719 }, // get the location for Calgary, Alberta
+          zoom: 13,
         });
-      }
     });
-  }, []);
+  }, [googleMapsApiKey]);
 
-  // Mock Data for Maintenance History (Bar Chart)
+  // Setup Data for Maintenance History
   const maintenanceHistoryData = {
     labels: [
       "Jan", "Feb", "Mar", "Apr", "May", "Jun",
@@ -47,7 +48,7 @@ export default function TrackOverview() {
     ],
   };
 
-  // Mock Data for Track Capacity (Line Chart)
+  // Setup Data for Track Capacity
   const trackCapacityData = {
     labels: [
       "Jan", "Feb", "Mar", "Apr", "May", "Jun",
