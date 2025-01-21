@@ -19,24 +19,24 @@ export default function Dashboard() {
 
   const [tasks, setTasks] = useState<task[]>([]);
 
-  // Reference for the map container
+// Reference for the map container
   const mapRef = useRef<HTMLDivElement | null>(null);
+
+  // Retrieve the API key from the environment variable
+  const googleMapsApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 
   useEffect(() => {
     const loader = new Loader({
-      apiKey: process.env.GOOGLE_MAPS_API_KEY || "", // Replace with your actual API key
-      version: "weekly",
+      apiKey: googleMapsApiKey || "", // Use API key from the .env.local file
     });
 
     loader.load().then(() => {
-      if (mapRef.current) {
         new google.maps.Map(mapRef.current, {
-          center: { lat: 51.0447, lng: -114.0719 }, // Coordinates for Calgary, Alberta
-          zoom: 10,
+          center: { lat: 51.0447, lng: -114.0719 }, // get the location for Calgary, Alberta
+          zoom: 13,
         });
-      }
     });
-  }, []);
+  }, [googleMapsApiKey]);
 
   // Mock Data for Track Capacity (Line Chart)
   const trackCapacityData = {
