@@ -5,21 +5,21 @@ import React, { useState, FormEvent, useEffect } from "react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import TaskDetailsModal from "@/components/detailsModal";
+import { start } from "repl";
 
 // Initialize the localizer with moment
 const localizer = momentLocalizer(moment);
 
 type task = {
   id: number;
+  title: string;
   description: string;
   status: string;
   assigned_to: string;
   created_by: string;
   due_date: string;
   priority: string;
-  start: Date;
-  end: Date;
-  date: string; // Add date property
+  date: string;
 };
 
 export default function Schedule() {
@@ -27,18 +27,57 @@ export default function Schedule() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false); // State for task details modal
   const [selectedTask, setSelectedTask] = useState<task | null>(null); // State to store the selected task
+  // const hardcodedTasks = [
+  //   {
+  //     id: 1,
+  //     title: "Task 1",
+  //     description: "Description 1",
+  //     status: "Pending",
+  //     assigned_to: "1",
+  //     created_by: "1",
+  //     due_date: "2025-01-20T18:12:00Z",
+  //     priority: "High",
+  //     date: "2025-01-20", // Add the date property
+  //   },
+  //   {
+  //     id: 2,
+  //     title: "Task 2",
+  //     description: "Description 2",
+  //     status: "Completed",
+  //     assigned_to: "2",
+  //     created_by: "2",
+  //     due_date: "2025-01-21T07:12:00Z",
+  //     priority: "Medium",
+      
+  //     date: "2025-01-20", // Add the date property
+  //   },
+  //   {
+  //     id: 3,
+  //     title: "Task 2",
+  //     description: "Description 2",
+  //     status: "Completed",
+  //     assigned_to: "2",
+  //     created_by: "2",
+  //     due_date: "2025-01-21T07:12:00Z",
+  //     priority: "Medium",
+  //     date: "2025-01-21", // Add the date property
+  //   },
+  // ];
+
+  // useEffect(() => {
+  //   setTasks(hardcodedTasks);
+  // }, []);
 
   // Fetch tasks from the API
   useEffect(() => {
     const fetchTasks = async () => {
       const fetchedTasks = await getTasks();
+      console.log(fetchedTasks);
       setTasks(fetchedTasks);
     };
 
     fetchTasks();
   }, []);
-
-
 
   // Fetch all tasks
   const getTasks = async (): Promise<task[]> => {
@@ -62,23 +101,18 @@ export default function Schedule() {
 
     // Create a new task object
     const newTask = {
-      id: tasks.length + 1, // Generate a unique ID (replace with a better method if needed)
-      description: title,
+      title: title,
+      description: description,
       status: status, // Include the status
       assigned_to: assignedTo.toString(),
       created_by: "Admin", // Replace with the actual creator
       due_date,
-      start: new Date(due_date), // Set start date
-      end: new Date(due_date), // Set end date
       date: date, // Assign date property
       priority: priority, // Include priority property
     };
 
-    // Add the task to the state
-    setTasks([...tasks, newTask]);
-
     // Send the task to the API
-    await fetch("/api/tasks", {
+   const response = await fetch("/api/tasks", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -86,6 +120,19 @@ export default function Schedule() {
       body: JSON.stringify(newTask),
     });
 
+    const createdTask = await response.json();
+
+    // Add the task to the state with the database-generated ID
+  setTasks((prevTasks) => [
+    ...prevTasks,
+    {
+      ...createdTask,
+      start: new Date(createdTask.due_date), // Set start date
+      end: new Date(createdTask.due_date), // Set end date
+      date: date, // Assign date property
+    },
+  ]);
+ 
     // Close the modal
     setIsModalOpen(false);
   };
@@ -113,7 +160,7 @@ export default function Schedule() {
   // Transform tasks for the calendar
   const calendarTasks = tasks.map((task) => ({
     id: task.id,
-    title: task.description, // Use description as the title
+    title: task.title, 
     start: new Date(task.due_date), // Convert due_date to a Date object
     end: new Date(task.due_date), // Use the same date for end (or adjust as needed)
     description: task.description,
@@ -121,6 +168,8 @@ export default function Schedule() {
     status: task.status,
     priority: task.priority, // Include priority in the event object
   }));
+ 
+  
 
   return (
     <div>
@@ -181,10 +230,12 @@ export default function Schedule() {
             <tr>
               <th className="border border-gray-800">Order ID</th>
               <th className="border border-gray-800">Status</th>
+              <th className="border border-gray-800">Title</th>
               <th className="border border-gray-800">Description</th>
               <th className="border border-gray-800">Date</th>
               <th className="border border-gray-800">Assigned To</th>
               <th className="border border-gray-800">Priority</th>
+              <th className="border border-gray-800">Date</th>
             </tr>
           </thead>
           <tbody>
@@ -192,10 +243,13 @@ export default function Schedule() {
               <tr key={task.id}>
                 <td className="border border-gray-300">#{task.id}</td>
                 <td className="border border-gray-300">{task.status}</td>
+                <td className="border border-gray-300">{task.title}</td>
                 <td className="border border-gray-300">{task.description}</td>
                 <td className="border border-gray-300">{task.due_date}</td>
                 <td className="border border-gray-300">{task.assigned_to}</td>
                 <td className="border border-gray-300">{task.priority}</td>
+                <td className="border border-gray-300">{task.date}</td>
+
               </tr>
             ))}
           </tbody>

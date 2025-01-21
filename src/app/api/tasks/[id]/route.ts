@@ -23,7 +23,7 @@ export async function PUT(request: Request, { params }: { params: { id: Number |
     //PostgresQL
     const id = Number(params.id);
     const resquestData = await request.json();
-    const response = await sql`UPDATE tasks SET description = ${resquestData.description}, status = ${resquestData.status}, assigned_to = ${resquestData.assigned_to}, created_by = ${resquestData.created_by}, due_date = ${resquestData.due_date}, priority = ${resquestData.priority} WHERE id = ${id};`;
+    const response = await sql`UPDATE tasks SET description = ${resquestData.description}, status = ${resquestData.status}, assigned_to = ${resquestData.assigned_to}, created_by = ${resquestData.created_by}, due_date = ${resquestData.due_date}, priority = ${resquestData.priority}, date = ${resquestData.date} WHERE id = ${id};`;
     return new Response(JSON.stringify(response), { status: 200 });
 }
 

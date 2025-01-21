@@ -1,11 +1,12 @@
 import React from 'react';
-import getTasks from '../app/schedule/page';
+
 
 interface TaskDetailsModalProps {
   isOpen: boolean;
   onClose: () => void;
   task: {
     id: number;
+    title: string;
     description: string;
     status: string;
     assigned_to: string;
@@ -30,6 +31,10 @@ export default function TaskDetailsModal({ isOpen, onClose, task, onDelete }: Ta
       <div className="bg-gray-800 p-8 rounded-lg w-1/3">
         <h2 className="font-medium text-center text-xl text-white">Task Details</h2>
         <div className="mt-6 space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-300">Title</label>
+            <p className="mt-1 text-white">{task.title}</p>
+          </div>
           <div>
             <label className="block text-sm font-medium text-gray-300">Description</label>
             <p className="mt-1 text-white">{task.description}</p>

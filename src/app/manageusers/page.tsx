@@ -192,6 +192,7 @@ export default function page() {
               value={newUser.role}
               onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}
             >
+              <option value="">Select Role</option>
               <option value="admin">Admin</option>
               <option value="user">User</option>
             </select>
