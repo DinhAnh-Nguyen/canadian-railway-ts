@@ -48,7 +48,7 @@ export default function Schedule() {
   //     created_by: "2",
   //     due_date: "2025-01-21T07:12:00Z",
   //     priority: "Medium",
-      
+
   //     date: "2025-01-20", // Add the date property
   //   },
   //   {
@@ -112,7 +112,7 @@ export default function Schedule() {
     };
 
     // Send the task to the API
-   const response = await fetch("/api/tasks", {
+    const response = await fetch("/api/tasks", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -123,16 +123,16 @@ export default function Schedule() {
     const createdTask = await response.json();
 
     // Add the task to the state with the database-generated ID
-  setTasks((prevTasks) => [
-    ...prevTasks,
-    {
-      ...createdTask,
-      start: new Date(createdTask.due_date), // Set start date
-      end: new Date(createdTask.due_date), // Set end date
-      date: date, // Assign date property
-    },
-  ]);
- 
+    setTasks((prevTasks) => [
+      ...prevTasks,
+      {
+        ...createdTask,
+        start: new Date(createdTask.due_date), // Set start date
+        end: new Date(createdTask.due_date), // Set end date
+        date: date, // Assign date property
+      },
+    ]);
+
     // Close the modal
     setIsModalOpen(false);
   };
@@ -143,7 +143,7 @@ export default function Schedule() {
       const response = await fetch(`/api/tasks/${taskId}`, {
         method: "DELETE",
       });
-  
+
       if (response.ok) {
         // Remove the task from the state
         setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskId));
@@ -154,10 +154,8 @@ export default function Schedule() {
       }
     } catch (error) {
       console.error("Error deleting task:", error);
-      
     }
   };
-
 
   // Handle task click on the calendar
   const handleSelectEvent = (task: any) => {
@@ -173,7 +171,7 @@ export default function Schedule() {
   // Transform tasks for the calendar
   const calendarTasks = tasks.map((task) => ({
     id: task.id,
-    title: task.title, 
+    title: task.title,
     start: new Date(task.due_date), // Convert due_date to a Date object
     end: new Date(task.due_date), // Use the same date for end (or adjust as needed)
     description: task.description,
@@ -181,9 +179,6 @@ export default function Schedule() {
     status: task.status,
     priority: task.priority, // Include priority in the event object
   }));
-  
- 
-  
 
   return (
     <div>
@@ -236,7 +231,6 @@ export default function Schedule() {
           views={["month", "week", "day"]}
         />
       </div>
-      
 
       {/* Task Table */}
       <div className="mt-8">

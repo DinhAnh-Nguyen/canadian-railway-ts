@@ -1,10 +1,10 @@
 "use client";
-
 import { Loader } from "@googlemaps/js-api-loader";
 import React, { useEffect, useRef, useState } from "react";
 import { Line } from "react-chartjs-2";
 import "chart.js/auto";
 import Nav from "@/components/navbar";
+import handleDeleteTask from "@/app/schedule/page";
 
 export default function Dashboard() {
   type task = {
@@ -47,6 +47,17 @@ export default function Dashboard() {
     return data;
   };
 
+  const handleDeleteTask = async (taskId: number) => {
+    try {
+      await fetch(`/api/tasks/${taskId}`, {
+        method: "DELETE",
+      });
+      setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskId));
+    } catch (error) {
+      console.error("Error deleting task:", error);
+    }
+  };
+
   useEffect(() => {
     const fetchTasks = async () => {
       const tasks = await getTasks();
@@ -54,6 +65,7 @@ export default function Dashboard() {
     };
     fetchTasks();
   }, []);
+
 
   // Mock Data for Track Capacity (Line Chart)
   const trackCapacityData = {
@@ -150,7 +162,7 @@ export default function Dashboard() {
                       <td>
                         <button
                           className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
-                          onClick={() => deleteTask(task.id)}
+                          onClick={() => handleDeleteTask(task.id)}
                         >
                           Delete
                         </button>
