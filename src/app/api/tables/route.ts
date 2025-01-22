@@ -18,12 +18,14 @@ export async function POST() {
     //Create a schedules table containing id, description, status, due_date, piroty, assigned_to, created_by.
     const response2 = await sql`CREATE TABLE IF NOT EXISTS tasks (
       id SERIAL PRIMARY KEY,
+      title VARCHAR(255) NOT NULL,
       description VARCHAR(255) NOT NULL,
       status VARCHAR(255) NOT NULL,
       assigned_to VARCHAR(255) NOT NULL,
       created_by VARCHAR(255) NOT NULL,
       due_date DATE NOT NULL,
-      priority VARCHAR(255) NOT NULL
+      priority VARCHAR(255) NOT NULL,
+      date VARCHAR(255)
     );`;
 
     return Response.json({ response1, response2 }, { status: 200 });
