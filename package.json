@@ -16,6 +16,7 @@
     "encoding": "^0.1.13",
     "firebase": "^11.0.2",
     "leaflet": "^1.9.4",
+    "leaflet.gridlayer.googlemutant": "^0.14.1",
     "next": "^15.1.0",
     "pgshims": "github:neondatabase/serverless",
     "react": "^19.0.0",
