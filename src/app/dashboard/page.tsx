@@ -9,12 +9,14 @@ import Nav from "@/components/navbar";
 export default function Dashboard() {
   type task = {
     id: number;
+    title: string;
     description: string;
     status: string;
     assigned_to: string;
     created_by: string;
     due_date: string;
-    piroty: string;
+    priority: string;
+    date: string;
   };
 
   const [tasks, setTasks] = useState<task[]>([]);
@@ -37,6 +39,21 @@ export default function Dashboard() {
         });
     });
   }, [googleMapsApiKey]);
+
+  //Fetch all tasks - Chris
+  const getTasks = async (): Promise<task[]> => {
+    const response = await fetch("/api/tasks");
+    const data = await response.json();
+    return data;
+  };
+
+  useEffect(() => {
+    const fetchTasks = async () => {
+      const tasks = await getTasks();
+      setTasks(tasks);
+    };
+    fetchTasks();
+  }, []);
 
   // Mock Data for Track Capacity (Line Chart)
   const trackCapacityData = {
@@ -127,7 +144,7 @@ export default function Dashboard() {
                     <tr key={task.id}>
                       <td>{task.id}</td>
                       <td>{task.status}</td>
-                      <td>{task.description}</td>
+                      <td>{task.title}</td>
                       <td>{task.due_date}</td>
                       <td>{task.assigned_to}</td>
                       <td>
