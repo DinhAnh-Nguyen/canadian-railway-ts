@@ -1,7 +1,11 @@
-import React from 'react'
+import Nav from "@/components/navbar";
+import React from "react";
 
 export default function Weather() {
   return (
-    <div>Weather</div>
-  )
+    <div>
+      <Nav />
+      Weather
+    </div>
+  );
 }

@@ -3,26 +3,10 @@ import React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useUserAuth } from "@/app/_utils/auth-context";
-import { signInWithPopup, GoogleAuthProvider, signOut } from "firebase/auth";
-import { auth } from "@/app/_utils/firebase";
 
 export default function Nav() {
   const router = useRouter();
-  const {user, logOut, signIn} = useUserAuth();
-
-  const handleSignIn = () => {
-    const provider = new GoogleAuthProvider();
-    signInWithPopup(auth, provider);
-  };
-
-  const handleLogout = async () => {
-    try {
-      await signOut(auth); // Pass auth if you're using firebase's signOut
-      router.push("/");
-    } catch (error) {
-      console.error("Logout Error: ", error);
-    }
-  };
+  const { user, googleSignIn, googleSignOut } = useUserAuth();
 
   return (
     <div className="h-24 flex items-center justify-between px-4 shadow-md">
@@ -37,6 +21,9 @@ export default function Nav() {
       <div className="hidden md:flex md:w-[50%] justify-center gap-4">
         <Link href="/dashboard" className="hover:underline">
           Dashboard
+        </Link>
+        <Link href="/trackOverview">
+          <button className="hover:underline">Track Overview</button>
         </Link>
         <button
           type="button"
@@ -55,18 +42,25 @@ export default function Nav() {
       {/* RIGHT */}
       <div className="w-full md:w-[30%] flex items-center justify-end gap-4 text-sm">
         {user ? (
-          <>
-            <span className="font-medium">{user?.displayName || "Anonymous"}</span>
+          <div>
+            <span className="font-medium p-3">
+              {user?.displayName || "Anonymous"}
+            </span>
             <button
-              onClick={handleLogout}
+              onClick={() => {
+                googleSignOut();
+                router.push("/signIn");
+              }}
               className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition"
             >
               Logout
             </button>
-          </>
+          </div>
         ) : (
           <button
-            onClick={handleSignIn}
+            onClick={() => {
+              googleSignIn();
+            }}
             className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
           >
             Sign In with Google

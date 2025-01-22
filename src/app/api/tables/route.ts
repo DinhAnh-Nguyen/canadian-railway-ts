@@ -15,9 +15,8 @@ export async function POST() {
             role VARCHAR(255) NOT NULL
         );`;
 
-    //Create a schedules table containing id, description, status, due_date, piroty
-
-    const response2 = await sql `CREATE TABLE IF NOT EXISTS tasks (
+    //Create a schedules table containing id, description, status, due_date, piroty, assigned_to, created_by.
+    const response2 = await sql`CREATE TABLE IF NOT EXISTS tasks (
       id SERIAL PRIMARY KEY,
       title VARCHAR(255) NOT NULL,
       description VARCHAR(255) NOT NULL,
@@ -30,11 +29,11 @@ export async function POST() {
     );`;
 
     return Response.json({ response1, response2 }, { status: 200 });
-    
   } catch (error) {
     return Response.json({ error }, { status: 500 });
   }
 }
+
 //Delete all tables
 export async function DELETE() {
   try {

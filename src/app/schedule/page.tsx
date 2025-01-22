@@ -1,6 +1,7 @@
 "use client";
 import Modal from "@/components/modal";
 import moment from "moment";
+import Nav from "@/components/navbar";
 import React, { useState, FormEvent, useEffect } from "react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
@@ -186,6 +187,7 @@ export default function Schedule() {
 
   return (
     <div>
+      <Nav />
       <div className="flex justify-end">
         <div className="flex px-4">
           <button

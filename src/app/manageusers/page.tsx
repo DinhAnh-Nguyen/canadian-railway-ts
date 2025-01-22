@@ -2,6 +2,7 @@
 import { useRouter } from "next/navigation";
 import React, { useState, FormEvent } from "react";
 import { useEffect } from "react";
+import Nav from "@/components/navbar";
 
 type User = {
   id: number;
@@ -94,7 +95,9 @@ export default function page() {
 
 
   return (
+    
     <div>
+      <Nav />
       <h1>Manage Users</h1>
       <div className="flex justify-between">
         <input
