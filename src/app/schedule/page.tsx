@@ -249,7 +249,6 @@ export default function Schedule() {
                 <td className="border border-gray-300">{task.assigned_to}</td>
                 <td className="border border-gray-300">{task.priority}</td>
                 <td className="border border-gray-300">{task.date}</td>
-
               </tr>
             ))}
           </tbody>

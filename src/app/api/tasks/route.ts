@@ -33,9 +33,9 @@ export async function PUT(request: Request) {
             description = ${requestData.description}, 
             status = ${requestData.status},
             assigned_to = ${requestData.assigned_to},
-            created_by = ${requestData.created_by}, 
-            due_date = ${requestData.due_date}, 
-            priotity = ${requestData.priotity} 
+            created_by = ${requestData.created_by},
+            due_date = ${requestData.due_date},
+            priotity = ${requestData.priotity},
             WHERE id = ${requestData.id};`;
 
   return new Response(JSON.stringify(response), { status: 200 });

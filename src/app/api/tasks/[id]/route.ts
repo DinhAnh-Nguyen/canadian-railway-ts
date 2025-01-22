@@ -28,7 +28,7 @@ export async function PUT(request: Request, { params }: { params: { id: Number |
 }
 
 //Delete a task - Nathan
-export async function DELETE(request: Request, { params }: { params: { id: string } }) {
+export async function DELETE({ params }: { params: { id: string } }) {
     try {
       const databaseUrl = process.env.DATABASE_URL || ""; // Set a default value if DATABASE_URL is not defined
       const sql = neon(databaseUrl);
