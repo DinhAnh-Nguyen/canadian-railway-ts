@@ -1,6 +1,3 @@
-import React from 'react';
-
-
 interface TaskDetailsModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -13,7 +10,7 @@ interface TaskDetailsModalProps {
     date: string;
     priority: string;
   };
-  onDelete: (id: number) => void;
+  onDelete: (id: number) => void; // Add onDelete prop
 }
 
 export default function TaskDetailsModal({ isOpen, onClose, task, onDelete }: TaskDetailsModalProps) {
@@ -21,10 +18,15 @@ export default function TaskDetailsModal({ isOpen, onClose, task, onDelete }: Ta
     return null;
   }
 
-  const handleDelete = () => {
-    onDelete(task.id);
-    onClose();
+  const handleDelete = async () => {
+    try {
+      await onDelete(task.id); // Call the onDelete function from props
+      onClose(); // Close the modal
+    } catch (error) {
+      console.error("Error deleting task:", error);
+    }
   };
+  
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
@@ -58,7 +60,7 @@ export default function TaskDetailsModal({ isOpen, onClose, task, onDelete }: Ta
         </div>
         <div className="mt-6 flex justify-end">
           <button
-            onClick={handleDelete}
+            onClick={handleDelete} // Use handleDelete instead of deleteTask
             className="rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-500"
           >
             Delete

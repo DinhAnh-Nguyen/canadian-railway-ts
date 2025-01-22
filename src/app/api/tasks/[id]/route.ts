@@ -1,5 +1,6 @@
 import { neon } from "@neondatabase/serverless";
-// Add a task - Daniel
+import { NextResponse } from "next/server";
+// Fetch with id - Daniel
 export async function GET({ params }: { params: { id: Number | String } }) {
     const databaseUrl = process.env.DATABASE_URL || ""; // Set a default value if DATABASE_URL is not defined
     const sql = neon(databaseUrl);
@@ -28,25 +29,35 @@ export async function PUT(request: Request, { params }: { params: { id: Number |
 }
 
 //Delete a task - Nathan
-export async function DELETE({ params }: { params: { id: string } }) {
-    try {
-      const databaseUrl = process.env.DATABASE_URL || ""; // Set a default value if DATABASE_URL is not defined
-      const sql = neon(databaseUrl);
-  
-      // Convert id to number
-      const id = Number(params.id);
-  
-      // Delete the task from the database
-      const response = await sql`DELETE FROM tasks WHERE id = ${id}`;
-  
-      if (!response) {
-        return new Response(null, { status: 404 }); // Task not found
-      }
-  
-      return new Response(null, { status: 200 }); // Success
-    } catch (error) {
-      console.error("Error deleting task:", error);
-      return new Response(JSON.stringify({ error: "Internal server error" }), { status: 500 });
+export async function DELETE(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const databaseUrl = process.env.DATABASE_URL || "";
+    const sql = neon(databaseUrl);
+
+    const id = Number(params.id); // Convert id to number
+
+    // Log the ID for debugging
+    console.log("Deleting task with ID:", id);
+
+    // Delete the task from the database
+    const response = await sql`DELETE FROM tasks WHERE id = ${id}`;
+
+    // Log the response for debugging
+    console.log("Delete response:", response);
+
+    if (!response) {
+      return NextResponse.json({ error: "Task not found" }, { status: 404 });
     }
+    return NextResponse.json({ success: true }, { status: 200 });
+  } catch (error) {
+    console.error("Database Error:", error);
+    return NextResponse.json(
+      { error: "Failed to delete task." },
+      { status: 500 }
+    );
   }
+}
 

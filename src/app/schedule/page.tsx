@@ -5,7 +5,6 @@ import React, { useState, FormEvent, useEffect } from "react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import TaskDetailsModal from "@/components/detailsModal";
-import { start } from "repl";
 
 // Initialize the localizer with moment
 const localizer = momentLocalizer(moment);
@@ -106,7 +105,7 @@ export default function Schedule() {
       status: status, // Include the status
       assigned_to: assignedTo.toString(),
       created_by: "Admin", // Replace with the actual creator
-      due_date,
+      due_date: due_date,
       date: date, // Assign date property
       priority: priority, // Include priority property
     };
@@ -138,13 +137,26 @@ export default function Schedule() {
   };
 
   const handleDeleteTask = async (taskId: number) => {
-    // Delete the task from the API
-    await fetch(`/api/tasks/${taskId}`, {
-      method: "DELETE",
-    });
-    
-    setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskId));
+    try {
+      // Delete the task from the API
+      const response = await fetch(`/api/tasks/${taskId}`, {
+        method: "DELETE",
+      });
+  
+      if (response.ok) {
+        // Remove the task from the state
+        setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskId));
+        setIsDetailsModalOpen(false); // Close the details modal
+      } else {
+        console.error("Failed to delete task:", response.statusText);
+        console.log("Error deleting task:", taskId);
+      }
+    } catch (error) {
+      console.error("Error deleting task:", error);
+      
+    }
   };
+
 
   // Handle task click on the calendar
   const handleSelectEvent = (task: any) => {
@@ -168,6 +180,7 @@ export default function Schedule() {
     status: task.status,
     priority: task.priority, // Include priority in the event object
   }));
+  
  
   
 
@@ -221,6 +234,7 @@ export default function Schedule() {
           views={["month", "week", "day"]}
         />
       </div>
+      
 
       {/* Task Table */}
       <div className="mt-8">

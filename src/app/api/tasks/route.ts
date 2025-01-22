@@ -1,4 +1,5 @@
 import { neon } from "@neondatabase/serverless";
+import { NextResponse } from "next/server";
 
 //Fetch All tasks - Mark
 export async function GET() {
@@ -11,14 +12,30 @@ export async function GET() {
 
 // Add task - Daniel
 export async function POST(request: Request) {
-  const requestData = await request.json();
-  const databaseUrl = process.env.DATABASE_URL || ""; // Set a default value if DATABASE_URL is not defined
-  const sql = neon(databaseUrl);
-  //PostgresQL
+  try {
+    const requestData = await request.json();
+    const databaseUrl = process.env.DATABASE_URL || "";
+    const sql = neon(databaseUrl);
 
-  const response =
-    await sql`INSERT INTO tasks (title,description, status, assigned_to, created_by, due_date, priority, date) VALUES (${requestData.title}, ${requestData.description}, ${requestData.status}, ${requestData.assigned_to}, ${requestData.created_by}, ${requestData.due_date}, ${requestData.priority }, ${requestData.date})RETURNING *;`;
-  return new Response(JSON.stringify(response), { status: 200 });
+    // Insert the task into the database
+    const response = await sql`
+      INSERT INTO tasks (title, description, status, assigned_to, created_by, due_date, priority, date)
+      VALUES (${requestData.title}, ${requestData.description}, ${requestData.status}, ${requestData.assigned_to}, ${requestData.created_by}, ${requestData.due_date}, ${requestData.priority}, ${requestData.date})
+      RETURNING *;
+    `;
+
+    // Log the response for debugging
+    console.log("Insert response:", response);
+
+    // Return the newly created task
+    return NextResponse.json(response[0], { status: 200 });
+  } catch (error) {
+    console.error("Database Error:", error);
+    return NextResponse.json(
+      { error: "Failed to create task.", },
+      { status: 500 }
+    );
+  }
 }
 
 // Modify task - Mark

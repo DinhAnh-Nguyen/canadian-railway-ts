@@ -1,4 +1,5 @@
 import { neon } from "@neondatabase/serverless";
+import { NextResponse } from "next/server";
 
 //Fetch a user by id
 export async function GET({ params }: { params: { id: Number | String } }) {
