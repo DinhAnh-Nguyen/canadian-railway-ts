@@ -155,9 +155,9 @@ export default function Dashboard() {
                   {tasks.map((task) => (
                     <tr key={task.id}>
                       <td>{task.id}</td>
-                      <td>{task.status}</td>
-                      <td>{task.title}</td>
                       <td>{task.due_date}</td>
+                      <td>{task.title}</td>
+                      <td>{task.status}</td>
                       <td>{task.assigned_to}</td>
                       <td>
                         <button
