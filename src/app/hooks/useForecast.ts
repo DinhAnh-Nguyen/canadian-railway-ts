@@ -24,6 +24,7 @@ const useForecast = () => {
             `https://api.openweathermap.org/data/2.5/weather?lat=${location.lat}&lon=${location.lon}&units=metric&appid=${API_KEY}`
         );
         const data = await response.json();
+        console.log(data);
         return {
             name: data.name,
             country: data.sys.country,
