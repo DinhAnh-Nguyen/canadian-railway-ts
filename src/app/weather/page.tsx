@@ -1,11 +1,23 @@
-import Nav from "@/components/navbar";
-import React from "react";
+//By: Mark Bui
 
-export default function Weather() {
-  return (
-    <div>
-      <Nav />
-      Weather
+'use client';
+
+import React, { JSX } from 'react';
+import SelectLocation from '../../components/SelectLocation';
+import useForecast from '../hooks/useForecast';
+
+const App = (): JSX.Element => {
+  const { selectedTrack, handleTrackChange, forecastData } = useForecast();
+
+    <div className="bg-black text-white min-h-screen p-6">
+      <SelectLocation
+        track={selectedTrack}
+        forecastData={forecastData}
+        handleTrackChange={handleTrackChange}
+      />
     </div>
   );
-}
+};
+
+export default App;
+
