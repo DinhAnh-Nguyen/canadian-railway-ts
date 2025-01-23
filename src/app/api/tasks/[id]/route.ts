@@ -1,5 +1,6 @@
 import { neon } from "@neondatabase/serverless";
-// Add a task - Daniel
+import { NextResponse } from "next/server";
+// Fetch with id - Daniel
 export async function GET({ params }: { params: { id: Number | String } }) {
     const databaseUrl = process.env.DATABASE_URL || ""; // Set a default value if DATABASE_URL is not defined
     const sql = neon(databaseUrl);
@@ -22,21 +23,43 @@ export async function PUT(request: Request, { params }: { params: { id: Number |
     const sql = neon(databaseUrl);
     //PostgresQL
     const id = Number(params.id);
-    const requestData = await request.json();
-    const response = await sql`UPDATE schedules SET description = ${requestData.description}, status = ${requestData.status}, due_date = ${requestData.due_date}, priority = ${requestData.priority} WHERE id = ${id};`;
+
+    const resquestData = await request.json();
+    const response = await sql`UPDATE tasks SET description = ${resquestData.description}, status = ${resquestData.status}, assigned_to = ${resquestData.assigned_to}, created_by = ${resquestData.created_by}, due_date = ${resquestData.due_date}, priority = ${resquestData.priority}, date = ${resquestData.date} WHERE id = ${id};`;
+
     return new Response(JSON.stringify(response), { status: 200 });
 }
 
 //Delete a task - Nathan
-export async function DELETE(request: Request, { params }: { params: { id: number } }) {
-    const databaseUrl = process.env.DATABASE_URL || ""; // Set a default value if DATABASE_URL is not defined
+export async function DELETE(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const databaseUrl = process.env.DATABASE_URL || "";
     const sql = neon(databaseUrl);
 
-    const response = await sql`DELETE FROM schedules WHERE id = ${params.id};`;
+    const id = Number(params.id); // Convert id to number
+
+    // Log the ID for debugging
+    console.log("Deleting task with ID:", id);
+
+    // Delete the task from the database
+    const response = await sql`DELETE FROM tasks WHERE id = ${id}`;
+
+    // Log the response for debugging
+    console.log("Delete response:", response);
 
     if (!response) {
-        return new Response(null, { status: 404 }); //When Task Not Found
+      return NextResponse.json({ error: "Task not found" }, { status: 404 });
     }
-
-    return new Response(null, { status: 200 });
+    return NextResponse.json({ success: true }, { status: 200 });
+  } catch (error) {
+    console.error("Database Error:", error);
+    return NextResponse.json(
+      { error: "Failed to delete task." },
+      { status: 500 }
+    );
+  }
 }
+

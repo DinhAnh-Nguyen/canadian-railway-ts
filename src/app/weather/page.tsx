@@ -9,7 +9,6 @@ import useForecast from '../hooks/useForecast';
 const App = (): JSX.Element => {
   const { selectedTrack, handleTrackChange, forecastData } = useForecast();
 
-  return (
     <div className="bg-black text-white min-h-screen p-6">
       <SelectLocation
         track={selectedTrack}
@@ -21,3 +20,4 @@ const App = (): JSX.Element => {
 };
 
 export default App;
+
