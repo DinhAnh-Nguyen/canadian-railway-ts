@@ -60,6 +60,13 @@ const SelectLocation = ({ track, forecastData, handleTrackChange }: Props): JSX.
                             <div className="h-40 bg-gray-800 rounded mt-4"></div>
                         </div>
 
+                        <div className='col-span-6 row-span-2 h-full p-4 rounded'>
+                            <h2 className="text-lg font-semibold bg-emerald-950 px-4 py-2 rounded-2xl">
+                                Map View for Selected View
+                            </h2>
+                            <div className="h-5/6 bg-gray-800 rounded mt-4"></div>
+                        </div>
+
                         <div className="col-span-6 row-span-1 p-4 rounded">
                             <h2 className="text-lg font-semibold bg-emerald-950 px-4 py-2 rounded-2xl">
                                 Wind Speed for Selected Track

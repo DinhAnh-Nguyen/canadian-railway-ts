@@ -3,7 +3,7 @@ import { locationType, forecastType } from '../types';
 
 const useForecast = () => {
 
-    const API_KEY = process.env.NEXT_APP_OPENWEATHER_API_KEY;
+    const API_KEY = process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY;
 
     const [selectedTrack, setSelectedTrack] = useState(''); // use to track the currently selected track
     const [forecastData, setForecastData] = useState<{ [key: string]: forecastType | null }>({}); // stores weather data for multiple locations in an object, track is a key
