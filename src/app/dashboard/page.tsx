@@ -5,6 +5,7 @@ import { Line } from "react-chartjs-2";
 import "chart.js/auto";
 import Nav from "@/components/navbar";
 import handleDeleteTask from "@/app/schedule/page";
+import Link from "next/link";
 
 export default function Dashboard() {
   type task = {
@@ -125,7 +126,7 @@ export default function Dashboard() {
   return (
     <div>
       <Nav />
-      <div className="p-6 bg-background text-foreground">
+      <div className="p-6 bg-background text-foreground size-100">
         {/* Main Content Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Left Column */}
@@ -145,7 +146,7 @@ export default function Dashboard() {
               <table className="border-collapse border border-gray-800 w-full">
                 <thead>
                   <tr>
-                    <th>Title</th>
+                    <th>Order #</th>
                     <th>Date</th>
                     <th>Assigned To</th>
                     <th>Progress</th>
@@ -165,6 +166,14 @@ export default function Dashboard() {
                           onClick={() => handleDeleteTask(task.id)}
                         >
                           Delete
+                        </button>
+                        <button>
+                          <Link
+                            href={`/task/${task.id}`}
+                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded"
+                          >
+                            Edit
+                          </Link>
                         </button>
                       </td>
                     </tr>
