@@ -34,10 +34,12 @@ export default function Dashboard() {
     });
 
     loader.load().then(() => {
-        new google.maps.Map(mapRef.current, {
-          center: { lat: 51.0447, lng: -114.0719 }, // get the location for Calgary, Alberta
-          zoom: 13,
-        });
+        if (mapRef.current) {
+          new google.maps.Map(mapRef.current, {
+            center: { lat: 51.0447, lng: -114.0719 }, // get the location for Calgary, Alberta
+            zoom: 13,
+          });
+        }
     });
   }, [googleMapsApiKey]);
 
