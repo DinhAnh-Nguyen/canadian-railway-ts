@@ -9,24 +9,94 @@ export default function TrackOverview() {
   const [selectedDate, setSelectedDate] = useState<string>("");
   const [selectedTrack, setSelectedTrack] = useState<string>("");
 
-  // Mock Data for Maintenance History
-  const maintenanceHistoryData = {
-    labels: [
-      "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
-    ],
-    datasets: [
-      {
-        label: "Maintenance Count",
-        data: [5, 8, 6, 10, 9, 7, 8, 6, 10, 12, 11, 9],
-        backgroundColor: [
-          "#66B168", "#6060E1", "#66B168", "#6060E1", "#66B168",
-          "#6060E1", "#66B168", "#6060E1", "#66B168", "#6060E1",
-          "#66B168", "#6060E1",
-        ],
-      },
-    ],
+  // Mock data for track maintenance history
+  const trackMaintenanceData = {
+    "Track 1": [5, 8, 6, 10, 9, 7, 8, 6, 10, 12, 11, 9],
+    "Track 2": [4, 7, 5, 9, 8, 6, 7, 5, 9, 11, 10, 8],
+    "Track 3": [6, 9, 7, 11, 10, 8, 9, 7, 11, 13, 12, 10],
+    "Track 4": [3, 6, 4, 8, 7, 5, 6, 4, 8, 10, 9, 7],
+    "Track 5": [7, 10, 8, 12, 11, 9, 10, 8, 12, 14, 13, 11],
   };
+
+// Mock data for track details
+  const trackDetails = {
+    "Track 1": {
+      name: "Main - Operational - Freight and Tourist",
+      location: "Alberta, Laggan, Canadian Pacific",
+      identifier: "0b345a08a0db4a3eb944443b259396cb",
+      mode: "Train",
+      subdivision1: "Laggan",
+      subdivision2: "Calgary",
+      length: "136.60 Mile",
+    },
+    "Track 2": {
+      name: "Secondary - Operational - Passenger",
+      location: "Ontario, Toronto, Canadian National",
+      identifier: "0a234b06a1cb4b3fb945533b269396cc",
+      mode: "Train",
+      subdivision1: "Toronto",
+      subdivision2: "Niagara",
+      length: "120.45 Mile",
+    },
+    "Track 3": {
+      name: "Light Rail - Urban Transport",
+      location: "British Columbia, Vancouver, TransLink",
+      identifier: "1c456d09c2dc5c4fc946623c379397cd",
+      mode: "Light Rail",
+      subdivision1: "Vancouver",
+      subdivision2: "Richmond",
+      length: "85.20 Mile",
+    },
+    "Track 4": {
+      name: "Cargo - Industrial Use",
+      location: "Quebec, Montreal, VIA Rail",
+      identifier: "2d567e12d3ed6d5fd957713d489398de",
+      mode: "Train",
+      subdivision1: "Montreal",
+      subdivision2: "Quebec City",
+      length: "150.30 Mile",
+    },
+    "Track 5": {
+      name: "High Speed Rail",
+      location: "Ontario, Ottawa, Canadian National",
+      identifier: "3e678f13e4fe7e6ge968823e599399ef",
+      mode: "High Speed Train",
+      subdivision1: "Ottawa",
+      subdivision2: "Toronto",
+      length: "200.00 Mile",
+    },
+  };
+
+  
+  // Get maintenance data for the selected track
+const selectedMaintenanceData = selectedTrack
+? trackMaintenanceData[selectedTrack]
+: trackMaintenanceData["Track 1"];
+
+// Update maintenance history chart data
+const maintenanceHistoryData = {
+labels: [
+  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+],
+datasets: [
+  {
+    label: "Maintenance Count",
+    data: selectedMaintenanceData,
+    backgroundColor: [
+      "#66B168", "#6060E1", "#66B168", "#6060E1", "#66B168",
+      "#6060E1", "#66B168", "#6060E1", "#66B168", "#6060E1",
+      "#66B168", "#6060E1",
+    ],
+  },
+],
+};
+
+// Get selected track details
+const selectedTrackDetails = selectedTrack
+? trackDetails[selectedTrack]
+: trackDetails["Track 1"];
+
 
 // Setup Data for Track Capacity
 const trackCapacityData = {
@@ -124,35 +194,35 @@ const trackCapacityData = {
               <div className="overflow-hidden rounded-md border">
                 <table className="w-full text-sm">
                 <tbody>
-                  <tr className="bg-black text-white">
-                    <td className="p-2 font-medium">Railway Track</td>
-                    <td className="p-2">Main - Operational - Freight and Tourist</td>
-                  </tr>
-                  <tr className="bg-gray-800 text-gray-200">
-                    <td className="p-2 font-medium">Location</td>
-                    <td className="p-2">Alberta, Laggan, Canadian Pacific</td>
-                  </tr>
-                  <tr className="bg-black text-white">
-                    <td className="p-2 font-medium">Identifier</td>
-                    <td className="p-2">0b345a08a0db4a3eb944443b259396cb</td>
-                  </tr>
-                  <tr className="bg-gray-800 text-gray-200">
-                    <td className="p-2 font-medium">Track Mode</td>
-                    <td className="p-2">Train</td>
-                  </tr>
-                  <tr className="bg-black text-white">
-                    <td className="p-2 font-medium">Subdivision 1</td>
-                    <td className="p-2">Laggan</td>
-                  </tr>
-                  <tr className="bg-gray-800 text-gray-200">
-                    <td className="p-2 font-medium">Subdivision 2</td>
-                    <td className="p-2">Calgary</td>
-                  </tr>
-                  <tr className="bg-gray-800 text-gray-200">
-                    <td className="p-2 font-medium">Length</td>
-                    <td className="p-1">136.60 Mile</td>
-                  </tr>
-                </tbody>
+                      <tr className="bg-black text-white">
+                        <td className="p-2 font-medium">Railway Track</td>
+                        <td className="p-2">{selectedTrackDetails.name}</td>
+                      </tr>
+                      <tr className="bg-gray-800 text-gray-200">
+                        <td className="p-2 font-medium">Location</td>
+                        <td className="p-2">{selectedTrackDetails.location}</td>
+                      </tr>
+                      <tr className="bg-black text-white">
+                        <td className="p-2 font-medium">Identifier</td>
+                        <td className="p-2">{selectedTrackDetails.identifier}</td>
+                      </tr>
+                      <tr className="bg-gray-800 text-gray-200">
+                        <td className="p-2 font-medium">Track Mode</td>
+                        <td className="p-2">{selectedTrackDetails.mode}</td>
+                      </tr>
+                      <tr className="bg-black text-white">
+                        <td className="p-2 font-medium">Subdivision 1</td>
+                        <td className="p-2">{selectedTrackDetails.subdivision1}</td>
+                      </tr>
+                      <tr className="bg-gray-800 text-gray-200">
+                        <td className="p-2 font-medium">Subdivision 2</td>
+                        <td className="p-2">{selectedTrackDetails.subdivision2}</td>
+                      </tr>
+                      <tr className="bg-gray-800 text-gray-200">
+                        <td className="p-2 font-medium">Length</td>
+                        <td className="p-2">{selectedTrackDetails.length}</td>
+                      </tr>
+                    </tbody>
                 </table>
               </div>
             </div>
