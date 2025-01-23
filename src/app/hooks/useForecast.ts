@@ -8,6 +8,7 @@ const useForecast = () => {
     const [selectedTrack, setSelectedTrack] = useState(''); // use to track the currently selected track
     const [forecastData, setForecastData] = useState<{ [key: string]: forecastType | null }>({}); // stores weather data for multiple locations in an object, track is a key
 
+    // predefined locations
     const locations: { [key: string]: locationType } = {
         Vancouver: { name: 'Vancouver', lat: 49.2827, lon: -123.1207 },
         Banff: { name: 'Banff', lat: 51.1784, lon: -115.5708 },
@@ -17,6 +18,7 @@ const useForecast = () => {
         'Red Deer': { name: 'Red Deer', lat: 52.2681, lon: -113.8112 },
     };
 
+    // To fetch weather data for a single location, which take parameter location of type locationType and return a promise of forecastType
     const getWeatherData = async (location: locationType): Promise<forecastType | null> => {
         const response = await fetch(
             `https://api.openweathermap.org/data/2.5/weather?lat=${location.lat}&lon=${location.lon}&units=metric&appid=${API_KEY}`
@@ -41,6 +43,7 @@ const useForecast = () => {
 
     };
 
+    // To fetch weather data for all locations simultaneously
     const fetchAllWeatherData = async () => {
         const updatedData: { [key: string]: forecastType | null } = {};
         const locationKeys = Object.keys(locations);
@@ -54,12 +57,14 @@ const useForecast = () => {
         setForecastData(updatedData);
     };
 
+    // To handle the track change event (through track selection)
     const handleTrackChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const track = e.target.value.trim();
         setSelectedTrack(track);
     };
 
 
+    // To fetch weather data for all locations when the component mounts
     useEffect(() => {
         fetchAllWeatherData();
     }, []);
