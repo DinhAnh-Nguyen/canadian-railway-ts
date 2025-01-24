@@ -1,20 +1,23 @@
 "use client";
-
 import { Loader } from "@googlemaps/js-api-loader";
 import React, { useEffect, useRef, useState } from "react";
 import { Line } from "react-chartjs-2";
 import "chart.js/auto";
 import Nav from "@/components/navbar";
+import handleDeleteTask from "@/app/schedule/page";
+import Link from "next/link";
 
 export default function Dashboard() {
   type task = {
     id: number;
+    title: string;
     description: string;
     status: string;
     assigned_to: string;
     created_by: string;
     due_date: string;
-    piroty: string;
+    priority: string;
+    date: string;
   };
 
   const [tasks, setTasks] = useState<task[]>([]);
@@ -31,12 +34,41 @@ export default function Dashboard() {
     });
 
     loader.load().then(() => {
-        new google.maps.Map(mapRef.current, {
-          center: { lat: 51.0447, lng: -114.0719 }, // get the location for Calgary, Alberta
-          zoom: 13,
-        });
+        if (mapRef.current) {
+          new google.maps.Map(mapRef.current, {
+            center: { lat: 51.0447, lng: -114.0719 }, // get the location for Calgary, Alberta
+            zoom: 13,
+          });
+        }
     });
   }, [googleMapsApiKey]);
+
+  //Fetch all tasks - Chris
+  const getTasks = async (): Promise<task[]> => {
+    const response = await fetch("/api/tasks");
+    const data = await response.json();
+    return data;
+  };
+
+  const handleDeleteTask = async (taskId: number) => {
+    try {
+      await fetch(`/api/tasks/${taskId}`, {
+        method: "DELETE",
+      });
+      setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskId));
+    } catch (error) {
+      console.error("Error deleting task:", error);
+    }
+  };
+
+  useEffect(() => {
+    const fetchTasks = async () => {
+      const tasks = await getTasks();
+      setTasks(tasks);
+    };
+    fetchTasks();
+  }, []);
+
 
   // Mock Data for Track Capacity (Line Chart)
   const trackCapacityData = {
@@ -96,7 +128,7 @@ export default function Dashboard() {
   return (
     <div>
       <Nav />
-      <div className="p-6 bg-background text-foreground">
+      <div className="p-6 bg-background text-foreground size-100">
         {/* Main Content Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Left Column */}
@@ -116,7 +148,7 @@ export default function Dashboard() {
               <table className="border-collapse border border-gray-800 w-full">
                 <thead>
                   <tr>
-                    <th>Title</th>
+                    <th>Order #</th>
                     <th>Date</th>
                     <th>Assigned To</th>
                     <th>Progress</th>
@@ -126,16 +158,24 @@ export default function Dashboard() {
                   {tasks.map((task) => (
                     <tr key={task.id}>
                       <td>{task.id}</td>
-                      <td>{task.status}</td>
-                      <td>{task.description}</td>
                       <td>{task.due_date}</td>
+                      <td>{task.title}</td>
+                      <td>{task.status}</td>
                       <td>{task.assigned_to}</td>
                       <td>
                         <button
                           className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
-                          onClick={() => deleteTask(task.id)}
+                          onClick={() => handleDeleteTask(task.id)}
                         >
                           Delete
+                        </button>
+                        <button>
+                          <Link
+                            href={`/task/${task.id}`}
+                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded"
+                          >
+                            Edit
+                          </Link>
                         </button>
                       </td>
                     </tr>

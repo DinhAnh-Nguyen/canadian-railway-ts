@@ -39,13 +39,14 @@ export async function DELETE(
     const databaseUrl = process.env.DATABASE_URL || "";
     const sql = neon(databaseUrl);
 
-    const id = Number(params.id); // Convert id to number
+    const { id } = params;
+    const taskId = Number(id);
 
     // Log the ID for debugging
     console.log("Deleting task with ID:", id);
 
     // Delete the task from the database
-    const response = await sql`DELETE FROM tasks WHERE id = ${id}`;
+    const response = await sql`DELETE FROM tasks WHERE id = ${taskId} RETURNING *;`;
 
     // Log the response for debugging
     console.log("Delete response:", response);
