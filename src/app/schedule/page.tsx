@@ -195,26 +195,26 @@ export default function Schedule() {
         <div className="flex justify-end">
           <div className="flex px-4">
             <button
-              className="bg-blue-600 w-32 h-10 rounded-full cursor-pointer"
+              className="bg-blue-600 w-32 h-10 rounded-full cursor-pointer hover:bg-blue-500"
               onClick={() => setIsModalOpen(true)}
             >
               Schedule
             </button>
           </div>
-  
+
           <div className="flex px-4">
             <button className="bg-blue-600 rounded-full w-32 h-10">
               Manage Users
             </button>
           </div>
-  
+
           {/* Modal for adding a task */}
           <Modal
             isOpen={isModalOpen}
             onClose={() => setIsModalOpen(false)}
             onAddTask={handleAddTask}
           />
-  
+
           {/* Modal for task details */}
           {selectedTask && (
             <TaskDetailsModal
@@ -225,7 +225,7 @@ export default function Schedule() {
             />
           )}
         </div>
-  
+
         {/* Calendar Component */}
         <div className="mt-8 h-[600px]">
           <Calendar
@@ -240,10 +240,12 @@ export default function Schedule() {
             views={["month", "week", "day"]}
           />
         </div>
-  
+
         {/* Task Table */}
         <div className="mt-8">
-          <h1 className="text-lg font-bold">Scheduled Tasks</h1>
+          <h1 className="text-2xl font-bold mb-4 text-white">
+            Scheduled Tasks
+          </h1>
           <table className="border-collapse border border-gray-800 w-full justify-items-center">
             <thead>
               <tr>
