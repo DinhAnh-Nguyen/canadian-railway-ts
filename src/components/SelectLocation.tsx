@@ -1,13 +1,21 @@
 import { ChangeEvent, JSX } from 'react';
 import { forecastType } from '../app/types';
+import { Line } from 'react-chartjs-2';
+import { ChartData, ChartOptions } from 'chart.js';
 
 type Props = {
     track: string;
     forecastData: { [key: string]: forecastType | null };
     handleTrackChange: (e: ChangeEvent<HTMLSelectElement>) => void;
+    trackCapacityData: ChartData<'line'>;
+    chartOptions: ChartOptions<'line'>;
 };
 
+<<<<<<< Updated upstream
 const SelectLocation = ({ track, forecastData, handleTrackChange }: Props): JSX.Element => {
+=======
+const SelectLocation = ({ handleTrackChange, forecastData, trackCapacityData, chartOptions, track }: Props): JSX.Element => {
+>>>>>>> Stashed changes
     const selectedForecast = track ? forecastData[track] : null;
 
     return (
@@ -68,12 +76,21 @@ const SelectLocation = ({ track, forecastData, handleTrackChange }: Props): JSX.
                             </div>
                         </div>
 
+<<<<<<< Updated upstream
                         <div className='col-span-6 row-span-2 p-4 rounded'>
                             <h2 className='text-lg font-semibold bg-emerald-950 px-4 py-2 rounded-w2xl'>
                                 Weather Map for Selected Track
                             </h2>
                             <div className='h-[435px] bg-gray-800 rounded mt-4 flex items-center justify-center'></div>
                         </div>
+=======
+                        < div className='col-span-6 row-span-2 h-full p-4 rounded' >
+                            <h2 className="text-lg font-semibold bg-emerald-950 px-4 py-2 rounded-2xl">
+                                Map View for Selected View
+                            </h2>
+                            <div className="h-[435px] bg-gray-800 rounded mt-4"></div>
+                        </div >
+>>>>>>> Stashed changes
 
                         {/* Wind Speed */}
                         <div className="col-span-6 row-span-1 p-4 rounded">
@@ -105,4 +122,8 @@ const SelectLocation = ({ track, forecastData, handleTrackChange }: Props): JSX.
     );
 };
 
+<<<<<<< Updated upstream
 export default SelectLocation;
+=======
+export default SelectLocation;
+>>>>>>> Stashed changes
