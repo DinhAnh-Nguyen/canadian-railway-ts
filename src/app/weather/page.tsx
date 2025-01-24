@@ -1,11 +1,11 @@
 //By: Mark Bui
 
-'use client';
+"use client";
 
-import React, { JSX } from 'react';
-import SelectLocation from '../../components/SelectLocation';
-import useForecast from '../hooks/useForecast';
-import Nav from '@/components/navbar';
+import React, { JSX } from "react";
+import SelectLocation from "../../components/SelectLocation";
+import useForecast from "../hooks/useForecast";
+import Nav from "@/components/navbar";
 
 const App = (): JSX.Element => {
   const { selectedTrack, handleTrackChange, forecastData } = useForecast();
@@ -17,8 +17,8 @@ const App = (): JSX.Element => {
         forecastData={forecastData}
         handleTrackChange={handleTrackChange} />
     </div></>
+
   );
 };
 
 export default App;
-
