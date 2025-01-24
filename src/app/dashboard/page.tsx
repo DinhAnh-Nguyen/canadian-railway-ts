@@ -4,8 +4,10 @@ import React, { useEffect, useRef, useState } from "react";
 import { Line } from "react-chartjs-2";
 import "chart.js/auto";
 import Nav from "@/components/navbar";
-import handleDeleteTask from "@/app/schedule/page";
 import Link from "next/link";
+import CombinedMap from "@/components/CombinedMap";
+import useForecast from "../hooks/useForecast";
+import { useRouter } from "next/navigation";
 
 export default function Dashboard() {
   type task = {
@@ -21,8 +23,10 @@ export default function Dashboard() {
   };
 
   const [tasks, setTasks] = useState<task[]>([]);
+  const { forecastData } = useForecast();
+  const router = useRouter();
 
-// Reference for the map container
+  // Reference for the map container
   const mapRef = useRef<HTMLDivElement | null>(null);
 
   // Retrieve the API key from the environment variable
@@ -34,12 +38,12 @@ export default function Dashboard() {
     });
 
     loader.load().then(() => {
-        if (mapRef.current) {
-          new google.maps.Map(mapRef.current, {
-            center: { lat: 51.0447, lng: -114.0719 }, // get the location for Calgary, Alberta
-            zoom: 13,
-          });
-        }
+      if (mapRef.current) {
+        new google.maps.Map(mapRef.current, {
+          center: { lat: 51.0447, lng: -114.0719 }, // get the location for Calgary, Alberta
+          zoom: 13,
+        });
+      }
     });
   }, [googleMapsApiKey]);
 
@@ -68,7 +72,6 @@ export default function Dashboard() {
     };
     fetchTasks();
   }, []);
-
 
   // Mock Data for Track Capacity (Line Chart)
   const trackCapacityData = {
@@ -125,6 +128,8 @@ export default function Dashboard() {
     maintainAspectRatio: false,
   };
 
+  const forecast = forecastData["Banff"];
+
   return (
     <div>
       <Nav />
@@ -133,11 +138,14 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Left Column */}
           <div className="lg:col-span-1 space-y-6">
-            <div className="space-y-6 rounded-md p-2 bg-[#393A3E] h-80">
-              <h3 className="text-center text-lg font-bold mb-4">Weather</h3>
-              <Line data={trackCapacityData} options={chartOptions} />
+            <div className="space-y-6 rounded-md p-2 bg-[#393A3E] h-80 hover:cursor-pointer" onClick={() => router.push("/weather")}>
+              <h3 className="text-center text-lg font-bold mb-4">Weather Overview</h3>
+              <h3>Banff</h3>
+              <p>Wind: {forecast?.list[0].wind.speed ?? "-"} km/h</p>
+              <p>Temperature: {forecast?.list[0].main.temp ?? "-"}°C</p>
+              <p>Humidity: {forecast?.list[0].main.humidity ?? "-"}%</p>
             </div>
-            <div className="space-y-6 rounded-md p-2 bg-[#393A3E] h-80">
+            <div className="space-y-6 rounded-md p-2 bg-[#393A3E] h-80 hover:cursor-pointer" onClick={() => router.push("/schedule")}>
               <h3 className="text-center text-lg font-bold">Schedules</h3>
               <h3
                 className="text-center text-sm font-bold"
@@ -186,14 +194,14 @@ export default function Dashboard() {
           </div>
           {/* Right Column */}
           <div className="lg:col-span-1 space-y-6">
-            <div className="space-y-6 rounded-md p-2 bg-[#393A3E] h-80">
+            <div className="space-y-6 rounded-md p-2 bg-[#393A3E] h-80 hover:cursor-pointer" onClick={() => router.push("/trackOverview")}>
               <h3 className="text-center text-lg font-bold mb-4">
                 Track Capacity
               </h3>
               <Line data={trackCapacityData} options={chartOptions} />
             </div>
-            <div className="h-80 rounded-md bg-gray-200">
-              <div ref={mapRef} className="h-full w-full"></div>
+            <div className="space-y-6 rounded-md p-2 bg-[#393A3E] h-80 hover:cursor-pointer" onClick={() => router.push("/trackOverview")}>
+              <CombinedMap />
             </div>
           </div>
         </div>
