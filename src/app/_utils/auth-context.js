@@ -21,13 +21,21 @@ export function AuthProvider({ children }) {
     return () => unsubscribe();
   }, [user]);
 
-  const googleSignIn = () => {
+  const googleSignIn = async () => {
     const provider = new GoogleAuthProvider();
-    return signInWithPopup(auth, provider);
+    try {
+      await signInWithPopup(auth, provider);
+    } catch (error) {
+      if (error.code === "auth/popup-closed-by-user") {
+        console.log("User closed the popup before finishing sign-in");
+      } else {
+        console.error("An unexpected error occurred during sign-in:", error);
+      }
+    }
   };
 
-  const googleSignOut = () => {
-    return signOut(auth);
+  const googleSignOut = async () => {
+    await signOut(auth);
   };
 
   return (
