@@ -11,11 +11,7 @@ type Props = {
     chartOptions: ChartOptions<'line'>;
 };
 
-<<<<<<< Updated upstream
-const SelectLocation = ({ track, forecastData, handleTrackChange }: Props): JSX.Element => {
-=======
 const SelectLocation = ({ handleTrackChange, forecastData, trackCapacityData, chartOptions, track }: Props): JSX.Element => {
->>>>>>> Stashed changes
     const selectedForecast = track ? forecastData[track] : null;
 
     return (
@@ -76,21 +72,12 @@ const SelectLocation = ({ handleTrackChange, forecastData, trackCapacityData, ch
                             </div>
                         </div>
 
-<<<<<<< Updated upstream
-                        <div className='col-span-6 row-span-2 p-4 rounded'>
-                            <h2 className='text-lg font-semibold bg-emerald-950 px-4 py-2 rounded-w2xl'>
-                                Weather Map for Selected Track
-                            </h2>
-                            <div className='h-[435px] bg-gray-800 rounded mt-4 flex items-center justify-center'></div>
-                        </div>
-=======
                         < div className='col-span-6 row-span-2 h-full p-4 rounded' >
                             <h2 className="text-lg font-semibold bg-emerald-950 px-4 py-2 rounded-2xl">
                                 Map View for Selected View
                             </h2>
                             <div className="h-[435px] bg-gray-800 rounded mt-4"></div>
                         </div >
->>>>>>> Stashed changes
 
                         {/* Wind Speed */}
                         <div className="col-span-6 row-span-1 p-4 rounded">
@@ -122,8 +109,4 @@ const SelectLocation = ({ handleTrackChange, forecastData, trackCapacityData, ch
     );
 };
 
-<<<<<<< Updated upstream
 export default SelectLocation;
-=======
-export default SelectLocation;
->>>>>>> Stashed changes
