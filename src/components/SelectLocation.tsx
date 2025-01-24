@@ -64,7 +64,7 @@ const SelectLocation = ({ track, forecastData, handleTrackChange }: Props): JSX.
                             <h2 className="text-lg font-semibold bg-emerald-950 px-4 py-2 rounded-2xl">
                                 Map View for Selected View
                             </h2>
-                            <div className="h-5/6 bg-gray-800 rounded mt-4"></div>
+                            <div className="h-[434px] bg-gray-800 rounded mt-4"></div>
                         </div>
 
                         <div className="col-span-6 row-span-1 p-4 rounded">
