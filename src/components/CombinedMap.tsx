@@ -31,7 +31,7 @@ const CombinedMap: React.FC = () => {
   return (
     <div
       id="combined-map"
-      style={{ height: "100%", width: "100%" }}
+      style={{ height: "100%", width: "100%", borderRadius: "10px" }}
     ></div>
   );
 };
