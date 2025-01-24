@@ -1,3 +1,4 @@
+import { ChartData } from 'chart.js';
 import { useState, useEffect } from 'react';
 import { locationType, forecastType } from '../types';
 
@@ -7,6 +8,7 @@ const useForecast = () => {
 
     const [selectedTrack, setSelectedTrack] = useState(''); // use to track the currently selected track
     const [forecastData, setForecastData] = useState<{ [key: string]: forecastType | null }>({}); // stores weather data for multiple locations in an object, track is a key
+
 
     // predefined locations
     const locations: { [key: string]: locationType } = {
@@ -70,7 +72,54 @@ const useForecast = () => {
         fetchAllWeatherData();
     }, []);
 
-    return { selectedTrack, handleTrackChange, forecastData };
+
+
+
+    // const trackCapacityData = {
+    //     labels: [
+    //         "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+    //         "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+    //     ],
+    //     datasets: [
+    //         {
+    //             label: "Track 1",
+    //             data: [200, 220, 210, 250, 240, 230, 260, 300, 320, 350, 370, 400],
+    //             borderColor: "rgba(255, 99, 132, 1)",
+    //             fill: false,
+    //         },
+    //         {
+    //             label: "Track 2",
+    //             data: [170, 190, 220, 230, 250, 240, 250, 260, 270, 320, 330, 370],
+    //             borderColor: "rgba(54, 162, 235, 1)",
+    //             fill: false,
+    //         },
+    //         {
+    //             label: "Track 3",
+    //             data: [130, 170, 180, 200, 210, 180, 190, 220, 270, 300, 320, 340],
+    //             borderColor: "rgba(255, 206, 86, 1)",
+    //             fill: false,
+    //         },
+    //         {
+    //             label: "Track 4",
+    //             data: [150, 150, 160, 180, 190, 200, 220, 230, 250, 270, 290, 310],
+    //             borderColor: "rgba(75, 192, 192, 1)",
+    //             fill: false,
+    //         },
+    //         {
+    //             label: "Track 5",
+    //             data: [150, 145, 150, 160, 170, 190, 210, 230, 240, 260, 280, 300],
+    //             borderColor: "rgba(153, 102, 255, 1)",
+    //             fill: false,
+    //         },
+    //     ],
+    // };
+
+    // const chartOptions = {
+    //     responsive: true,
+    //     maintainAspectRatio: false,
+    // };
+
+    return { selectedTrack, handleTrackChange, forecastData, locations };
 };
 
 export default useForecast;

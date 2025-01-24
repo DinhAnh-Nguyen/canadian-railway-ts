@@ -11,16 +11,13 @@ const App = (): JSX.Element => {
   const { selectedTrack, handleTrackChange, forecastData } = useForecast();
 
   return (
-    <div>
-      <Nav />
-      <div className="bg-black text-white min-h-screen p-6">
-        <SelectLocation
-          track={selectedTrack}
-          forecastData={forecastData}
-          handleTrackChange={handleTrackChange}
-        />
-      </div>
-    </div>
+    <><Nav /><div className="bg-black text-white min-h-screen p-6">
+      <SelectLocation
+        track={selectedTrack}
+        forecastData={forecastData}
+        handleTrackChange={handleTrackChange} />
+    </div></>
+
   );
 };
 
