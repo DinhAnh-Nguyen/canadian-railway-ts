@@ -31,7 +31,6 @@ const SelectLocation = ({ handleTrackChange, forecastData, trackCapacityData, ch
                             <div key={i} className="bg-gray-800 p-4 rounded">
                                 <h3 className="font-bold">{`Track ${i + 1} - ${trackName}`}</h3>
                                 <p>Wind Speed: {forecast?.list[0].wind.speed ?? '-'} km/h</p>
-                                <p>Wind Direction: {forecast?.list[0].wind.deg ?? '-'}°</p>
                                 <p>Temperature: {forecast?.list[0].main.temp ?? '-'}°C</p>
                                 <p>Humidity: {forecast?.list[0].main.humidity ?? '-'}%</p>
                             </div>
@@ -42,7 +41,7 @@ const SelectLocation = ({ handleTrackChange, forecastData, trackCapacityData, ch
                 {/* Detailed Information for Selected Track */}
                 <div className="col-span-8 space-y-4">
                     <div className="flex justify-between items-center bg-emerald-950 p-4 rounded">
-                        <h2>Select a Track</h2>
+                        <h2 className='text-lg font-semibold'>Select a Track</h2>
                         <select
                             name="track"
                             id="track"
