@@ -9,7 +9,7 @@ export default function TrackOverview() {
   const [selectedDate, setSelectedDate] = useState<string>("");
   const [selectedTrack, setSelectedTrack] = useState<string>("");
 
-  // Mock data for track maintenance history
+  // Setup track maintenance history
   const trackMaintenanceData = {
     "Track 1": [5, 8, 6, 10, 9, 7, 8, 6, 10, 12, 11, 9],
     "Track 2": [4, 7, 5, 9, 8, 6, 7, 5, 9, 11, 10, 8],
@@ -18,7 +18,7 @@ export default function TrackOverview() {
     "Track 5": [7, 10, 8, 12, 11, 9, 10, 8, 12, 14, 13, 11],
   };
 
-// Mock data for track details
+// Setup track details
   const trackDetails = {
     "Track 1": {
       name: "Main - Operational - Freight and Tourist",
@@ -68,12 +68,12 @@ export default function TrackOverview() {
   };
 
   
-  // Get maintenance data for the selected track
+// Get maintenance data for the selected track
 const selectedMaintenanceData = selectedTrack
 ? trackMaintenanceData[selectedTrack]
 : trackMaintenanceData["Track 1"];
 
-// Update maintenance history chart data
+// Update maintenance history
 const maintenanceHistoryData = {
 labels: [
   "Jan", "Feb", "Mar", "Apr", "May", "Jun",
@@ -92,13 +92,13 @@ datasets: [
 ],
 };
 
-// Get selected track details
+// Get selected track
 const selectedTrackDetails = selectedTrack
 ? trackDetails[selectedTrack]
 : trackDetails["Track 1"];
 
 
-// Setup Data for Track Capacity
+// Setup Track Capacity
 const trackCapacityData = {
   labels: [
     "Jan", "Feb", "Mar", "Apr", "May", "Jun",
@@ -137,7 +137,7 @@ const trackCapacityData = {
     },
   ],
 };
-
+  //Setup reposinveness and ratio for charts
   const chartOptions = {
     responsive: true,
     maintainAspectRatio: false,
@@ -148,6 +148,7 @@ const trackCapacityData = {
       <Nav />
       <div className="p-6 bg-background text-foreground">
         {/* Filters Section */}
+        {/* Dropdown Date Button */}
         <div className="mb-4 flex gap-4">
           <div>
             <label htmlFor="date" className="block mb-1 text-darkgrey font-medium">
@@ -161,6 +162,7 @@ const trackCapacityData = {
               onChange={(e) => setSelectedDate(e.target.value)}
             />
           </div>
+          {/* Dropdown Seclecting Track Button */}
           <div>
             <label htmlFor="track" className="block mb-1 text-darkgrey font-medium">
               Select Track:
@@ -184,11 +186,13 @@ const trackCapacityData = {
         {/* Main Content Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column */}
+          {/* Track Maintennance History Chart*/}
           <div className="lg:col-span-1 space-y-6">
             <div className="h-80 rounded-md p-12 bg-[#393A3E]">
               <h3 className="text-center text-lg font-bold mb-4">Track Maintenance History</h3>
               <Bar data={maintenanceHistoryData} options={chartOptions} />
             </div>
+          {/* Selected Track Detail Table    */}
             <div className="rounded-md p-2 bg-[#393A3E]">
               <h3 className="text-center text-lg font-bold mb-4">Selected Track Details</h3>
               <div className="overflow-hidden rounded-md border">
@@ -229,10 +233,12 @@ const trackCapacityData = {
           </div>
 
           {/* Right Column */}
+          {/* Railway Map Component */}
           <div className="lg:col-span-2 space-y-6">
             <div className="h-80 rounded-md bg-gray-200">
               <CombinedMap /> {/* Combined map */}
             </div>
+          {/* Track Capacity Chart   */}
             <div className="rounded-md p-2 bg-[#393A3E] h-80">
               <h3 className="text-center text-lg font-bold mb-4">Track Capacity</h3>
               <Line data={trackCapacityData} options={chartOptions} />
