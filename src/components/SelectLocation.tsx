@@ -75,7 +75,23 @@ const SelectLocation = ({ handleTrackChange, forecastData, trackCapacityData, ch
                             <h2 className="text-lg font-semibold bg-emerald-950 px-4 py-2 rounded-2xl">
                                 Map View for Selected View
                             </h2>
-                            <div className="h-[435px] bg-gray-800 rounded mt-4"></div>
+                            <div>
+                                <iframe
+                                    src="https://www.meteoblue.com/en/weather/maps/widget/calgary_canada_5913490?windAnimation=1&gust=1&satellite=1&cloudsAndPrecipitation=1&temperature=1&sunshine=1&extremeForecastIndex=1&geoloc=fixed&tempunit=C&windunit=km%252Fh&lengthunit=metric&zoom=5&autowidth=auto"
+                                    frameBorder="0"
+                                    scrolling="no"
+                                    sandbox="allow-same-origin allow-scripts allow-popups allow-popups-to-escape-sandbox"
+                                    style={{ width: '100%', height: '420px' }}
+                                ></iframe>
+                                <div>
+                                    <a
+                                        href="https://www.meteoblue.com/en/weather/maps/calgary_canada_5913490?utm_source=map_widget&utm_medium=linkus&utm_content=map&utm_campaign=Weather%2BWidget"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                    </a>
+                                </div>
+                            </div>
                         </div >
 
                         {/* Wind Speed */}
