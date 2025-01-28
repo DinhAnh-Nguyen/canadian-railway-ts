@@ -6,7 +6,7 @@ import { useUserAuth } from "@/app/_utils/auth-context";
 
 export default function Nav() {
   const router = useRouter();
-  const { user, googleSignIn, googleSignOut } = useUserAuth();
+  const { user, googleSignOut } = useUserAuth();
 
   return (
     <div className="h-24 flex items-center justify-between px-4 shadow-md">
@@ -41,31 +41,20 @@ export default function Nav() {
       </div>
       {/* RIGHT */}
       <div className="w-full md:w-[30%] flex items-center justify-end gap-4 text-sm">
-        {user ? (
-          <div>
-            <span className="font-medium p-3">
-              {user?.displayName || "Anonymous"}
-            </span>
-            <button
-              onClick={() => {
-                googleSignOut();
-                router.push("/signIn");
-              }}
-              className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition"
-            >
-              Logout
-            </button>
-          </div>
-        ) : (
+        <div>
+          <span className="font-medium p-3">
+            {user?.displayName || "Anonymous"}
+          </span>
           <button
             onClick={() => {
-              googleSignIn();
+              googleSignOut();
+              router.push("/signIn");
             }}
-            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
+            className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition"
           >
-            Sign In with Google
+            Logout
           </button>
-        )}
+        </div>
       </div>
     </div>
   );
