@@ -1,17 +1,13 @@
 import { ChangeEvent, JSX } from 'react';
 import { forecastType } from '../app/types';
-import { Line } from 'react-chartjs-2';
-import { ChartData, ChartOptions } from 'chart.js';
 
 type Props = {
     track: string;
     forecastData: { [key: string]: forecastType | null };
     handleTrackChange: (e: ChangeEvent<HTMLSelectElement>) => void;
-    trackCapacityData: ChartData<'line'>;
-    chartOptions: ChartOptions<'line'>;
 };
 
-const SelectLocation = ({ handleTrackChange, forecastData, trackCapacityData, chartOptions, track }: Props): JSX.Element => {
+const SelectLocation = ({ handleTrackChange, forecastData, track }: Props): JSX.Element => {
     const selectedForecast = track ? forecastData[track] : null;
 
     return (

@@ -9,7 +9,6 @@ const useForecast = () => {
     const [selectedTrack, setSelectedTrack] = useState(''); // use to track the currently selected track
     const [forecastData, setForecastData] = useState<{ [key: string]: forecastType | null }>({}); // stores weather data for multiple locations in an object, track is a key
 
-
     // predefined locations
     const locations: { [key: string]: locationType } = {
         Vancouver: { name: 'Vancouver', lat: 49.2827, lon: -123.1207 },
@@ -25,7 +24,7 @@ const useForecast = () => {
         const response = await fetch(
             `https://api.openweathermap.org/data/2.5/weather?lat=${location.lat}&lon=${location.lon}&units=metric&appid=${API_KEY}`
         );
-        const data = await response.json();
+        const data = await response.json(); // fetch data from the response as a list 
         console.log(data);
         return {
             name: data.name,
@@ -49,7 +48,7 @@ const useForecast = () => {
     // To fetch weather data for all locations simultaneously
     const fetchAllWeatherData = async () => {
         const updatedData: { [key: string]: forecastType | null } = {};
-        const locationKeys = Object.keys(locations);
+        const locationKeys = Object.keys(locations); // Fetch the keys of the locations object
 
         for (const key of locationKeys) {
             const location = locations[key];
@@ -66,60 +65,12 @@ const useForecast = () => {
         setSelectedTrack(track);
     };
 
-
     // To fetch weather data for all locations when the component mounts
     useEffect(() => {
         fetchAllWeatherData();
     }, []);
 
-
-
-
-    // const trackCapacityData = {
-    //     labels: [
-    //         "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-    //         "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
-    //     ],
-    //     datasets: [
-    //         {
-    //             label: "Track 1",
-    //             data: [200, 220, 210, 250, 240, 230, 260, 300, 320, 350, 370, 400],
-    //             borderColor: "rgba(255, 99, 132, 1)",
-    //             fill: false,
-    //         },
-    //         {
-    //             label: "Track 2",
-    //             data: [170, 190, 220, 230, 250, 240, 250, 260, 270, 320, 330, 370],
-    //             borderColor: "rgba(54, 162, 235, 1)",
-    //             fill: false,
-    //         },
-    //         {
-    //             label: "Track 3",
-    //             data: [130, 170, 180, 200, 210, 180, 190, 220, 270, 300, 320, 340],
-    //             borderColor: "rgba(255, 206, 86, 1)",
-    //             fill: false,
-    //         },
-    //         {
-    //             label: "Track 4",
-    //             data: [150, 150, 160, 180, 190, 200, 220, 230, 250, 270, 290, 310],
-    //             borderColor: "rgba(75, 192, 192, 1)",
-    //             fill: false,
-    //         },
-    //         {
-    //             label: "Track 5",
-    //             data: [150, 145, 150, 160, 170, 190, 210, 230, 240, 260, 280, 300],
-    //             borderColor: "rgba(153, 102, 255, 1)",
-    //             fill: false,
-    //         },
-    //     ],
-    // };
-
-    // const chartOptions = {
-    //     responsive: true,
-    //     maintainAspectRatio: false,
-    // };
-
-    return { selectedTrack, handleTrackChange, forecastData, locations };
+    return { selectedTrack, handleTrackChange, forecastData, locations, };
 };
 
 export default useForecast;

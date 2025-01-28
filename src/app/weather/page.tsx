@@ -1,5 +1,7 @@
 //By: Mark Bui
 
+// Reference: https://youtu.be/6MKFKwwhbNo?si=qjyo1UpXCojA7F3w - How to use OpenWeatherMap API with React
+
 "use client";
 
 import React, { JSX } from "react";
