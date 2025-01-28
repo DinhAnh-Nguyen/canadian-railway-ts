@@ -14,13 +14,6 @@ const AuthContext = createContext();
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      setUser(currentUser);
-    });
-    return () => unsubscribe();
-  }, [user]);
-
   const googleSignIn = async () => {
     const provider = new GoogleAuthProvider();
     try {
@@ -37,6 +30,13 @@ export function AuthProvider({ children }) {
   const googleSignOut = async () => {
     await signOut(auth);
   };
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+    return () => unsubscribe();
+  }, [user]);
 
   return (
     <AuthContext.Provider value={{ user, googleSignIn, googleSignOut }}>
