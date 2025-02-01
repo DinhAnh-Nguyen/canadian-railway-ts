@@ -5,7 +5,7 @@ import { Line } from "react-chartjs-2";
 import "chart.js/auto";
 import Nav from "@/components/navbar";
 import Link from "next/link";
-import CombinedMap from "@/components/CombinedMap";
+import CombinedMap from "@/components/trackOverViewComponents/CombinedMap";
 import useForecast from "../hooks/useForecast";
 import { useRouter } from "next/navigation";
 
