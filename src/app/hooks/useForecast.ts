@@ -1,4 +1,3 @@
-import { ChartData } from 'chart.js';
 import { useState, useEffect } from 'react';
 import { locationType, forecastType } from '../types';
 

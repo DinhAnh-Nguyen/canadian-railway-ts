@@ -1,5 +1,6 @@
 import { ChangeEvent, JSX } from 'react';
 import { forecastType } from '../app/types';
+import { getWindDierction } from '@/app/helpers';
 
 type Props = {
     track: string;
@@ -62,7 +63,7 @@ const SelectLocation = ({ handleTrackChange, forecastData, track }: Props): JSX.
                             </h2>
                             <div className="h-40 bg-gray-800 rounded mt-4 flex items-center justify-center">
                                 {selectedForecast?.list[0].wind.deg !== undefined
-                                    ? `${selectedForecast.list[0].wind.deg}°`
+                                    ? `${getWindDierction(Math.round(selectedForecast.list[0].wind.deg))}`
                                     : 'No data'}
                             </div>
                         </div>
