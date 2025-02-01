@@ -1,7 +1,7 @@
 import { ChangeEvent, JSX } from 'react';
 import { forecastType } from '../app/types';
-import { Line } from 'react-chartjs-2';
 import { ChartData, ChartOptions } from 'chart.js';
+import { getWindDierction } from '@/app/helpers';
 
 type Props = {
     track: string;
@@ -11,7 +11,7 @@ type Props = {
     chartOptions: ChartOptions<'line'>;
 };
 
-const SelectLocation = ({ handleTrackChange, forecastData, trackCapacityData, chartOptions, track }: Props): JSX.Element => {
+const SelectLocation = ({ handleTrackChange, forecastData, track }: Props): JSX.Element => {
     const selectedForecast = track ? forecastData[track] : null;
 
     return (
@@ -67,7 +67,7 @@ const SelectLocation = ({ handleTrackChange, forecastData, trackCapacityData, ch
                             </h2>
                             <div className="h-40 bg-gray-800 rounded mt-4 flex items-center justify-center">
                                 {selectedForecast?.list[0].wind.deg !== undefined
-                                    ? `${selectedForecast.list[0].wind.deg}°`
+                                    ? `${getWindDierction(Math.round(selectedForecast.list[0].wind.deg))}`
                                     : 'No data'}
                             </div>
                         </div>
