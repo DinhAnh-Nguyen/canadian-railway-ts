@@ -1,4 +1,4 @@
-export const getWindDierction = (degree: number) => {
+export const getWindDirection = (degree: number) => {
     if (degree > 15 && degree <= 75) return 'NE';
     if (degree > 75 && degree <= 105) return 'E';
     if (degree > 105 && degree <= 165) return 'SE';

@@ -44,6 +44,46 @@ const useForecast = () => {
 
     };
 
+    const getHistoricalWeatherData = async (location: locationType): Promise<forecastType | null> => {
+        const response = await fetch(
+            `https://api.openweathermap.org/data/2.5/forecast?${location.lat}&${location.lon}&cnt=7&appid=${API_KEY}`
+        );
+        const data = await response.json(); // fetch data from the response as a list 
+        console.log(data);
+        return {
+            name: data.city.name,
+            country: data.city.country,
+            sunrise: data.city.sunrise,
+            sunset: data.city.sunset,
+            list: data.list.map((day: any) => ({
+                dt: day.dt,
+                main: day.temp, // temp is an object with min, max, day, night, eve, morn
+                pressure: day.pressure,
+                humidity: day.humidity,
+                wind: { speed: day.speed, deg: day.deg },
+                clouds: day.clouds,
+                weather: day.weather[0],
+            })),
+        };
+    };
+
+    const saveForecastData = async (lat: number, lon: number) => {
+        try {
+            const res = await fetch(`/api/weather/saveHistoricalWeather?lat=${lat}&lon=${lon}`);
+
+            if (!res.ok) {
+                throw new Error(`HTTP error! Status: ${res.status}, Message: ${await res.text()}`);
+            }
+
+            const data = await res.json();
+            console.log("Forecast data saved:", data);
+        } catch (error) {
+            console.error("Error saving forecast data:", error);
+        }
+    };
+
+
+
     // To fetch weather data for all locations simultaneously
     const fetchAllWeatherData = async () => {
         const updatedData: { [key: string]: forecastType | null } = {};
@@ -69,7 +109,7 @@ const useForecast = () => {
         fetchAllWeatherData();
     }, []);
 
-    return { selectedTrack, handleTrackChange, forecastData, locations, };
+    return { selectedTrack, handleTrackChange, forecastData, locations, saveForecastData, getHistoricalWeatherData };
 };
 
 export default useForecast;
