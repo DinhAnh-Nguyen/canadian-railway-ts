@@ -19,8 +19,8 @@ export async function POST(request: Request) {
 
     // Insert the task into the database
     const response = await sql`
-      INSERT INTO tasks (title, description, status, assigned_to, created_by, due_date, priority, date)
-      VALUES (${requestData.title}, ${requestData.description}, ${requestData.status}, ${requestData.assigned_to}, ${requestData.created_by}, ${requestData.due_date}, ${requestData.priority}, ${requestData.date})
+      INSERT INTO tasks (title, description, status, assigned_to, created_by, start_date, start_time, end_date, end_time, priority)
+      VALUES (${requestData.title}, ${requestData.description}, ${requestData.status}, ${requestData.assigned_to}, ${requestData.created_by}, ${requestData.start_date}, ${requestData.start_time}, ${requestData.end_date}, ${requestData.end_time}, ${requestData.priority})
       RETURNING *;
     `;
 

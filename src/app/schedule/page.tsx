@@ -19,7 +19,10 @@ type task = {
   created_by: string;
   due_date: string;
   priority: string;
-  date: string;
+  startDate: string;
+  startTime: string;
+  endDate: string;
+  endTime: string;
 };
 
 export default function Schedule() {
@@ -28,7 +31,11 @@ export default function Schedule() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false); // State for task details modal
   const [selectedTask, setSelectedTask] = useState<task | null>(null); // State to store the selected task
-  
+  const [selectedRange, setSelectedRange] = useState({
+    start: new Date(),
+    end: new Date(),
+  });
+
   // Fetch tasks from the API
   useEffect(() => {
     const fetchTasks = async () => {
@@ -52,14 +59,16 @@ export default function Schedule() {
   const handleAddTask = async (
     title: string,
     description: string,
-    date: string,
-    time: string,
+    startDate: string,
+    startTime: string,
+    endDate: string,
+    endTime: string,
     assignedTo: number,
     priority: string,
     status: string
   ) => {
     // Combine date and time into a single due_date string
-    const due_date = `${date}T${time}:00`;
+    const due_date = `${endDate}T${endDate}:00`;
 
     // Create a new task object
     const newTask = {
@@ -69,8 +78,11 @@ export default function Schedule() {
       assigned_to: assignedTo.toString(),
       created_by: "Admin", // Replace with the actual creator
       due_date: due_date,
-      date: date, // Assign date property
-      priority: priority, // Include priority property
+      startDate: startDate,
+      startTime: startTime,
+      endDate: endDate,
+      endTime: endTime,
+      priority: priority,
     };
 
     // Send the task to the API
@@ -82,20 +94,17 @@ export default function Schedule() {
       body: JSON.stringify(newTask),
     });
 
-    const createdTask = await response.json();
-
     // Add the task to the state with the database-generated ID
+    const createdTask = await response.json();
     setTasks((prevTasks) => [
       ...prevTasks,
       {
         ...createdTask,
-        start: new Date(createdTask.due_date), // Set start date
-        end: new Date(createdTask.due_date), // Set end date
-        date: date, // Assign date property
+        start: new Date(`${createdTask.startDate}T${createdTask.startTime}:00`),
+        end: new Date(`${createdTask.endDate}T${createdTask.endTime}:00`),
       },
     ]);
 
-    // Close the modal
     setIsModalOpen(false);
   };
 
@@ -128,14 +137,15 @@ export default function Schedule() {
   // Handle date selection for new task
   const handleSelectSlot = ({ start, end }: { start: Date; end: Date }) => {
     setIsModalOpen(true);
+    setSelectedRange({ start, end });
   };
 
   // Transform tasks for the calendar
   const calendarTasks = tasks.map((task) => ({
     id: task.id,
     title: task.title,
-    start: new Date(task.due_date), // Convert due_date to a Date object
-    end: new Date(task.due_date), // Use the same date for end (or adjust as needed)
+    start: new Date(`${task.startDate}T${task.startTime}:00`), // Use start date and time
+    end: new Date(`${task.endDate}T${task.endTime}:00`), // Use the same date for end (or adjust as needed)
     description: task.description,
     assigned_to: task.assigned_to,
     status: task.status,
@@ -213,10 +223,13 @@ export default function Schedule() {
                 <th className="border border-gray-800">Status</th>
                 <th className="border border-gray-800">Title</th>
                 <th className="border border-gray-800">Description</th>
-                <th className="border border-gray-800">Date</th>
+                <th className="border border-gray-800">Start Date</th>
+                <th className="border border-gray-800">Start Time</th>
+                <th className="border border-gray-800">End Date</th>
+                <th className="border border-gray-800">End Time</th>
                 <th className="border border-gray-800">Assigned To</th>
                 <th className="border border-gray-800">Priority</th>
-                <th className="border border-gray-800">Date</th>
+                <th className="border border-gray-800">Due Date</th>
               </tr>
             </thead>
             <tbody>
@@ -226,10 +239,13 @@ export default function Schedule() {
                   <td className="border border-gray-300">{task.status}</td>
                   <td className="border border-gray-300">{task.title}</td>
                   <td className="border border-gray-300">{task.description}</td>
-                  <td className="border border-gray-300">{task.due_date}</td>
+                  <td className="border border-gray-300">{task.startDate}</td>
+                  <td className="border border-gray-300">{task.startTime}</td>
+                  <td className="border border-gray-300">{task.endDate}</td>
+                  <td className="border border-gray-300">{task.endTime}</td>
                   <td className="border border-gray-300">{task.assigned_to}</td>
                   <td className="border border-gray-300">{task.priority}</td>
-                  <td className="border border-gray-300">{task.date}</td>
+                  <td className="border border-gray-300">{task.due_date}</td>
                 </tr>
               ))}
             </tbody>
