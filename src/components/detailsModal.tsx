@@ -19,6 +19,8 @@ export default function TaskDetailsModal({ isOpen, onClose, task, onDelete }: Ta
   }
 
   const handleDelete = async () => {
+    const confirmed = window.confirm("Are you sure you want to delete this task?");
+    if (!confirmed) return;
     try {
       await onDelete(task.id); // Call the onDelete function from props
       onClose(); // Close the modal
@@ -60,7 +62,7 @@ export default function TaskDetailsModal({ isOpen, onClose, task, onDelete }: Ta
         </div>
         <div className="mt-6 flex justify-end">
           <button
-            onClick={handleDelete} // Use handleDelete instead of deleteTask
+            onClick={handleDelete}
             className="rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-500"
           >
             Delete
