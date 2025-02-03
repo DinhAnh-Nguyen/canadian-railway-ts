@@ -28,47 +28,7 @@ export default function Schedule() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false); // State for task details modal
   const [selectedTask, setSelectedTask] = useState<task | null>(null); // State to store the selected task
-  // const hardcodedTasks = [
-  //   {
-  //     id: 1,
-  //     title: "Task 1",
-  //     description: "Description 1",
-  //     status: "Pending",
-  //     assigned_to: "1",
-  //     created_by: "1",
-  //     due_date: "2025-01-20T18:12:00Z",
-  //     priority: "High",
-  //     date: "2025-01-20", // Add the date property
-  //   },
-  //   {
-  //     id: 2,
-  //     title: "Task 2",
-  //     description: "Description 2",
-  //     status: "Completed",
-  //     assigned_to: "2",
-  //     created_by: "2",
-  //     due_date: "2025-01-21T07:12:00Z",
-  //     priority: "Medium",
-
-  //     date: "2025-01-20", // Add the date property
-  //   },
-  //   {
-  //     id: 3,
-  //     title: "Task 2",
-  //     description: "Description 2",
-  //     status: "Completed",
-  //     assigned_to: "2",
-  //     created_by: "2",
-  //     due_date: "2025-01-21T07:12:00Z",
-  //     priority: "Medium",
-  //     date: "2025-01-21", // Add the date property
-  //   },
-  // ];
-
-  // useEffect(() => {
-  //   setTasks(hardcodedTasks);
-  // }, []);
-
+  
   // Fetch tasks from the API
   useEffect(() => {
     const fetchTasks = async () => {

@@ -21,8 +21,9 @@ export default function TaskDetailsModal({ isOpen, onClose, task, onDelete }: Ta
   const handleDelete = async () => {
     const confirmed = window.confirm("Are you sure you want to delete this task?");
     if (!confirmed) return;
+    onDelete(task.id); // Call the onDelete function from props
     try {
-      await onDelete(task.id); // Call the onDelete function from props
+      alert("Task deleted successfully");
       onClose(); // Close the modal
     } catch (error) {
       console.error("Error deleting task:", error);
