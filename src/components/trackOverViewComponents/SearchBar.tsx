@@ -2,12 +2,13 @@
 import React, { useState, useRef, useEffect } from "react";
 
 interface SearchBarProps {
-  tracks: string[]; // List of all track names
-  onTrackSelect: (track: string) => void; // Callback when a track is selected
+  tracks: string[];
+  onTrackSelect: (track: string) => void;
+  searchTerm: string;
+  setSearchTerm: (term: string) => void;
 }
 
-const SearchBar: React.FC<SearchBarProps> = ({ tracks, onTrackSelect }) => {
-  const [searchTerm, setSearchTerm] = useState("");
+const SearchBar: React.FC<SearchBarProps> = ({ tracks, onTrackSelect, searchTerm, setSearchTerm }) => {
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const searchBarRef = useRef<HTMLDivElement>(null);
 
@@ -56,7 +57,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ tracks, onTrackSelect }) => {
             setSearchTerm(e.target.value);
             setIsDropdownVisible(true);
           }}
-          onKeyDown={handleKeyPress}
+          onKeyDown={handleKeyPress} // Handle Enter key
         />
         {/* Magnifying Glass Image */}
         <img
@@ -68,7 +69,13 @@ const SearchBar: React.FC<SearchBarProps> = ({ tracks, onTrackSelect }) => {
 
       {/* Dropdown Options */}
       {isDropdownVisible && searchTerm && (
-        <ul className="absolute z-10 mt-1 w-full bg-[#393A3E] rounded-md max-h-40 overflow-y-auto text-white">
+        <ul
+          className="absolute z-10 mt-1 w-full bg-[#393A3E] rounded-md max-h-40 overflow-y-auto text-white"
+          style={{
+            scrollbarWidth: "thin",
+            scrollbarColor: "transparent transparent", // Transparent scrollbar
+          }}
+        >
           {filteredTracks.map((track) => (
             <li
               key={track}

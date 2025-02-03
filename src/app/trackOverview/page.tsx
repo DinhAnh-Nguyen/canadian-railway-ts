@@ -2,21 +2,38 @@
 import React, { useState } from "react";
 import Nav from "@/components/navbar";
 import CombinedMap from "@/components/trackOverViewComponents/CombinedMap";
-import { getSelectedTrackMaintenance, getSelectedTrackDetails } from "@/app/_utils/trackUtils";
 import TrackMaintenanceChart from "@/components/trackOverViewComponents/TrackMaintenanceChart";
 import TrackDetailsTable from "@/components/trackOverViewComponents/TrackDetailsTable";
 import TrackCapacityChart from "@/components/trackOverViewComponents/TrackCapacityChart";
 import SearchBar from "@/components/trackOverViewComponents/SearchBar";
-import { trackDetails, trackCapacityData } from "@/data/trackData";
+import { trackDetails, trackMaintenanceData, trackCapacityData } from "@/data/trackData";
 
 export default function TrackOverview() {
   const [selectedDate, setSelectedDate] = useState<string>("");
-  const [selectedTrack, setSelectedTrack] = useState<string>("");
+  const [selectedTrack, setSelectedTrack] = useState<string>("Track 1");
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [favoriteTracks, setFavoriteTracks] = useState<string[]>([]);
 
-  // Maintenance and details data
-  const selectedMaintenanceData = getSelectedTrackMaintenance(selectedTrack);
-  const selectedTrackDetails = getSelectedTrackDetails(selectedTrack);
+  // Handle toggling favorites
+  const toggleFavorite = () => {
+    setFavoriteTracks((prev) =>
+      prev.includes(selectedTrack)
+        ? prev.filter((t) => t !== selectedTrack)
+        : [...prev, selectedTrack]
+    );
+  };
 
+  // Check if selected track is in favorites
+  const isFavorite = favoriteTracks.includes(selectedTrack);
+
+  // Handle favorite track selection
+  const handleFavoriteSelect = (track: string) => {
+    setSelectedTrack(track);
+    setSearchTerm(""); // Clear the search bar
+  };
+
+  // Prepare maintenance history data for the selected track
+  const selectedMaintenanceData = trackMaintenanceData[selectedTrack];
   const maintenanceHistoryData = {
     labels: [
       "Jan", "Feb", "Mar", "Apr", "May", "Jun",
@@ -24,7 +41,7 @@ export default function TrackOverview() {
     ],
     datasets: [
       {
-        label: "Maintenance Count",
+        label: `${selectedTrack} Maintenance Count`,
         data: selectedMaintenanceData,
         backgroundColor: [
           "#66B168", "#6060E1", "#66B168", "#6060E1", "#66B168",
@@ -35,6 +52,7 @@ export default function TrackOverview() {
     ],
   };
 
+  // Chart options
   const chartOptions = {
     responsive: true,
     maintainAspectRatio: false,
@@ -44,15 +62,17 @@ export default function TrackOverview() {
     <div>
       <Nav />
       <div className="p-6 bg-background text-foreground">
-        {/* SearchBar Component */}
+        {/* Search Bar */}
         <div className="mb-4">
-        <SearchBar
-          tracks={Object.keys(trackDetails)} // Pass track names
-          onTrackSelect={(track) => setSelectedTrack(track)} // Update selected track
-        />
+          <SearchBar
+            tracks={Object.keys(trackDetails)}
+            onTrackSelect={(track) => setSelectedTrack(track)}
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+          />
         </div>
 
-        <div className="mb-4 flex gap-4">
+        <div className="mb-4 flex gap-4 items-center">
           {/* Select Date */}
           <div>
             <label htmlFor="date" className="block mb-1 text-darkgrey font-medium">
@@ -66,16 +86,47 @@ export default function TrackOverview() {
               onChange={(e) => setSelectedDate(e.target.value)}
             />
           </div>
+
+          {/* Favorite Tracks Dropdown */}
+          <div>
+            <label htmlFor="favorites" className="block mb-1 text-darkgrey font-medium">
+              Favorite Tracks:
+            </label>
+            <select
+              id="favorites"
+              className="p-2 border rounded-md text-black"
+              value={favoriteTracks.includes(selectedTrack) ? selectedTrack : ""}
+              onChange={(e) => handleFavoriteSelect(e.target.value)}
+            >
+              {!favoriteTracks.includes(selectedTrack) &&
+                favoriteTracks.length > 0 && (
+                  <option value="">Pick a Track</option>
+                )}
+              {favoriteTracks.length === 0 && <option value="">No fav track</option>}
+              {favoriteTracks.map((track) => (
+                <option key={track} value={track}>
+                  {track}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
-        {/* Main Content Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left Column */}
           <div className="lg:col-span-1 space-y-6">
             <TrackMaintenanceChart data={maintenanceHistoryData} options={chartOptions} />
-            <TrackDetailsTable details={selectedTrackDetails} />
+            {trackDetails[selectedTrack] ? (
+              <TrackDetailsTable
+                details={trackDetails[selectedTrack]}
+                isFavorite={isFavorite}
+                onToggleFavorite={toggleFavorite}
+              />
+            ) : (
+              <div className="rounded-md p-4 bg-[#393A3E] text-center text-white">
+                No track selected.
+              </div>
+            )}
           </div>
-
           {/* Right Column */}
           <div className="lg:col-span-2 space-y-6">
             <div className="h-80 rounded-md bg-gray-200">
