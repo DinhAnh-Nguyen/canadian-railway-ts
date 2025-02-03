@@ -175,7 +175,6 @@ export default function Dashboard() {
                       <td>{task.due_date}</td>
                       <td>{task.title}</td>
                       <td>{task.status}</td>
-                      <td>{task.assigned_to}</td>
                       <td>
                         <button
                           className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
