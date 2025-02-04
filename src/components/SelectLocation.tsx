@@ -3,7 +3,6 @@ import { forecastType, locationType } from '../app/types';
 import { getWindDirection } from '@/app/helpers';
 import { Chart as ChartJs, defaults, CategoryScale } from 'chart.js/auto';
 import { Line } from 'react-chartjs-2';
-import weatherData from '../app/data/weatherData.json';
 
 ChartJs.register(CategoryScale);
 
@@ -99,10 +98,10 @@ const SelectLocation = ({ handleTrackChange, forecastData, track, predictWeather
                             <div className="h-40 bg-gray-800 rounded mt-4 flex items-center justify-center">
                                 <Line
                                     data={{
-                                        labels: weatherData.map((data) => data.label),
+                                        labels: predictWeatherData[track]?.list.map((entry) => entry.timestamp.split(" ")[1]) || [],
                                         datasets: [{
                                             label: 'Wind Speed',
-                                            data: weatherData.map((data) => data.wind_spd),
+                                            data: predictWeatherData[track]?.list.map((entry) => entry.wind.speed) || [],
                                             borderColor: 'rgba(75, 192, 192, 1)',
                                             backgroundColor: 'rgba(75, 192, 192, 0.2)',
                                             borderWidth: 2, // Thickness of the line
@@ -146,12 +145,19 @@ const SelectLocation = ({ handleTrackChange, forecastData, track, predictWeather
                                 <div className="">
                                     <Line
                                         data={{
-                                            labels: weatherData.map((data) => data.label),
+                                            labels: predictWeatherData[track]?.list.map((entry) => entry.timestamp.split(" ")[1]) || [],
                                             datasets: [{
                                                 label: 'Wind Speed',
-                                                data: weatherData.map((data) => data.wind_spd),
+                                                data: predictWeatherData[track]?.list.map((entry) => entry.wind.speed) || [],
                                                 borderColor: 'rgba(75, 192, 192, 1)',
                                                 backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                                borderWidth: 2, // Thickness of the line
+                                                pointBackgroundColor: 'rgba(75, 192, 192, 1)',
+                                                pointBorderColor: '#fff',
+                                                pointRadius: 5,
+                                                pointHoverRadius: 7,
+                                                fill: true,
+                                                tension: 0.4
                                             }],
                                         }}
                                         options={{

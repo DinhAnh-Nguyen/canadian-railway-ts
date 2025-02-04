@@ -39,6 +39,7 @@ const useForecast = () => {
                     wind: data.wind,
                     clouds: data.clouds,
                     weather: data.weather[0],
+                    timestamp: data.dt,
                 },
             ],
         };
@@ -47,7 +48,7 @@ const useForecast = () => {
 
     const getPredictWeatherData = async (location: locationType): Promise<forecastType | null> => {
         const response = await fetch(
-            `https://api.openweathermap.org/data/2.5/forecast?lat=${location.lat}&lon=${location.lon}&cnt=10&appid=${API_KEY}`
+            `https://api.openweathermap.org/data/2.5/forecast?lat=${location.lat}&lon=${location.lon}&cnt=10&units=metric&appid=${API_KEY}`
         );
         const data = await response.json();
         console.log(data);
@@ -97,7 +98,7 @@ const useForecast = () => {
         setPredictWeatherData(updatedData);
         console.log('Predicted weather data:', JSON.stringify(updatedData, null, 2));
 
-        saveDataToFile({ forecastData, predictWeatherData: updatedData });
+        saveDataToFile({ predictWeatherData: updatedData });
 
     };
 

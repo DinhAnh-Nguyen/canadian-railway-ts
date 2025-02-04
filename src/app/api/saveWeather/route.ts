@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
 
-// Path to JSON file
+// Save JSON data in the "data" folder at the project root
 const filePath = path.join(process.cwd(), 'data', 'weatherData.json');
 
 export async function POST(request: Request) {
@@ -11,7 +11,7 @@ export async function POST(request: Request) {
 
         console.log('Received data:', JSON.stringify(data, null, 2));
 
-        // Ensure directory exists
+        // Ensure the "data" directory exists
         const dir = path.dirname(filePath);
         if (!fs.existsSync(dir)) {
             fs.mkdirSync(dir, { recursive: true });

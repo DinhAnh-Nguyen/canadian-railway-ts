@@ -1,77 +1,5 @@
 {
-  "forecastData": {
-    "Vancouver": {
-      "name": "Vancouver",
-      "country": "CA",
-      "sunrise": 1738683542,
-      "sunset": 1738718030,
-      "list": [
-        {
-          "dt": 1738703352,
-          "main": {
-            "temp": 0.31,
-            "feels_like": 0.31,
-            "temp_min": -1.45,
-            "temp_max": 2.07,
-            "pressure": 1012,
-            "humidity": 76,
-            "sea_level": 1012,
-            "grnd_level": 999
-          },
-          "visibility": 10000,
-          "wind": {
-            "speed": 0.89,
-            "deg": 160,
-            "gust": 1.79
-          },
-          "clouds": {
-            "all": 50
-          },
-          "weather": {
-            "id": 802,
-            "main": "Clouds",
-            "description": "scattered clouds",
-            "icon": "03d"
-          }
-        }
-      ]
-    },
-    "Banff": {
-      "name": "Banff",
-      "country": "CA",
-      "sunrise": 1738682057,
-      "sunset": 1738715891,
-      "list": [
-        {
-          "dt": 1738703540,
-          "main": {
-            "temp": -20.11,
-            "feels_like": -26.17,
-            "temp_min": -20.11,
-            "temp_max": -20.11,
-            "pressure": 1032,
-            "humidity": 82,
-            "sea_level": 1032,
-            "grnd_level": 791
-          },
-          "visibility": 7293,
-          "wind": {
-            "speed": 2.14,
-            "deg": 96,
-            "gust": 1.94
-          },
-          "clouds": {
-            "all": 98
-          },
-          "weather": {
-            "id": 804,
-            "main": "Clouds",
-            "description": "overcast clouds",
-            "icon": "04d"
-          }
-        }
-      ]
-    },
+  "predictWeatherData": {
     "Edmonton": {
       "name": "Edmonton",
       "country": "CA",
@@ -79,237 +7,92 @@
       "sunset": 1738714943,
       "list": [
         {
-          "dt": 1738703590,
-          "main": {
-            "temp": -21.82,
-            "feels_like": -28.37,
-            "temp_min": -23.97,
-            "temp_max": -20.59,
-            "pressure": 1041,
-            "humidity": 73,
-            "sea_level": 1041,
-            "grnd_level": 949
-          },
-          "visibility": 391,
-          "wind": {
-            "speed": 2.24,
-            "deg": 10,
-            "gust": 3.13
-          },
-          "clouds": {
-            "all": 100
-          },
-          "weather": {
-            "id": 804,
-            "main": "Clouds",
-            "description": "overcast clouds",
-            "icon": "04d"
-          }
-        }
-      ]
-    },
-    "Jasper": {
-      "name": "Jasper",
-      "country": "CA",
-      "sunrise": 1738682975,
-      "sunset": 1738716178,
-      "list": [
-        {
-          "dt": 1738703202,
-          "main": {
-            "temp": -20.04,
-            "feels_like": -20.04,
-            "temp_min": -20.04,
-            "temp_max": -20.04,
-            "pressure": 1037,
-            "humidity": 65,
-            "sea_level": 1037,
-            "grnd_level": 819
-          },
-          "visibility": 7640,
-          "wind": {
-            "speed": 0.89,
-            "deg": 68,
-            "gust": 4.92
-          },
-          "clouds": {
-            "all": 100
-          },
-          "weather": {
-            "id": 804,
-            "main": "Clouds",
-            "description": "overcast clouds",
-            "icon": "04d"
-          }
-        }
-      ]
-    },
-    "Canmore": {
-      "name": "Canmore",
-      "country": "CA",
-      "sunrise": 1738681990,
-      "sunset": 1738715856,
-      "list": [
-        {
-          "dt": 1738703352,
-          "main": {
-            "temp": -20.93,
-            "feels_like": -26.48,
-            "temp_min": -20.93,
-            "temp_max": -20.93,
-            "pressure": 1034,
-            "humidity": 80,
-            "sea_level": 1034,
-            "grnd_level": 793
-          },
-          "visibility": 3636,
-          "wind": {
-            "speed": 1.84,
-            "deg": 74,
-            "gust": 1.61
-          },
-          "clouds": {
-            "all": 100
-          },
-          "weather": {
-            "id": 804,
-            "main": "Clouds",
-            "description": "overcast clouds",
-            "icon": "04d"
-          }
-        }
-      ]
-    },
-    "Red Deer": {
-      "name": "Red Deer",
-      "country": "CA",
-      "sunrise": 1738681836,
-      "sunset": 1738715268,
-      "list": [
-        {
-          "dt": 1738703007,
-          "main": {
-            "temp": -23.73,
-            "feels_like": -30.73,
-            "temp_min": -23.73,
-            "temp_max": -23.73,
-            "pressure": 1040,
-            "humidity": 70,
-            "sea_level": 1040,
-            "grnd_level": 919
-          },
-          "visibility": 4828,
-          "wind": {
-            "speed": 2.57,
-            "deg": 340
-          },
-          "clouds": {
-            "all": 100
-          },
-          "weather": {
-            "id": 804,
-            "main": "Clouds",
-            "description": "overcast clouds",
-            "icon": "04d"
-          }
-        }
-      ]
-    }
-  },
-  "predictWeatherData": {
-    "Banff": {
-      "name": "Banff",
-      "country": "CA",
-      "sunrise": 1738682057,
-      "sunset": 1738715891,
-      "list": [
-        {
           "temperature": {
-            "current": 252.36
+            "current": -21.8
           },
           "wind": {
-            "speed": 1.8
+            "speed": 1.03
           },
           "timestamp": "2025-02-05 00:00:00"
         },
         {
           "temperature": {
-            "current": 249.61
+            "current": -24.41
           },
           "wind": {
-            "speed": 1.66
+            "speed": 0.56
           },
           "timestamp": "2025-02-05 03:00:00"
         },
         {
           "temperature": {
-            "current": 249.15
+            "current": -29.81
           },
           "wind": {
-            "speed": 1.53
+            "speed": 1.49
           },
           "timestamp": "2025-02-05 06:00:00"
         },
         {
           "temperature": {
-            "current": 249.35
+            "current": -32.34
           },
           "wind": {
-            "speed": 1.37
+            "speed": 1.53
           },
           "timestamp": "2025-02-05 09:00:00"
         },
         {
           "temperature": {
-            "current": 251.66
+            "current": -33.02
           },
           "wind": {
-            "speed": 1.33
+            "speed": 1.82
           },
           "timestamp": "2025-02-05 12:00:00"
         },
         {
           "temperature": {
-            "current": 251.18
+            "current": -32.08
           },
           "wind": {
-            "speed": 1.29
+            "speed": 2.15
           },
           "timestamp": "2025-02-05 15:00:00"
         },
         {
           "temperature": {
-            "current": 256.93
+            "current": -24.7
           },
           "wind": {
-            "speed": 0.97
+            "speed": 2.44
           },
           "timestamp": "2025-02-05 18:00:00"
         },
         {
           "temperature": {
-            "current": 261.62
+            "current": -20.38
           },
           "wind": {
-            "speed": 2.32
+            "speed": 2.57
           },
           "timestamp": "2025-02-05 21:00:00"
         },
         {
           "temperature": {
-            "current": 260.78
+            "current": -21.32
           },
           "wind": {
-            "speed": 2.66
+            "speed": 1.82
           },
           "timestamp": "2025-02-06 00:00:00"
         },
         {
           "temperature": {
-            "current": 253.59
+            "current": -23.59
           },
           "wind": {
-            "speed": 2.56
+            "speed": 2.3
           },
           "timestamp": "2025-02-06 03:00:00"
         }
