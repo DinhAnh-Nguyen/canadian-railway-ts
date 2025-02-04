@@ -1,98 +1,98 @@
 {
   "predictWeatherData": {
-    "Edmonton": {
-      "name": "Edmonton",
+    "Jasper": {
+      "name": "Jasper",
       "country": "CA",
-      "sunrise": 1738682009,
-      "sunset": 1738714943,
+      "sunrise": 1738682975,
+      "sunset": 1738716178,
       "list": [
         {
           "temperature": {
-            "current": -21.8
+            "current": -20.55
           },
           "wind": {
-            "speed": 1.03
+            "speed": 2.19
           },
           "timestamp": "2025-02-05 00:00:00"
         },
         {
           "temperature": {
-            "current": -24.41
+            "current": -23.4
           },
           "wind": {
-            "speed": 0.56
+            "speed": 0.8
           },
           "timestamp": "2025-02-05 03:00:00"
         },
         {
           "temperature": {
-            "current": -29.81
+            "current": -27.18
           },
           "wind": {
-            "speed": 1.49
+            "speed": 1.45
           },
           "timestamp": "2025-02-05 06:00:00"
         },
         {
           "temperature": {
-            "current": -32.34
+            "current": -31.22
           },
           "wind": {
-            "speed": 1.53
+            "speed": 1.74
           },
           "timestamp": "2025-02-05 09:00:00"
         },
         {
           "temperature": {
-            "current": -33.02
+            "current": -31.25
           },
           "wind": {
-            "speed": 1.82
+            "speed": 1.75
           },
           "timestamp": "2025-02-05 12:00:00"
         },
         {
           "temperature": {
-            "current": -32.08
+            "current": -31.38
           },
           "wind": {
-            "speed": 2.15
+            "speed": 1.66
           },
           "timestamp": "2025-02-05 15:00:00"
         },
         {
           "temperature": {
-            "current": -24.7
+            "current": -22.25
           },
           "wind": {
-            "speed": 2.44
+            "speed": 1.22
           },
           "timestamp": "2025-02-05 18:00:00"
         },
         {
           "temperature": {
-            "current": -20.38
+            "current": -14.49
           },
           "wind": {
-            "speed": 2.57
+            "speed": 0.85
           },
           "timestamp": "2025-02-05 21:00:00"
         },
         {
           "temperature": {
-            "current": -21.32
+            "current": -14.05
           },
           "wind": {
-            "speed": 1.82
+            "speed": 0.75
           },
           "timestamp": "2025-02-06 00:00:00"
         },
         {
           "temperature": {
-            "current": -23.59
+            "current": -21.23
           },
           "wind": {
-            "speed": 2.3
+            "speed": 2.71
           },
           "timestamp": "2025-02-06 03:00:00"
         }

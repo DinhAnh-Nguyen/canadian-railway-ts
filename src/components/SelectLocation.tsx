@@ -148,7 +148,7 @@ const SelectLocation = ({ handleTrackChange, forecastData, track, predictWeather
                                             labels: predictWeatherData[track]?.list.map((entry) => entry.timestamp.split(" ")[1]) || [],
                                             datasets: [{
                                                 label: 'Wind Speed',
-                                                data: predictWeatherData[track]?.list.map((entry) => entry.wind.speed) || [],
+                                                data: predictWeatherData[track]?.list.map((entry) => entry.temperature.current) || [],
                                                 borderColor: 'rgba(75, 192, 192, 1)',
                                                 backgroundColor: 'rgba(75, 192, 192, 0.2)',
                                                 borderWidth: 2, // Thickness of the line

@@ -40,6 +40,10 @@ const useForecast = () => {
                     clouds: data.clouds,
                     weather: data.weather[0],
                     timestamp: data.dt,
+                    temperature: {
+                        current
+                            : data.main.temp,
+                    }
                 },
             ],
         };

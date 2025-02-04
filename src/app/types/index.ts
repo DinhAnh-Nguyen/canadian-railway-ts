@@ -12,6 +12,7 @@ export type forecastType = {
 
     list: [
         {
+            timestamp: any
             dt: number
             main: {
                 feels_like: number
@@ -35,6 +36,9 @@ export type forecastType = {
                 main: string
                 description: string
                 icon: string
+            }
+            temperature: {
+                current: number
             }
         }
     ]
