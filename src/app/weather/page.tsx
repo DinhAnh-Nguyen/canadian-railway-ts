@@ -10,8 +10,7 @@ const App = (): JSX.Element => {
     selectedTrack,
     handleTrackChange,
     forecastData,
-    saveForecastData,
-    getHistoricalWeatherData,
+    predictWeatherData
   } = useForecast();
 
   return (
@@ -22,8 +21,8 @@ const App = (): JSX.Element => {
           track={selectedTrack}
           forecastData={forecastData}
           handleTrackChange={handleTrackChange}
-          getHistoricalWeatherData={getHistoricalWeatherData}
-          saveForecastData={saveForecastData}
+          predictWeatherData={predictWeatherData}
+
         />
       </div>
     </>

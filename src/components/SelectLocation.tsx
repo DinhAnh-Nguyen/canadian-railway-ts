@@ -1,16 +1,20 @@
 import { ChangeEvent, JSX } from 'react';
 import { forecastType, locationType } from '../app/types';
 import { getWindDirection } from '@/app/helpers';
+import { Chart as ChartJs, defaults, CategoryScale } from 'chart.js/auto';
+import { Line } from 'react-chartjs-2';
+import weatherData from '../app/data/weatherData.json';
+
+ChartJs.register(CategoryScale);
 
 type Props = {
     track: string;
     forecastData: { [key: string]: forecastType | null };
     handleTrackChange: (e: ChangeEvent<HTMLSelectElement>) => void;
-    getHistoricalWeatherData: (location: locationType) => Promise<forecastType | null>;
-    saveForecastData: (lat: number, lon: number) => void;
+    predictWeatherData: { [key: string]: forecastType | null };
 };
 
-const SelectLocation = ({ handleTrackChange, forecastData, track, getHistoricalWeatherData, saveForecastData }: Props): JSX.Element => {
+const SelectLocation = ({ handleTrackChange, forecastData, track, predictWeatherData }: Props): JSX.Element => {
     const selectedForecast = track ? forecastData[track] : null;
 
     return (
@@ -18,7 +22,7 @@ const SelectLocation = ({ handleTrackChange, forecastData, track, getHistoricalW
             <div className="text-2xl font-bold mb-6">Weather Dashboard</div>
 
             <div className="grid grid-cols-12 gap-6">
-                {/* Current Forecast Per Track */}
+                {/* // Current forecast per track */}
                 <div className="col-span-4 space-y-4">
                     <div className="bg-emerald-950 p-4 rounded">
                         <h2 className="text-lg font-semibold">Current Forecast Per Track</h2>
@@ -64,7 +68,7 @@ const SelectLocation = ({ handleTrackChange, forecastData, track, getHistoricalW
                             <h2 className="text-lg font-semibold bg-emerald-950 px-4 py-2 rounded-2xl">
                                 Wind Direction for Selected Track
                             </h2>
-                            <div className="h-40 bg-gray-800 rounded mt-4 flex items-center justify-center">
+                            <div className="font-bold text-5xl h-40 bg-gray-800 rounded mt-4 flex items-center justify-center">
                                 {selectedForecast?.list?.[0]?.wind?.deg !== undefined
                                     ? `${getWindDirection(Math.round(selectedForecast.list[0].wind.deg))}`
                                     : 'No data'}
@@ -93,27 +97,81 @@ const SelectLocation = ({ handleTrackChange, forecastData, track, getHistoricalW
                                 Wind Speed for Selected Track
                             </h2>
                             <div className="h-40 bg-gray-800 rounded mt-4 flex items-center justify-center">
-                                {selectedForecast?.list?.[0]?.wind?.speed !== undefined
-                                    ? `${selectedForecast.list[0].wind.speed} km/h`
-                                    : 'No data'}
+                                <Line
+                                    data={{
+                                        labels: weatherData.map((data) => data.label),
+                                        datasets: [{
+                                            label: 'Wind Speed',
+                                            data: weatherData.map((data) => data.wind_spd),
+                                            borderColor: 'rgba(75, 192, 192, 1)',
+                                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                            borderWidth: 2, // Thickness of the line
+                                            pointBackgroundColor: 'rgba(75, 192, 192, 1)',
+                                            pointBorderColor: '#fff',
+                                            pointRadius: 5,
+                                            pointHoverRadius: 7,
+                                            fill: true,
+                                            tension: 0.4
+                                        }],
+                                    }}
+                                    options={{
+                                        maintainAspectRatio: false, // Allow independent width & height control
+                                        scales: {
+                                            x: {
+                                                ticks: {
+                                                    color: 'white', // make the label text white
+                                                }
+                                            },
+                                            y: {
+                                                ticks: {
+                                                    color: 'white',
+                                                },
+                                                beginAtZero: true
+                                            }
+                                        }
+                                    }}
+                                />
+
+
                             </div>
-                            <button
-                                onClick={() => saveForecastData(53.5461, -113.4938)}
-                                className="mt-4 bg-blue-600 px-4 py-2 rounded text-white hover:bg-blue-500 transition"
-                            >
-                                Save Forecast Data
-                            </button>
+
                         </div>
 
                         {/* Temperature */}
-                        <div className="col-span-12 p-4 rounded">
+                        <div className="col-span-12 row-span-1 p-4 rounded">
                             <h2 className="text-lg font-semibold bg-emerald-950 px-4 py-2 rounded-2xl">
                                 Temperature for Selected Track
                             </h2>
-                            <div className="h-40 bg-gray-800 rounded mt-4 flex items-center justify-center">
-                                {selectedForecast?.list?.[0]?.main?.temp !== undefined
-                                    ? `${selectedForecast.list[0].main.temp}°C`
-                                    : 'No data'}
+                            <div className=" overflow-x-auto bg-gray-800 rounded mt-4  p-4">
+                                <div className="">
+                                    <Line
+                                        data={{
+                                            labels: weatherData.map((data) => data.label),
+                                            datasets: [{
+                                                label: 'Wind Speed',
+                                                data: weatherData.map((data) => data.wind_spd),
+                                                borderColor: 'rgba(75, 192, 192, 1)',
+                                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                            }],
+                                        }}
+                                        options={{
+                                            maintainAspectRatio: false, // Allow independent width & height control
+                                            scales: {
+                                                x: {
+                                                    ticks: {
+                                                        color: 'white', // make the label text white
+                                                    }
+                                                },
+                                                y: {
+                                                    ticks: {
+                                                        color: 'white',
+                                                    },
+                                                    beginAtZero: true
+                                                }
+                                            }
+                                        }}
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>

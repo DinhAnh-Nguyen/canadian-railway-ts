@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { locationType, forecastType } from '../types';
 
+
 const useForecast = () => {
 
     const API_KEY = process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY;
 
     const [selectedTrack, setSelectedTrack] = useState(''); // use to track the currently selected track
     const [forecastData, setForecastData] = useState<{ [key: string]: forecastType | null }>({}); // stores weather data for multiple locations in an object, track is a key
+    const [predictWeatherData, setPredictWeatherData] = useState<{ [key: string]: forecastType | null }>({}); // store predicted weather data for a location 
 
     // predefined locations
     const locations: { [key: string]: locationType } = {
@@ -24,7 +26,6 @@ const useForecast = () => {
             `https://api.openweathermap.org/data/2.5/weather?lat=${location.lat}&lon=${location.lon}&units=metric&appid=${API_KEY}`
         );
         const data = await response.json(); // fetch data from the response as a list 
-        console.log(data);
         return {
             name: data.name,
             country: data.sys.country,
@@ -44,42 +45,28 @@ const useForecast = () => {
 
     };
 
-    const getHistoricalWeatherData = async (location: locationType): Promise<forecastType | null> => {
+    const getPredictWeatherData = async (location: locationType): Promise<forecastType | null> => {
         const response = await fetch(
-            `https://api.openweathermap.org/data/2.5/forecast?${location.lat}&${location.lon}&cnt=7&appid=${API_KEY}`
+            `https://api.openweathermap.org/data/2.5/forecast?lat=${location.lat}&lon=${location.lon}&cnt=10&appid=${API_KEY}`
         );
-        const data = await response.json(); // fetch data from the response as a list 
+        const data = await response.json();
         console.log(data);
+
         return {
             name: data.city.name,
             country: data.city.country,
             sunrise: data.city.sunrise,
             sunset: data.city.sunset,
             list: data.list.map((day: any) => ({
-                dt: day.dt,
-                main: day.temp, // temp is an object with min, max, day, night, eve, morn
-                pressure: day.pressure,
-                humidity: day.humidity,
-                wind: { speed: day.speed, deg: day.deg },
-                clouds: day.clouds,
-                weather: day.weather[0],
+                temperature: {
+                    current: day.main.temp,
+                },
+                wind: {
+                    speed: day.wind.speed,
+                },
+                timestamp: day.dt_txt
             })),
         };
-    };
-
-    const saveForecastData = async (lat: number, lon: number) => {
-        try {
-            const res = await fetch(`/api/weather/saveHistoricalWeather?lat=${lat}&lon=${lon}`);
-
-            if (!res.ok) {
-                throw new Error(`HTTP error! Status: ${res.status}, Message: ${await res.text()}`);
-            }
-
-            const data = await res.json();
-            console.log("Forecast data saved:", data);
-        } catch (error) {
-            console.error("Error saving forecast data:", error);
-        }
     };
 
 
@@ -98,6 +85,21 @@ const useForecast = () => {
         setForecastData(updatedData);
     };
 
+    const fetchPredictWeatherData = async () => {
+        if (!selectedTrack) {
+            return;
+        }
+        const updatedData: { [key: string]: forecastType | null } = {};
+
+        const location = locations[selectedTrack];
+        const data = await getPredictWeatherData(location)
+        updatedData[selectedTrack] = data;
+        setPredictWeatherData(updatedData);
+
+    };
+
+
+
     // To handle the track change event (through track selection)
     const handleTrackChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const track = e.target.value.trim();
@@ -109,7 +111,13 @@ const useForecast = () => {
         fetchAllWeatherData();
     }, []);
 
-    return { selectedTrack, handleTrackChange, forecastData, locations, saveForecastData, getHistoricalWeatherData };
+    useEffect(() => {
+        if (selectedTrack && locations[selectedTrack]) {
+            fetchPredictWeatherData();
+        }
+    }, [selectedTrack]);
+
+    return { selectedTrack, handleTrackChange, forecastData, locations, getPredictWeatherData, predictWeatherData };
 };
 
 export default useForecast;
