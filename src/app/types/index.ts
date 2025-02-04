@@ -9,8 +9,10 @@ export type forecastType = {
     country: string
     sunrise: number
     sunset: number
+
     list: [
         {
+            timestamp: any
             dt: number
             main: {
                 feels_like: number
@@ -34,6 +36,9 @@ export type forecastType = {
                 main: string
                 description: string
                 icon: string
+            }
+            temperature: {
+                current: number
             }
         }
     ]

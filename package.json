@@ -12,6 +12,7 @@
     "@googlemaps/js-api-loader": "^1.16.8",
     "@material-tailwind/react": "^2.1.10",
     "@neondatabase/serverless": "^0.10.4",
+    "@nivo/line": "^0.88.0",
     "@types/google.maps": "^3.58.1",
     "chart.js": "^4.4.7",
     "encoding": "^0.1.13",

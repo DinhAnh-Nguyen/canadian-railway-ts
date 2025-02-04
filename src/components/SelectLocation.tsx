@@ -1,13 +1,19 @@
 import { ChangeEvent, JSX } from 'react';
-import { forecastType } from '../app/types';
+import { forecastType, locationType } from '../app/types';
+import { getWindDirection } from '@/app/helpers';
+import { Chart as ChartJs, defaults, CategoryScale } from 'chart.js/auto';
+import { Line } from 'react-chartjs-2';
+
+ChartJs.register(CategoryScale);
 
 type Props = {
     track: string;
     forecastData: { [key: string]: forecastType | null };
     handleTrackChange: (e: ChangeEvent<HTMLSelectElement>) => void;
+    predictWeatherData: { [key: string]: forecastType | null };
 };
 
-const SelectLocation = ({ handleTrackChange, forecastData, track }: Props): JSX.Element => {
+const SelectLocation = ({ handleTrackChange, forecastData, track, predictWeatherData }: Props): JSX.Element => {
     const selectedForecast = track ? forecastData[track] : null;
 
     return (
@@ -15,7 +21,7 @@ const SelectLocation = ({ handleTrackChange, forecastData, track }: Props): JSX.
             <div className="text-2xl font-bold mb-6">Weather Dashboard</div>
 
             <div className="grid grid-cols-12 gap-6">
-                {/* Current Forecast Per Track */}
+                {/* // Current forecast per track */}
                 <div className="col-span-4 space-y-4">
                     <div className="bg-emerald-950 p-4 rounded">
                         <h2 className="text-lg font-semibold">Current Forecast Per Track</h2>
@@ -25,10 +31,11 @@ const SelectLocation = ({ handleTrackChange, forecastData, track }: Props): JSX.
                         const forecast = forecastData[trackName];
                         return (
                             <div key={i} className="bg-gray-800 p-4 rounded">
-                                <h3 className="font-bold">{`Track ${i + 1} - ${trackName}`}</h3>
-                                <p>Wind Speed: {forecast?.list[0].wind.speed ?? '-'} km/h</p>
-                                <p>Temperature: {forecast?.list[0].main.temp ?? '-'}°C</p>
-                                <p>Humidity: {forecast?.list[0].main.humidity ?? '-'}%</p>
+                                <h3 className="font-bold">{`Track ${i + 1} - ${trackName} (${forecast?.list[0].weather.main ?? '-'})`}</h3>
+                                <p>Wind Speed: {forecast?.list?.[0]?.wind?.speed ?? '-'} km/h</p>
+                                <p>Temperature: {forecast?.list?.[0]?.main?.temp ?? '-'}°C</p>
+                                <p>Feels Like: {forecast?.list?.[0]?.main?.feels_like ?? '-'}°C</p>
+                                <p>Humidity: {forecast?.list?.[0]?.main?.humidity ?? '-'}%</p>
                             </div>
                         );
                     })}
@@ -41,7 +48,7 @@ const SelectLocation = ({ handleTrackChange, forecastData, track }: Props): JSX.
                         <select
                             name="track"
                             id="track"
-                            className="bg-gray-800 text-white p-2 rounded"
+                            className="bg-gray-800 text-white p-2 rounded cursor-pointer hover:bg-gray-700 transition"
                             value={track}
                             onChange={handleTrackChange}
                         >
@@ -60,16 +67,17 @@ const SelectLocation = ({ handleTrackChange, forecastData, track }: Props): JSX.
                             <h2 className="text-lg font-semibold bg-emerald-950 px-4 py-2 rounded-2xl">
                                 Wind Direction for Selected Track
                             </h2>
-                            <div className="h-40 bg-gray-800 rounded mt-4 flex items-center justify-center">
-                                {selectedForecast?.list[0].wind.deg !== undefined
-                                    ? `${selectedForecast.list[0].wind.deg}°`
+                            <div className="font-bold text-5xl h-40 bg-gray-800 rounded mt-4 flex items-center justify-center">
+                                {selectedForecast?.list?.[0]?.wind?.deg !== undefined
+                                    ? `${getWindDirection(Math.round(selectedForecast.list[0].wind.deg))}`
                                     : 'No data'}
                             </div>
                         </div>
 
-                        < div className='col-span-6 row-span-2 h-full p-4 rounded' >
+                        {/* Map View */}
+                        <div className='col-span-6 row-span-2 h-full p-4 rounded'>
                             <h2 className="text-lg font-semibold bg-emerald-950 px-4 py-2 rounded-2xl">
-                                Map View for Selected View
+                                Map View for Selected Track
                             </h2>
                             <div>
                                 <iframe
@@ -79,16 +87,8 @@ const SelectLocation = ({ handleTrackChange, forecastData, track }: Props): JSX.
                                     sandbox="allow-same-origin allow-scripts allow-popups allow-popups-to-escape-sandbox"
                                     style={{ width: '100%', height: '420px' }}
                                 ></iframe>
-                                <div>
-                                    <a
-                                        href="https://www.meteoblue.com/en/weather/maps/calgary_canada_5913490?utm_source=map_widget&utm_medium=linkus&utm_content=map&utm_campaign=Weather%2BWidget"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                    >
-                                    </a>
-                                </div>
                             </div>
-                        </div >
+                        </div>
 
                         {/* Wind Speed */}
                         <div className="col-span-6 row-span-1 p-4 rounded">
@@ -96,21 +96,88 @@ const SelectLocation = ({ handleTrackChange, forecastData, track }: Props): JSX.
                                 Wind Speed for Selected Track
                             </h2>
                             <div className="h-40 bg-gray-800 rounded mt-4 flex items-center justify-center">
-                                {selectedForecast?.list[0].wind.speed !== undefined
-                                    ? `${selectedForecast.list[0].wind.speed} km/h`
-                                    : 'No data'}
+                                <Line
+                                    data={{
+                                        labels: predictWeatherData[track]?.list.map((entry) => entry.timestamp.split(" ")[1]) || [],
+                                        datasets: [{
+                                            label: 'Wind Speed',
+                                            data: predictWeatherData[track]?.list.map((entry) => entry.wind.speed) || [],
+                                            borderColor: 'rgba(75, 192, 192, 1)',
+                                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                            borderWidth: 2, // Thickness of the line
+                                            pointBackgroundColor: 'rgba(75, 192, 192, 1)',
+                                            pointBorderColor: '#fff',
+                                            pointRadius: 5,
+                                            pointHoverRadius: 7,
+                                            fill: true,
+                                            tension: 0.4
+                                        }],
+                                    }}
+                                    options={{
+                                        maintainAspectRatio: false, // Allow independent width & height control
+                                        scales: {
+                                            x: {
+                                                ticks: {
+                                                    color: 'white', // make the label text white
+                                                }
+                                            },
+                                            y: {
+                                                ticks: {
+                                                    color: 'white',
+                                                },
+                                                beginAtZero: true
+                                            }
+                                        }
+                                    }}
+                                />
+
+
                             </div>
+
                         </div>
 
                         {/* Temperature */}
-                        <div className="col-span-12 p-4 rounded">
+                        <div className="col-span-12 row-span-1 p-4 rounded">
                             <h2 className="text-lg font-semibold bg-emerald-950 px-4 py-2 rounded-2xl">
                                 Temperature for Selected Track
                             </h2>
-                            <div className="h-40 bg-gray-800 rounded mt-4 flex items-center justify-center">
-                                {selectedForecast?.list[0].main.temp !== undefined
-                                    ? `${selectedForecast.list[0].main.temp}°C`
-                                    : 'No data'}
+                            <div className=" overflow-x-auto bg-gray-800 rounded mt-4  p-4">
+                                <div className="">
+                                    <Line
+                                        data={{
+                                            labels: predictWeatherData[track]?.list.map((entry) => entry.timestamp.split(" ")[1]) || [],
+                                            datasets: [{
+                                                label: 'Wind Speed',
+                                                data: predictWeatherData[track]?.list.map((entry) => entry.temperature.current) || [],
+                                                borderColor: 'rgba(75, 192, 192, 1)',
+                                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                                borderWidth: 2, // Thickness of the line
+                                                pointBackgroundColor: 'rgba(75, 192, 192, 1)',
+                                                pointBorderColor: '#fff',
+                                                pointRadius: 5,
+                                                pointHoverRadius: 7,
+                                                fill: true,
+                                                tension: 0.4
+                                            }],
+                                        }}
+                                        options={{
+                                            maintainAspectRatio: false, // Allow independent width & height control
+                                            scales: {
+                                                x: {
+                                                    ticks: {
+                                                        color: 'white', // make the label text white
+                                                    }
+                                                },
+                                                y: {
+                                                    ticks: {
+                                                        color: 'white',
+                                                    },
+                                                    beginAtZero: true
+                                                }
+                                            }
+                                        }}
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>
