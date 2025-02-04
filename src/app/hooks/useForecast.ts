@@ -95,8 +95,33 @@ const useForecast = () => {
         const data = await getPredictWeatherData(location)
         updatedData[selectedTrack] = data;
         setPredictWeatherData(updatedData);
+        console.log('Predicted weather data:', JSON.stringify(updatedData, null, 2));
+
+        saveDataToFile({ forecastData, predictWeatherData: updatedData });
 
     };
+
+    const saveDataToFile = async (dataToSave: any) => {
+        try {
+            const response = await fetch('/api/saveWeather', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(dataToSave, null, 2),
+            });
+
+            if (!response.ok) {
+                throw new Error(`Network response was not ok: ${response.statusText}`);
+            }
+
+            const result = await response.json();
+            console.log('Data saved:', result);
+        } catch (error) {
+            console.error('Error saving data:', error);
+        }
+    };
+
 
 
 

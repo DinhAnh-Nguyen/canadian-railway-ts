@@ -1,62 +1,62 @@
 [
     {
         "label": "Jan",
-        "wind_spd": 64854,
-        "cost": 32652
+        "revenue": 64854,
+        "wind_spd": 32652
     },
     {
         "label": "Feb",
-        "wind_spd": 54628,
-        "cost": 42393
+        "revenue": 54628,
+        "wind_spd": 42393
     },
     {
         "label": "Mar",
-        "wind_spd": 117238,
-        "cost": 50262
+        "revenue": 117238,
+        "wind_spd": 50262
     },
     {
         "label": "Apr",
-        "wind_spd": 82830,
-        "cost": 64731
+        "revenue": 82830,
+        "wind_spd": 64731
     },
     {
         "label": "May",
-        "wind_spd": 91208,
-        "cost": 41893
+        "revenue": 91208,
+        "wind_spd": 41893
     },
     {
         "label": "Jun",
-        "wind_spd": 103609,
-        "cost": 83809
+        "revenue": 103609,
+        "wind_spd": 83809
     },
     {
         "label": "Jul",
-        "wind_spd": 90974,
-        "cost": 44772
+        "revenue": 90974,
+        "wind_spd": 44772
     },
     {
         "label": "Aug",
-        "wind_spd": 82919,
-        "cost": 37590
+        "revenue": 82919,
+        "wind_spd": 37590
     },
     {
         "label": "Sep",
-        "wind_spd": 62407,
-        "cost": 43349
+        "revenue": 62407,
+        "wind_spd": 43349
     },
     {
         "label": "Oct",
-        "wind_spd": 82528,
-        "cost": 45324
+        "revenue": 82528,
+        "wind_spd": 45324
     },
     {
         "label": "Nov",
-        "wind_spd": 56979,
-        "cost": 47978
+        "revenue": 56979,
+        "wind_spd": 47978
     },
     {
         "label": "Dec",
-        "wind_spd": 87436,
-        "cost": 39175
+        "revenue": 87436,
+        "wind_spd": 39175
     }
 ]
