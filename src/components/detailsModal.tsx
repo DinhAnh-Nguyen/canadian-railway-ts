@@ -7,10 +7,10 @@ interface TaskDetailsModalProps {
     description: string;
     status: string;
     assigned_to: string;
-    startDate: string,
-    startTime: string,
-    endDate: string,
-    endTime: string,
+    start_date: string,
+    start_time: string,
+    end_date: string,
+    end_time: string,
     priority: string;
   };
   onDelete: (id: number) => void; // Add onDelete prop
@@ -57,7 +57,7 @@ export default function TaskDetailsModal({ isOpen, onClose, task, onDelete }: Ta
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-300">Due Date</label>
-            <p className="mt-1 text-white">{task.endDate}</p>
+            <p className="mt-1 text-white">{task.end_date}</p>
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-300">Priority</label>

@@ -16,6 +16,13 @@ export async function POST(request: Request) {
     const requestData = await request.json();
     const databaseUrl = process.env.DATABASE_URL || "";
     const sql = neon(databaseUrl);
+    // Validate request data
+    if (!requestData.title || !requestData.description || !requestData.status || !requestData.assigned_to || !requestData.created_by || !requestData.start_date || !requestData.start_time || !requestData.end_date || !requestData.end_time || !requestData.priority) {
+      return NextResponse.json(
+        { error: "Missing required fields." },
+        { status: 400 }
+      );
+    }
 
     // Insert the task into the database
     const response = await sql`

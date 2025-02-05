@@ -19,10 +19,10 @@ type task = {
   created_by: string;
   due_date: string;
   priority: string;
-  startDate: string;
-  startTime: string;
-  endDate: string;
-  endTime: string;
+  start_date: string;
+  start_time: string;
+  end_date: string;
+  end_time: string;
 };
 
 export default function Schedule() {
@@ -78,10 +78,10 @@ export default function Schedule() {
       assigned_to: assignedTo.toString(),
       created_by: "Admin", // Replace with the actual creator
       due_date: due_date,
-      startDate: startDate,
-      startTime: startTime,
-      endDate: endDate,
-      endTime: endTime,
+      start_date: startDate,
+      start_time: startTime,
+      end_date: endDate,
+      end_time: endTime,
       priority: priority,
     };
 
@@ -100,8 +100,8 @@ export default function Schedule() {
       ...prevTasks,
       {
         ...createdTask,
-        start: new Date(`${createdTask.startDate}T${createdTask.startTime}:00`),
-        end: new Date(`${createdTask.endDate}T${createdTask.endTime}:00`),
+        start: new Date(`${createdTask.start_date}T${createdTask.start_time}:00`),
+        end: new Date(`${createdTask.end_date}T${createdTask.end_time}:00`),
       },
     ]);
 
@@ -144,8 +144,8 @@ export default function Schedule() {
   const calendarTasks = tasks.map((task) => ({
     id: task.id,
     title: task.title,
-    start: new Date(`${task.startDate}T${task.startTime}:00`), // Use start date and time
-    end: new Date(`${task.endDate}T${task.endTime}:00`), // Use the same date for end (or adjust as needed)
+    start: new Date(`${task.start_date}T${task.start_time}:00`), // Use start date and time
+    end: new Date(`${task.end_date}T${task.end_time}:00`), // Use the same date for end (or adjust as needed)
     description: task.description,
     assigned_to: task.assigned_to,
     status: task.status,
@@ -239,10 +239,10 @@ export default function Schedule() {
                   <td className="border border-gray-300">{task.status}</td>
                   <td className="border border-gray-300">{task.title}</td>
                   <td className="border border-gray-300">{task.description}</td>
-                  <td className="border border-gray-300">{task.startDate}</td>
-                  <td className="border border-gray-300">{task.startTime}</td>
-                  <td className="border border-gray-300">{task.endDate}</td>
-                  <td className="border border-gray-300">{task.endTime}</td>
+                  <td className="border border-gray-300">{task.start_date}</td>
+                  <td className="border border-gray-300">{task.start_time}</td>
+                  <td className="border border-gray-300">{task.end_date}</td>
+                  <td className="border border-gray-300">{task.end_time}</td>
                   <td className="border border-gray-300">{task.assigned_to}</td>
                   <td className="border border-gray-300">{task.priority}</td>
                   <td className="border border-gray-300">{task.due_date}</td>
