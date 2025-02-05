@@ -3,7 +3,7 @@ import Modal from "@/components/modal";
 import moment from "moment";
 import Nav from "@/components/navbar";
 import React, { useState, FormEvent, useEffect } from "react";
-import { Calendar, momentLocalizer } from "react-big-calendar";
+import { Calendar, momentLocalizer, Views } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import TaskDetailsModal from "@/components/detailsModal";
 
@@ -163,6 +163,8 @@ export default function Schedule() {
     due_date: task.due_date
   }));
 
+  
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -217,8 +219,8 @@ export default function Schedule() {
             selectable
             onSelectEvent={handleSelectEvent}
             onSelectSlot={handleSelectSlot}
-            defaultView="month"
-            views={["month", "week", "day"]}
+            defaultView={Views.MONTH}
+            views={[Views.MONTH, Views.WEEK, Views.DAY]}
           />
         </div>
 
