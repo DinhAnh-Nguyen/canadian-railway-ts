@@ -15,7 +15,7 @@ type task = {
   title: string;
   description: string;
   status: string;
-  assigned_to: string;
+  assigned_to: number;
   created_by: string;
   due_date: string;
   priority: string;
@@ -50,9 +50,17 @@ export default function Schedule() {
 
   // Fetch all tasks
   const getTasks = async (): Promise<task[]> => {
-    const response = await fetch("/api/tasks");
-    const data = await response.json();
-    return data;
+    try {
+      const response = await fetch("/api/tasks");
+      if (!response.ok) {
+        throw new Error("Failed to fetch tasks");
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error fetching tasks:", error);
+      return [];
+    }
   };
 
   // Handle adding a new task
@@ -68,7 +76,7 @@ export default function Schedule() {
     status: string
   ) => {
     // Combine date and time into a single due_date string
-    const due_date = `${endDate}T${endDate}:00`;
+    const due_date = `${endDate}T${endTime}:00`;
 
     // Create a new task object
     const newTask = {
@@ -100,8 +108,10 @@ export default function Schedule() {
       ...prevTasks,
       {
         ...createdTask,
-        start: new Date(`${createdTask.start_date}T${createdTask.start_time}:00`),
-        end: new Date(`${createdTask.end_date}T${createdTask.end_time}:00`),
+        start: new Date(
+          createdTask.start_date
+        ),
+        end: new Date(createdTask.end_date),
       },
     ]);
 
@@ -144,12 +154,13 @@ export default function Schedule() {
   const calendarTasks = tasks.map((task) => ({
     id: task.id,
     title: task.title,
-    start: new Date(`${task.start_date}T${task.start_time}:00`), // Use start date and time
-    end: new Date(`${task.end_date}T${task.end_time}:00`), // Use the same date for end (or adjust as needed)
+    start: new Date(task.start_date), // Use start date and time
+    end: new Date(task.end_date), // Use end date and time
     description: task.description,
     assigned_to: task.assigned_to,
     status: task.status,
     priority: task.priority, // Include priority in the event object
+    due_date: task.due_date
   }));
 
   if (loading) {
@@ -229,7 +240,6 @@ export default function Schedule() {
                 <th className="border border-gray-800">End Time</th>
                 <th className="border border-gray-800">Assigned To</th>
                 <th className="border border-gray-800">Priority</th>
-                <th className="border border-gray-800">Due Date</th>
               </tr>
             </thead>
             <tbody>
@@ -245,7 +255,6 @@ export default function Schedule() {
                   <td className="border border-gray-300">{task.end_time}</td>
                   <td className="border border-gray-300">{task.assigned_to}</td>
                   <td className="border border-gray-300">{task.priority}</td>
-                  <td className="border border-gray-300">{task.due_date}</td>
                 </tr>
               ))}
             </tbody>

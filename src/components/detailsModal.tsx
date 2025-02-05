@@ -6,12 +6,13 @@ interface TaskDetailsModalProps {
     title: string;
     description: string;
     status: string;
-    assigned_to: string;
+    assigned_to: number;
     start_date: string,
     start_time: string,
     end_date: string,
     end_time: string,
     priority: string;
+    due_date: string;
   };
   onDelete: (id: number) => void; // Add onDelete prop
 }

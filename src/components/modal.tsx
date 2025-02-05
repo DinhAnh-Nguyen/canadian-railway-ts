@@ -194,7 +194,7 @@ export default function Modal({ isOpen, onClose, onAddTask }: ModalProps) {
                     value={priority}
                     onChange={(e) => setPriority(e.target.value)}
                   >
-                    <option value={0}>Select a priority</option>
+                    <option value="">Select a priority</option>
                     <option value="Low">Low</option>
                     <option value="Medium">Medium</option>
                     <option value="High">High</option>
@@ -216,7 +216,7 @@ export default function Modal({ isOpen, onClose, onAddTask }: ModalProps) {
                     value={status}
                     onChange={(e) => setStatus(e.target.value)}
                   >
-                    <option value={0}>Select a status</option>
+                    <option value="">Select a status</option>
                     <option value="Pending">Pending</option>
                     <option value="In Progress">In Progress</option>
                   </select>
