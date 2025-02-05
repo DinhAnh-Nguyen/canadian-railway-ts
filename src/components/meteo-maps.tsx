@@ -1,3 +1,7 @@
+type WeathermapProps = {
+    track: string
+}
+
 export const meteoMaps = [
     {
         "city": "Vancouver",
@@ -24,3 +28,30 @@ export const meteoMaps = [
         "link": "https://www.meteoblue.com/en/weather/maps/widget/red-deer_canada_6118158?windAnimation=1&gust=1&satellite=1&cloudsAndPrecipitation=1&temperature=1&sunshine=1&extremeForecastIndex=1&geoloc=fixed&tempunit=C&windunit=km%252Fh&lengthunit=metric&zoom=5&autowidth=auto"
     }
 ];
+
+export default function WeatherMap({ track }: WeathermapProps) {
+    const selectedMap = meteoMaps.find((map) => map.city === track)?.link;
+
+    return (
+        <div className="col-span-6 row-span-2 h-full p-4 rounded">
+            <h2 className="text-lg font-semibold bg-emerald-950 px-4 py-2 rounded-2xl">
+                Map View for Selected Track
+            </h2>
+            <div className="mt-4">
+                {selectedMap ? (
+                    <iframe
+                        src={selectedMap}
+                        frameBorder="0"
+                        scrolling="no"
+                        sandbox="allow-same-origin allow-scripts allow-popups allow-popups-to-escape-sandbox"
+                        style={{ width: "100%", height: "420px", borderRadius: "10px" }}
+                    ></iframe>
+                ) : (
+                    <p className="text-gray-500 text-center">No map available for the selected track.</p>
+                )}
+            </div>
+        </div>
+    );
+}
+
+

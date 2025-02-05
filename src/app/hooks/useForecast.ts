@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { locationType, forecastType } from '../types';
-import { meteoMaps } from '@/data/meteo-maps';
+import { meteoMaps } from '@/components/meteo-maps';
 
 
 const useForecast = () => {
@@ -20,14 +20,6 @@ const useForecast = () => {
         Canmore: { name: 'Canmore', lat: 51.0899, lon: -115.3593 },
         'Red Deer': { name: 'Red Deer', lat: 52.2681, lon: -113.8112 },
     };
-
-    const getMeteoLink = async (location: locationType) => {
-        meteoMaps.map((map) => {
-            if (map.city === location.name) {
-                return map.link;
-            }
-        });
-    }
 
     // To fetch weather data for a single location, which take parameter location of type locationType and return a promise of forecastType
     const getWeatherData = async (location: locationType): Promise<forecastType | null> => {
@@ -154,7 +146,7 @@ const useForecast = () => {
         }
     }, [selectedTrack]);
 
-    return { selectedTrack, handleTrackChange, forecastData, locations, getPredictWeatherData, predictWeatherData, getMeteoLink };
+    return { selectedTrack, handleTrackChange, forecastData, locations, getPredictWeatherData, predictWeatherData };
 };
 
 
