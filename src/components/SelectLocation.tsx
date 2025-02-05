@@ -3,6 +3,7 @@ import { forecastType, locationType } from '../app/types';
 import { getWindDirection } from '@/app/helpers';
 import { Chart as ChartJs, defaults, CategoryScale } from 'chart.js/auto';
 import { Line } from 'react-chartjs-2';
+import { meteoMaps } from '@/data/meteo-maps';
 
 ChartJs.register(CategoryScale);
 
@@ -71,22 +72,6 @@ const SelectLocation = ({ handleTrackChange, forecastData, track, predictWeather
                                 {selectedForecast?.list?.[0]?.wind?.deg !== undefined
                                     ? `${getWindDirection(Math.round(selectedForecast.list[0].wind.deg))}`
                                     : 'No data'}
-                            </div>
-                        </div>
-
-                        {/* Map View */}
-                        <div className='col-span-6 row-span-2 h-full p-4 rounded'>
-                            <h2 className="text-lg font-semibold bg-emerald-950 px-4 py-2 rounded-2xl">
-                                Map View for Selected Track
-                            </h2>
-                            <div>
-                                <iframe
-                                    src="https://www.meteoblue.com/en/weather/maps/widget/calgary_canada_5913490?windAnimation=1&gust=1&satellite=1&cloudsAndPrecipitation=1&temperature=1&sunshine=1&extremeForecastIndex=1&geoloc=fixed&tempunit=C&windunit=km%252Fh&lengthunit=metric&zoom=5&autowidth=auto"
-                                    frameBorder="0"
-                                    scrolling="no"
-                                    sandbox="allow-same-origin allow-scripts allow-popups allow-popups-to-escape-sandbox"
-                                    style={{ width: '100%', height: '420px' }}
-                                ></iframe>
                             </div>
                         </div>
 
