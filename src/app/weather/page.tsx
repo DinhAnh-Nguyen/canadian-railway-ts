@@ -10,7 +10,7 @@ const App = (): JSX.Element => {
     selectedTrack,
     handleTrackChange,
     forecastData,
-    predictWeatherData
+    predictWeatherData,
   } = useForecast();
 
   return (

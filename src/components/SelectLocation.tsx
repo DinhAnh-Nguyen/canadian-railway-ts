@@ -3,6 +3,7 @@ import { forecastType, locationType } from '../app/types';
 import { getWindDirection } from '@/app/helpers';
 import { Chart as ChartJs, defaults, CategoryScale } from 'chart.js/auto';
 import { Line } from 'react-chartjs-2';
+import WeatherMap, { meteoMaps } from '@/components/meteo-maps';
 
 ChartJs.register(CategoryScale);
 
@@ -11,7 +12,7 @@ type Props = {
     forecastData: { [key: string]: forecastType | null };
     handleTrackChange: (e: ChangeEvent<HTMLSelectElement>) => void;
     predictWeatherData: { [key: string]: forecastType | null };
-};
+}
 
 const SelectLocation = ({ handleTrackChange, forecastData, track, predictWeatherData }: Props): JSX.Element => {
     const selectedForecast = track ? forecastData[track] : null;
@@ -30,7 +31,7 @@ const SelectLocation = ({ handleTrackChange, forecastData, track, predictWeather
                     {["Vancouver", "Banff", "Edmonton", "Jasper", "Canmore", "Red Deer"].map((trackName, i) => {
                         const forecast = forecastData[trackName];
                         return (
-                            <div key={i} className="bg-gray-800 p-4 rounded">
+                            <div key={i} className="bg-gray-800 p-4 rounded-[10px]">
                                 <h3 className="font-bold">{`Track ${i + 1} - ${trackName} (${forecast?.list[0].weather.main ?? '-'})`}</h3>
                                 <p>Wind Speed: {forecast?.list?.[0]?.wind?.speed ?? '-'} km/h</p>
                                 <p>Temperature: {forecast?.list?.[0]?.main?.temp ?? '-'}°C</p>
@@ -63,31 +64,20 @@ const SelectLocation = ({ handleTrackChange, forecastData, track, predictWeather
 
                     <div className="grid grid-cols-12 grid-rows-3 gap-6">
                         {/* Wind Direction */}
-                        <div className="col-span-6 row-span-1 p-4 rounded">
+                        <div className="col-span-6 row-span-1 p-4 rounded-[10px]">
                             <h2 className="text-lg font-semibold bg-emerald-950 px-4 py-2 rounded-2xl">
                                 Wind Direction for Selected Track
                             </h2>
-                            <div className="font-bold text-5xl h-40 bg-gray-800 rounded mt-4 flex items-center justify-center">
+                            <div className="font-bold text-5xl h-40 bg-gray-800 rounded-[10px] mt-4 flex items-center justify-center">
                                 {selectedForecast?.list?.[0]?.wind?.deg !== undefined
                                     ? `${getWindDirection(Math.round(selectedForecast.list[0].wind.deg))}`
                                     : 'No data'}
                             </div>
                         </div>
 
-                        {/* Map View */}
-                        <div className='col-span-6 row-span-2 h-full p-4 rounded'>
-                            <h2 className="text-lg font-semibold bg-emerald-950 px-4 py-2 rounded-2xl">
-                                Map View for Selected Track
-                            </h2>
-                            <div>
-                                <iframe
-                                    src="https://www.meteoblue.com/en/weather/maps/widget/calgary_canada_5913490?windAnimation=1&gust=1&satellite=1&cloudsAndPrecipitation=1&temperature=1&sunshine=1&extremeForecastIndex=1&geoloc=fixed&tempunit=C&windunit=km%252Fh&lengthunit=metric&zoom=5&autowidth=auto"
-                                    frameBorder="0"
-                                    scrolling="no"
-                                    sandbox="allow-same-origin allow-scripts allow-popups allow-popups-to-escape-sandbox"
-                                    style={{ width: '100%', height: '420px' }}
-                                ></iframe>
-                            </div>
+                        {/* Weather Map */}
+                        <div className="col-span-6 row-span-2 h-full p-4 rounded">
+                            <WeatherMap track={track} />
                         </div>
 
                         {/* Wind Speed */}
@@ -95,7 +85,7 @@ const SelectLocation = ({ handleTrackChange, forecastData, track, predictWeather
                             <h2 className="text-lg font-semibold bg-emerald-950 px-4 py-2 rounded-2xl">
                                 Wind Speed for Selected Track
                             </h2>
-                            <div className="h-40 bg-gray-800 rounded mt-4 flex items-center justify-center">
+                            <div className="h-40 bg-gray-800 rounded-[10px] mt-4 flex items-center justify-center">
                                 <Line
                                     data={{
                                         labels: predictWeatherData[track]?.list.map((entry) => entry.timestamp.split(" ")[1]) || [],
@@ -141,13 +131,13 @@ const SelectLocation = ({ handleTrackChange, forecastData, track, predictWeather
                             <h2 className="text-lg font-semibold bg-emerald-950 px-4 py-2 rounded-2xl">
                                 Temperature for Selected Track
                             </h2>
-                            <div className=" overflow-x-auto bg-gray-800 rounded mt-4  p-4">
+                            <div className=" overflow-x-auto bg-gray-800 rounded-[10px] mt-4  p-4 ">
                                 <div className="">
                                     <Line
                                         data={{
                                             labels: predictWeatherData[track]?.list.map((entry) => entry.timestamp.split(" ")[1]) || [],
                                             datasets: [{
-                                                label: 'Wind Speed',
+                                                label: 'Temperature',
                                                 data: predictWeatherData[track]?.list.map((entry) => entry.temperature.current) || [],
                                                 borderColor: 'rgba(75, 192, 192, 1)',
                                                 backgroundColor: 'rgba(75, 192, 192, 0.2)',

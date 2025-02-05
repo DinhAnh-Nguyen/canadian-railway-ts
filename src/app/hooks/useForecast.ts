@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { locationType, forecastType } from '../types';
+import { meteoMaps } from '@/components/meteo-maps';
 
 
 const useForecast = () => {
@@ -74,8 +75,6 @@ const useForecast = () => {
         };
     };
 
-
-
     // To fetch weather data for all locations simultaneously
     const fetchAllWeatherData = async () => {
         const updatedData: { [key: string]: forecastType | null } = {};
@@ -149,5 +148,6 @@ const useForecast = () => {
 
     return { selectedTrack, handleTrackChange, forecastData, locations, getPredictWeatherData, predictWeatherData };
 };
+
 
 export default useForecast;
