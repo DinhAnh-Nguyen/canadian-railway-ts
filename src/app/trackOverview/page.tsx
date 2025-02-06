@@ -7,6 +7,7 @@ import TrackDetailsTable from "@/components/trackOverViewComponents/TrackDetails
 import TrackCapacityChart from "@/components/trackOverViewComponents/TrackCapacityChart";
 import SearchBar from "@/components/trackOverViewComponents/SearchBar";
 import { trackDetails, trackMaintenanceData, trackCapacityData } from "@/data/trackData";
+import { trackCoordinates } from "@/data/trackLocations";
 
 export default function TrackOverview() {
   const [selectedDate, setSelectedDate] = useState<string>("");
@@ -130,7 +131,7 @@ export default function TrackOverview() {
           {/* Right Column */}
           <div className="lg:col-span-2 space-y-6">
             <div className="h-80 rounded-md bg-gray-200">
-              <CombinedMap />
+                  <CombinedMap selectedTrack={selectedTrack} coordinates={trackCoordinates[selectedTrack]} />
             </div>
             <TrackCapacityChart data={trackCapacityData} options={chartOptions} />
           </div>
