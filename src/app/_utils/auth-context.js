@@ -21,6 +21,9 @@ export function AuthProvider({ children }) {
     } catch (error) {
       if (error.code === "auth/popup-closed-by-user") {
         console.log("User closed the popup before finishing sign-in");
+      }
+      if (error.code === "auth/cancelled-popup-request") {
+        console.log("User cancelled the sign-in request");
       } else {
         console.error("An unexpected error occurred during sign-in:", error);
       }

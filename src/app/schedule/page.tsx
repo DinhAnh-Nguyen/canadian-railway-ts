@@ -190,90 +190,96 @@ export default function Schedule() {
     );
   } else {
     return (
-      <div>
+      <div className="flex">
         <Nav />
-        <div className="flex justify-end">
-          <div className="flex px-4">
-            <button
-              className="bg-blue-600 w-32 h-10 rounded-full cursor-pointer hover:bg-blue-500"
-              onClick={() => setIsModalOpen(true)}
-            >
-              Schedule
-            </button>
-          </div>
+        <div className="flex flex-col ml-9">
+          <div className="flex justify-end">
+            <div className="flex px-4">
+              <button
+                className="bg-blue-600 w-32 h-10 rounded-full cursor-pointer hover:bg-blue-500"
+                onClick={() => setIsModalOpen(true)}
+              >
+                Schedule
+              </button>
+            </div>
 
-          <div className="flex px-4">
-            <button className="bg-blue-600 rounded-full w-32 h-10">
-              Manage Users
-            </button>
-          </div>
+            <div className="flex px-4">
+              <button className="bg-blue-600 rounded-full w-32 h-10">
+                Manage Users
+              </button>
+            </div>
 
-          {/* Modal for adding a task */}
-          <Modal
-            isOpen={isModalOpen}
-            onClose={() => setIsModalOpen(false)}
-            onAddTask={handleAddTask}
-          />
-
-          {/* Modal for task details */}
-          {selectedTask && (
-            <TaskDetailsModal
-              isOpen={isDetailsModalOpen}
-              onClose={() => setIsDetailsModalOpen(false)}
-              task={selectedTask}
-              onDelete={handleDeleteTask}
+            {/* Modal for adding a task */}
+            <Modal
+              isOpen={isModalOpen}
+              onClose={() => setIsModalOpen(false)}
+              onAddTask={handleAddTask}
             />
-          )}
-        </div>
 
-        {/* Calendar Component */}
-        <div className="mt-8 h-[600px]">
-          <Calendar
-            localizer={localizer}
-            events={calendarTasks}
-            startAccessor="start"
-            endAccessor="end"
-            selectable
-            onSelectEvent={handleSelectEvent}
-            onSelectSlot={handleSelectSlot}
-            defaultView="month"
-            views={["month", "week", "day"]}
-          />
-        </div>
+            {/* Modal for task details */}
+            {selectedTask && (
+              <TaskDetailsModal
+                isOpen={isDetailsModalOpen}
+                onClose={() => setIsDetailsModalOpen(false)}
+                task={selectedTask}
+                onDelete={handleDeleteTask}
+              />
+            )}
+          </div>
 
-        {/* Task Table */}
-        <div className="mt-8">
-          <h1 className="text-2xl font-bold mb-4 text-white">
-            Scheduled Tasks
-          </h1>
-          <table className="border-collapse border border-gray-800 w-full justify-items-center">
-            <thead>
-              <tr>
-                <th className="border border-gray-800">Order ID</th>
-                <th className="border border-gray-800">Status</th>
-                <th className="border border-gray-800">Title</th>
-                <th className="border border-gray-800">Description</th>
-                <th className="border border-gray-800">Date</th>
-                <th className="border border-gray-800">Assigned To</th>
-                <th className="border border-gray-800">Priority</th>
-                <th className="border border-gray-800">Date</th>
-              </tr>
-            </thead>
-            <tbody>
-              {tasks.map((task) => (
-                <tr key={task.id}>
-                  <td className="border border-gray-300">#{task.id}</td>
-                  <td className="border border-gray-300">{task.status}</td>
-                  <td className="border border-gray-300">{task.title}</td>
-                  <td className="border border-gray-300">{task.description}</td>
-                  <td className="border border-gray-300">{task.due_date}</td>
-                  <td className="border border-gray-300">{task.assigned_to}</td>
-                  <td className="border border-gray-300">{task.priority}</td>
-                  <td className="border border-gray-300">{task.date}</td>
+          {/* Calendar Component */}
+          <div className="mt-8 h-[600px]">
+            <Calendar
+              localizer={localizer}
+              events={calendarTasks}
+              startAccessor="start"
+              endAccessor="end"
+              selectable
+              onSelectEvent={handleSelectEvent}
+              onSelectSlot={handleSelectSlot}
+              defaultView="month"
+              views={["month", "week", "day"]}
+            />
+          </div>
+
+          {/* Task Table */}
+          <div className="mt-8">
+            <h1 className="text-2xl font-bold mb-4 text-white">
+              Scheduled Tasks
+            </h1>
+            <table className="border-collapse border border-gray-800 w-full justify-items-center">
+              <thead>
+                <tr>
+                  <th className="border border-gray-800">Order ID</th>
+                  <th className="border border-gray-800">Status</th>
+                  <th className="border border-gray-800">Title</th>
+                  <th className="border border-gray-800">Description</th>
+                  <th className="border border-gray-800">Date</th>
+                  <th className="border border-gray-800">Assigned To</th>
+                  <th className="border border-gray-800">Priority</th>
+                  <th className="border border-gray-800">Date</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {tasks.map((task) => (
+                  <tr key={task.id}>
+                    <td className="border border-gray-300">#{task.id}</td>
+                    <td className="border border-gray-300">{task.status}</td>
+                    <td className="border border-gray-300">{task.title}</td>
+                    <td className="border border-gray-300">
+                      {task.description}
+                    </td>
+                    <td className="border border-gray-300">{task.due_date}</td>
+                    <td className="border border-gray-300">
+                      {task.assigned_to}
+                    </td>
+                    <td className="border border-gray-300">{task.priority}</td>
+                    <td className="border border-gray-300">{task.date}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     );

@@ -2,123 +2,119 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useUserAuth } from "@/app/_utils/auth-context";
-import {
-  BsArrowLeftShort,
-  BsChevronDown,
-  BsFillImageFill,
-  BsSearch,
-} from "react-icons/bs";
-import { AiFillEnvironment } from "react-icons/ai";
-import { RiDashboardFill } from "react-icons/ri";
+
+import { FcEnteringHeavenAlive } from "react-icons/fc";
+import { BsArrowLeftShort } from "react-icons/bs";
+import { AiOutlineSchedule } from "react-icons/ai";
+import { RiDashboardFill, RiLogoutCircleRLine } from "react-icons/ri";
+import { LuTrainTrack } from "react-icons/lu";
+import { TiWeatherPartlySunny } from "react-icons/ti";
+import { GrUserAdmin } from "react-icons/gr";
+import { IoIosHelpCircleOutline } from "react-icons/io";
+import { MdOutlineManageAccounts, MdOutlineFeedback } from "react-icons/md";
+import { usePathname } from "next/navigation"
 
 export default function Nav() {
+  const pathName = usePathname();
   const router = useRouter();
   const { user, googleSignOut } = useUserAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(true);
-  const [isSubMenuOpen, setIsSubMenuOpen] = useState(false);
 
   const Menus = [
-    { title: "Dashboard" },
-    { title: "Track Overview" },
-    { title: "Schedule" },
+    {
+      title: "Dashboard",
+      id: 1,
+      icon: <RiDashboardFill />,
+      path: "/dashboard",
+    },
+    {
+      title: "Track Overview",
+      id: 2,
+      icon: <LuTrainTrack />,
+      path: "/trackOverview",
+    },
     {
       title: "Weather",
-      spacing: true,
-      icon: <BsFillImageFill></BsFillImageFill>,
+      id: 3,
+      icon: <TiWeatherPartlySunny />,
+      path: "/weather",
     },
     {
-      title: "Projects",
-      subMenu: true,
-      subMenuItems: [
-        { title: "Project 1" },
-        { title: "Project 2" },
-        { title: "Project 3" },
-      ],
+      title: "Schedule",
+      id: 4,
+      icon: <AiOutlineSchedule />,
+      path: "/schedule",
     },
-    { title: "Manage Users" },
-    { title: "Admin" },
-    { title: "Help", spacing: true },
-    { title: "Settings" },
-    { title: "Logout" },
+    { title: "Admin", id: 5, icon: <GrUserAdmin />, path: "/admin" },
+    { title: "Help", id: 6, icon: <IoIosHelpCircleOutline />, path: "/help" },
+    {
+      title: "Manage User",
+      id: 7,
+      icon: <MdOutlineManageAccounts />,
+      path: "/manageusers",
+    },
+    {
+      title: "Feedback",
+      id: 8,
+      icon: <MdOutlineFeedback />,
+      path: "/feedback",
+    },
+    // { title: "Sign Out", id: 9, spacing: true, icon: <RiLogoutCircleRLine />, path: "/signOut" },
   ];
 
   return (
     <div className="flex">
       <div
-        className={`bg-dark-purple h-screen p-5 pt-8 ${isMenuOpen ? "w-72" : "w-20"} duration-300 relative`}
+        className={`bg-[#393A3E] h-screen p-5 pt-8 ${isMenuOpen ? "w-52" : "w-20"} duration-300 rounded-md sticky top-0`}
       >
         <BsArrowLeftShort
-          className={`bg-white text-dark-purple text-3xl rounded-full absolute -right-3 top-9 border border-dark-purple cursor-pointer ${!isMenuOpen && "rotate-180"}`}
+          className={`bg-white text-dark-purple text-3xl rounded-full absolute -right-3 top-9 border border-dark-purple cursor-pointer ${!isMenuOpen && "rotate-180"} active:outline-2`}
           onClick={() => setIsMenuOpen(!isMenuOpen)}
         ></BsArrowLeftShort>
         <div className="inline-flex">
-          <AiFillEnvironment className="bg-amber-300 text-4xl text-black rounded cursor-pointer block float-left mr-2"></AiFillEnvironment>
+          <FcEnteringHeavenAlive className="text-4xl text-black rounded cursor-pointer block float-left mr-2"></FcEnteringHeavenAlive>
           <h1
-            className={`text-white origin-left font-medium text-2xl ${!isMenuOpen && "scale-0"} `}
+            className={`text-white origin-left font-medium text-2xl ${!isMenuOpen && "scale-0"} cursor-pointer`}
+            onClick={() => router.push("/dashboard")}
           >
             RAILLY
           </h1>
         </div>
-        <div
-          className={`flex items-center rounded-md bg-light-white mt-6 ${!isMenuOpen ? "px-2.5" : "px-4"} py-2`}
-        >
-          <BsSearch
-            className={`text-black text-lg block float-left cursor-pointer ${isMenuOpen && "mr-2"}`}
-          ></BsSearch>
-          <input
-            type={"search"}
-            placeholder="Search"
-            className={`text-base bg-transparent w-full text-white focus:outline-none ${!isMenuOpen && "hidden"}`}
-          ></input>
-        </div>
         <ul className="pt-2">
-          {Menus.map((menu, index) => {
+          {Menus.map((menu) => {
+            const isActive = pathName === menu.path;
             return (
-              <>
-                <li
-                  key={index}
-                  className={`text-gray-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-light-white rounded-md ${menu.spacing ? "mt-9" : "mt-2"}`}
+              <li
+                key={menu.id}
+                className={`text-gray-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-slate-500 rounded-md mt-2 ${isActive && "bg-slate-500"}`}
+                onClick={() => router.push(menu.path)}
+              >
+                <span className="text-2xl block float-left">{menu.icon}</span>
+                <span
+                  className={`text-base font-medium flex-1 duration-300 ${!isMenuOpen && "hidden"}`}
                 >
-                  <span className="text-2xl block float-left">
-                    {menu.icon ? (
-                      menu.icon
-                    ) : (
-                      <RiDashboardFill></RiDashboardFill>
-                    )}
-                  </span>
-                  <span
-                    className={`text-base font-medium flex-1 duration-300 ${!isMenuOpen && "hidden"}`}
-                  >
-                    {menu.title}
-                  </span>
-                  {menu.subMenu && isMenuOpen && (
-                    <BsChevronDown
-                      className={`${isSubMenuOpen && "rotate-180"}`}
-                      onClick={() => setIsSubMenuOpen(!isSubMenuOpen)}
-                    ></BsChevronDown>
-                  )}
-                </li>
-                {menu.subMenu && isSubMenuOpen && isMenuOpen && (
-                  <ul>
-                    {menu.subMenuItems.map((subMenuItem, index) => {
-                      return (
-                        <li
-                          key={index}
-                          className={`text-gray-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 px-5 hover:bg-light-white rounded-md ${menu.spacing ? "mt-9" : "mt-2"}`}
-                        >
-                          {subMenuItem.title}
-                        </li>
-                      );
-                    })}
-                  </ul>
-                )}
-              </>
+                  {menu.title}
+                </span>
+              </li>
             );
           })}
+          <div
+            className={`text-gray-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-slate-500 rounded-md mt-9`}
+            onClick={() => {
+              googleSignOut();
+              router.push("/signIn");
+            }}
+          >
+            <span className="text-2xl block float-left">
+              <RiLogoutCircleRLine />
+            </span>
+            <span
+              className={`text-base font-medium flex-1 duration-300 ${!isMenuOpen && "hidden"}`}
+            >
+              Sign Out
+            </span>
+          </div>
         </ul>
-      </div>
-      <div className="p-7">
-        <h1 className="text-2xl font-semibold">Home Page</h1>
       </div>
       {/*
       <div className="">

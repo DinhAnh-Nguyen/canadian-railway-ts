@@ -59,7 +59,7 @@ export default function TrackOverview() {
   };
 
   return (
-    <div>
+    <div className="flex">
       <Nav />
       <div className="p-6 bg-background text-foreground">
         {/* Search Bar */}
