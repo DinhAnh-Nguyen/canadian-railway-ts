@@ -36,7 +36,7 @@ const CombinedMap: React.FC<CombinedMapProps> = ({ selectedTrack }) => {
         map.remove();
       }
     };
-  }, [selectedTrack]); // 👈 Track selection updates the map
+  }, [selectedTrack]); 
 
   return (
     <div
