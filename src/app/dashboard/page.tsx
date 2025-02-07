@@ -131,7 +131,7 @@ export default function Dashboard() {
   const forecast = forecastData["Banff"];
 
   return (
-    <div>
+    <div className="flex p-2">
       <Nav />
       <div className="p-6 bg-background text-foreground size-100">
         {/* Main Content Layout */}
