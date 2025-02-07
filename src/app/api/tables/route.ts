@@ -23,9 +23,13 @@ export async function POST() {
       status VARCHAR(255) NOT NULL,
       assigned_to VARCHAR(255) NOT NULL,
       created_by VARCHAR(255) NOT NULL,
-      due_date DATE NOT NULL,
+      startDate VARCHAR(255) NOT NULL,
+      startTime VARCHAR(255) NOT NULL,
+      endDate VARCHAR(255) NOT NULL,
+      endTime VARCHAR(255) NOT NULL,
+      endDate VARCHAR(255) NOT NULL,
       priority VARCHAR(255) NOT NULL,
-      date VARCHAR(255)
+      due_date VARCHAR(255)
     );`;
 
     return Response.json({ response1, response2 }, { status: 200 });

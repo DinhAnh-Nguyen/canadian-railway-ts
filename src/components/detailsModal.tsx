@@ -6,9 +6,13 @@ interface TaskDetailsModalProps {
     title: string;
     description: string;
     status: string;
-    assigned_to: string;
-    date: string;
+    assigned_to: number;
+    start_date: string,
+    start_time: string,
+    end_date: string,
+    end_time: string,
     priority: string;
+    due_date: string;
   };
   onDelete: (id: number) => void; // Add onDelete prop
 }
@@ -19,8 +23,11 @@ export default function TaskDetailsModal({ isOpen, onClose, task, onDelete }: Ta
   }
 
   const handleDelete = async () => {
+    const confirmed = window.confirm("Are you sure you want to delete this task?");
+    if (!confirmed) return;
+    onDelete(task.id); // Call the onDelete function from props
     try {
-      await onDelete(task.id); // Call the onDelete function from props
+      alert("Task deleted successfully");
       onClose(); // Close the modal
     } catch (error) {
       console.error("Error deleting task:", error);
@@ -51,7 +58,7 @@ export default function TaskDetailsModal({ isOpen, onClose, task, onDelete }: Ta
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-300">Due Date</label>
-            <p className="mt-1 text-white">{task.date}</p>
+            <p className="mt-1 text-white">{task.end_date}</p>
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-300">Priority</label>
@@ -60,7 +67,7 @@ export default function TaskDetailsModal({ isOpen, onClose, task, onDelete }: Ta
         </div>
         <div className="mt-6 flex justify-end">
           <button
-            onClick={handleDelete} // Use handleDelete instead of deleteTask
+            onClick={handleDelete}
             className="rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-500"
           >
             Delete

@@ -55,11 +55,17 @@ export default function Dashboard() {
   };
 
   const handleDeleteTask = async (taskId: number) => {
+    const confirmed = window.confirm("Are you sure you want to delete this task?");
+    if (!confirmed) return;
     try {
-      await fetch(`/api/tasks/${taskId}`, {
+      const response = await fetch(`/api/tasks/${taskId}`, {
         method: "DELETE",
       });
+      if (!response.ok) {
+        throw new Error("Failed to delete task");
+      }
       setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskId));
+      alert("Task deleted successfully");
     } catch (error) {
       console.error("Error deleting task:", error);
     }
@@ -169,7 +175,6 @@ export default function Dashboard() {
                       <td>{task.due_date}</td>
                       <td>{task.title}</td>
                       <td>{task.status}</td>
-                      <td>{task.assigned_to}</td>
                       <td>
                         <button
                           className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
