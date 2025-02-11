@@ -1,4 +1,4 @@
-export default {
+const config = {
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -9,7 +9,11 @@ export default {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        "dark-purple": "#081A51",
+        "light-white": "#F9FAFB",
       },
     },
   },
-} satisfies Config;
+};
+
+export default config;

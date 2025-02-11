@@ -14,7 +14,7 @@ const App = (): JSX.Element => {
   } = useForecast();
 
   return (
-    <>
+    <div className="flex">
       <Nav />
       <div className="bg-black text-white min-h-screen p-6">
         <SelectLocation
@@ -25,7 +25,7 @@ const App = (): JSX.Element => {
 
         />
       </div>
-    </>
+    </div>
   );
 };
 
