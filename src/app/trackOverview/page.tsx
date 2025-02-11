@@ -7,6 +7,8 @@ import TrackDetailsTable from "@/components/trackOverViewComponents/TrackDetails
 import TrackCapacityChart from "@/components/trackOverViewComponents/TrackCapacityChart";
 import SearchBar from "@/components/trackOverViewComponents/SearchBar";
 import { trackDetails, trackMaintenanceData, trackCapacityData } from "@/data/trackData";
+import { trackCoordinates } from "@/data/trackLocations";
+import { CHART_LABELS, CHART_BACKGROUND_COLORS, CHART_OPTIONS } from "@/data/chartConfig";  // ✅ Import constants
 
 export default function TrackOverview() {
   const [selectedDate, setSelectedDate] = useState<string>("");
@@ -35,27 +37,14 @@ export default function TrackOverview() {
   // Prepare maintenance history data for the selected track
   const selectedMaintenanceData = trackMaintenanceData[selectedTrack];
   const maintenanceHistoryData = {
-    labels: [
-      "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
-    ],
+    labels: CHART_LABELS,  // ✅ Use chart labels from config
     datasets: [
       {
         label: `${selectedTrack} Maintenance Count`,
         data: selectedMaintenanceData,
-        backgroundColor: [
-          "#66B168", "#6060E1", "#66B168", "#6060E1", "#66B168",
-          "#6060E1", "#66B168", "#6060E1", "#66B168", "#6060E1",
-          "#66B168", "#6060E1",
-        ],
+        backgroundColor: CHART_BACKGROUND_COLORS, // ✅ Use colors from config
       },
     ],
-  };
-
-  // Chart options
-  const chartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
   };
 
   return (
@@ -114,7 +103,7 @@ export default function TrackOverview() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-1 space-y-6">
-            <TrackMaintenanceChart data={maintenanceHistoryData} options={chartOptions} />
+            <TrackMaintenanceChart data={maintenanceHistoryData} options={CHART_OPTIONS} />  {/* ✅ Use imported chart options */}
             {trackDetails[selectedTrack] ? (
               <TrackDetailsTable
                 details={trackDetails[selectedTrack]}
@@ -130,9 +119,9 @@ export default function TrackOverview() {
           {/* Right Column */}
           <div className="lg:col-span-2 space-y-6">
             <div className="h-80 rounded-md bg-gray-200">
-              <CombinedMap />
+              <CombinedMap selectedTrack={selectedTrack} coordinates={trackCoordinates[selectedTrack]} />
             </div>
-            <TrackCapacityChart data={trackCapacityData} options={chartOptions} />
+            <TrackCapacityChart data={trackCapacityData} options={CHART_OPTIONS} /> {/* ✅ Use imported chart options */}
           </div>
         </div>
       </div>

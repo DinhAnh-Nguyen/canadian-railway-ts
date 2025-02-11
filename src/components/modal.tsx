@@ -13,8 +13,10 @@ interface ModalProps {
   onAddTask: (
     title: string,
     description: string,
-    date: string,
-    time: string,
+    startDate: string,
+    startTime: string,
+    endDate: string,
+    endTime: string,
     assignedTo: number,
     priority: string,
     status: string,
@@ -26,24 +28,28 @@ export default function Modal({ isOpen, onClose, onAddTask }: ModalProps) {
   const [textareaValue, setTextareaValue] = useState("");
   const [priority, setPriority] = useState("");
   const [status, setStatus] = useState("");
-  const [date, setDate] = useState("");
-  const [time, setTime] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [startTime, setStartTime] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [endTime, setEndTime] = useState("");
   const [assignedTo, setAssignedTo] = useState<number>(0);
   const [error, setError] = useState("");
   const [users, setUsers] = useState<User[]>([]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!inputValue || !textareaValue || !date || !time || !assignedTo) {
+    if (!inputValue || !textareaValue || !startDate || !startTime || !endDate || !endTime || !assignedTo) {
       setError("Please fill in all fields");
       return;
     }
     setError("");
-    onAddTask(inputValue, textareaValue, date, time, assignedTo, priority, status);
+    onAddTask(inputValue, textareaValue, startDate, startTime, endDate, endTime,  assignedTo, priority, status);
     setInputValue("");
     setTextareaValue("");
-    setDate("");
-    setTime("");
+    setStartDate("");
+    setStartTime("");
+    setEndDate("");
+    setEndTime("");
     setAssignedTo(0);
     setPriority("");
     setStatus("");
@@ -113,20 +119,39 @@ export default function Modal({ isOpen, onClose, onAddTask }: ModalProps) {
               </div>
               <div className="col-span-full mt-4">
                 <label className="block text-sm font-medium leading-6 text-white">
-                  Date and Time
+                  Start Date and Time
                 </label>
                 <div className="mt-2 flex gap-4">
                   <input
                     type="date"
                     className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 placeholder:text-gray-800 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-                    value={date}
-                    onChange={(e) => setDate(e.target.value)}
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
                   />
                   <input
                     type="time"
                     className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 placeholder:text-gray-800 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-                    value={time}
-                    onChange={(e) => setTime(e.target.value)}
+                    value={startTime}
+                    onChange={(e) => setStartTime(e.target.value)}
+                  />
+                </div>
+              </div>
+              <div className="col-span-full mt-4">
+                <label className="block text-sm font-medium leading-6 text-white">
+                  End Date and Time
+                </label>
+                <div className="mt-2 flex gap-4">
+                  <input
+                    type="date"
+                    className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 placeholder:text-gray-800 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                  />
+                  <input
+                    type="time"
+                    className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 placeholder:text-gray-800 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                    value={endTime}
+                    onChange={(e) => setEndTime(e.target.value)}
                   />
                 </div>
               </div>
@@ -169,7 +194,7 @@ export default function Modal({ isOpen, onClose, onAddTask }: ModalProps) {
                     value={priority}
                     onChange={(e) => setPriority(e.target.value)}
                   >
-                    <option value={0}>Select a priority</option>
+                    <option value="">Select a priority</option>
                     <option value="Low">Low</option>
                     <option value="Medium">Medium</option>
                     <option value="High">High</option>
@@ -191,7 +216,7 @@ export default function Modal({ isOpen, onClose, onAddTask }: ModalProps) {
                     value={status}
                     onChange={(e) => setStatus(e.target.value)}
                   >
-                    <option value={0}>Select a status</option>
+                    <option value="">Select a status</option>
                     <option value="Pending">Pending</option>
                     <option value="In Progress">In Progress</option>
                   </select>
