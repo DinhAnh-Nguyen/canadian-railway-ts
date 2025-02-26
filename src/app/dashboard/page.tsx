@@ -23,6 +23,7 @@ export default function Dashboard() {
   };
 
   const [tasks, setTasks] = useState<task[]>([]);
+  // const [loading, setLoading] = useState(true);
   const { forecastData } = useForecast();
   const router = useRouter();
 
@@ -135,6 +136,10 @@ export default function Dashboard() {
   };
 
   const forecast = forecastData["Banff"];
+
+  // if (loading) {
+  //   return <p>Loading...</p>;
+  // }
 
   return (
     <div className="flex">
