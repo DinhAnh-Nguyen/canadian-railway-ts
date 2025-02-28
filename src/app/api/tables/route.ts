@@ -1,5 +1,13 @@
 import { neon } from "@neondatabase/serverless";
 
+/**
+ * 
+ * Sources used: 
+ * https://webdev2-git-dv-dereksaits-projects.vercel.app/week-13 
+ * https://youtu.be/ZVZzTKaagY8?si=3yWza4iI7RaD3ZOd 
+ */
+
+
 export async function POST() {
   try {
     const databaseUrl = process.env.DATABASE_URL || ""; // Set a default value if DATABASE_URL is not defined

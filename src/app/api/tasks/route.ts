@@ -1,6 +1,13 @@
 import { neon } from "@neondatabase/serverless";
 import { NextResponse } from "next/server";
 
+/**
+ * 
+ * Sources used: 
+ * https://webdev2-git-dv-dereksaits-projects.vercel.app/week-12/api-implementation#api-implementation-with-nextjs 
+ * https://github.com/warsylewicz/webdev2/blob/main/pages/week-12/api-implementation.mdx 
+ */
+
 //Fetch All tasks - Mark
 export async function GET() {
   const databaseUrl = process.env.DATABASE_URL || ""; // Set a default value if DATABASE_URL is not defined

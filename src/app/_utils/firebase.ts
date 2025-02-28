@@ -1,4 +1,11 @@
 // Import the functions you need from the SDKs you need
+/**
+ * 
+ * Sources used: 
+ * https://webdev2-git-dv-dereksaits-projects.vercel.app/week-9/firebase-auth
+ * https://youtu.be/CTo9vP3pbyc?si=52VA8cFCGun9HqFN 
+ */
+
 import { initializeApp, getApp, getApps } from "firebase/app";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
