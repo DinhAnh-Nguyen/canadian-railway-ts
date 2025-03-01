@@ -1,7 +1,8 @@
 "use client";
 import React, { useState } from "react";
 import Nav from "@/components/navbar";
-import CombinedMap from "@/components/trackOverViewComponents/CombinedMap";
+// import CombinedMap from "@/components/trackOverViewComponents/CombinedMap";
+import RailwayMap from "@/components/railwayMap";
 import TrackMaintenanceChart from "@/components/trackOverViewComponents/TrackMaintenanceChart";
 import TrackDetailsTable from "@/components/trackOverViewComponents/TrackDetailsTable";
 import TrackCapacityChart from "@/components/trackOverViewComponents/TrackCapacityChart";
@@ -119,7 +120,7 @@ export default function TrackOverview() {
           {/* Right Column */}
           <div className="lg:col-span-2 space-y-6">
             <div className="h-80 rounded-md bg-gray-200">
-              <CombinedMap selectedTrack={selectedTrack} coordinates={trackCoordinates[selectedTrack]} />
+              <RailwayMap/>
             </div>
             <TrackCapacityChart data={trackCapacityData} options={CHART_OPTIONS} /> {/* ✅ Use imported chart options */}
           </div>
