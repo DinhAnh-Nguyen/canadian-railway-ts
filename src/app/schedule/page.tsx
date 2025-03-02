@@ -30,6 +30,7 @@ type Task = {
   start_time: string;
   end_date: string;
   end_time: string;
+  track_Id: number;
 };
 
 export default function Schedule() {
@@ -85,7 +86,8 @@ export default function Schedule() {
     endTime: string,
     assignedTo: number,
     priority: string,
-    status: string
+    status: string,
+    trackID: number
   ) => {
     const due_date = `${endDate}T${endTime}:00`;
 
@@ -101,6 +103,7 @@ export default function Schedule() {
       end_date: endDate,
       end_time: endTime,
       priority,
+      track_Id: trackID
     };
 
     try {
@@ -172,6 +175,7 @@ export default function Schedule() {
 
   const calendar = useNextCalendarApp({
     views: [createViewDay(), createViewWeek(), createViewMonthGrid(), createViewMonthAgenda()],
+    defaultView: "monthGrid",
     events,
     plugins: [eventsService],
     callbacks: {
@@ -194,7 +198,7 @@ export default function Schedule() {
     );
   } else {
     return (
-      <div>
+      <div className="flex" >
         <Nav />
         <div className="flex justify-end p-4">
           <button
@@ -217,7 +221,7 @@ export default function Schedule() {
             onDelete={handleDeleteTask}
           />
         )}
-
+        <div className=" text-white min-h-screen p-6 w-full max-h-12"> 
         {/* Schedule-X Calendar */}
         <div className="sx-react-calendar-wrapper w-full h-[600px] mt-4">
           <ScheduleXCalendar calendarApp={calendar} />
@@ -226,10 +230,11 @@ export default function Schedule() {
         {/* Task Table */}
         <div className="mt-8">
           <h1 className="text-2xl font-bold mb-4 text-white">Scheduled Tasks</h1>
-          <table className="border-collapse border border-gray-800 w-full">
+          <table className="border-collapse border border-gray-800 w-full ">
             <thead>
               <tr>
                 <th className="border border-gray-800">Order ID</th>
+                <th className="border border-gray-800">Track ID</th>
                 <th className="border border-gray-800">Status</th>
                 <th className="border border-gray-800">Title</th>
                 <th className="border border-gray-800">Description</th>
@@ -243,6 +248,7 @@ export default function Schedule() {
               {tasks.map((task) => (
                 <tr key={task.id}>
                   <td className="border border-gray-300">#{task.id}</td>
+                  <td className="border border-gray-300">#{task.track_Id}</td>
                   <td className="border border-gray-300">{task.status}</td>
                   <td className="border border-gray-300">{task.title}</td>
                   <td className="border border-gray-300">{task.description}</td>
@@ -254,6 +260,7 @@ export default function Schedule() {
               ))}
             </tbody>
           </table>
+          </div>
         </div>
       </div>
     );
