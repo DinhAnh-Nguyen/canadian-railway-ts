@@ -1,14 +1,22 @@
+/**
+ * Sources used: chatGPT-o4  
+ * Prompted used: How do I intergrate leaflet with nextjs and get track details on the map. 
+ */
+
+
 "use client";
 
 import dynamic from "next/dynamic";
 import { useEffect, useState, useMemo } from "react";
 import "leaflet/dist/leaflet.css";
 
+// Dynamic imports
 const MapContainer = dynamic(() => import("react-leaflet").then((mod) => mod.MapContainer), { ssr: false });
 const TileLayer = dynamic(() => import("react-leaflet").then((mod) => mod.TileLayer), { ssr: false });
 const GeoJSON = dynamic(() => import("react-leaflet").then((mod) => mod.GeoJSON), { ssr: false });
 const Popup = dynamic(() => import("react-leaflet").then((mod) => mod.Popup), { ssr: false });
 
+// Initialize Leaflet
 let L;
 if (typeof window !== "undefined") {
   L = require("leaflet");
@@ -19,7 +27,7 @@ if (typeof window !== "undefined") {
     shadowUrl: "",
   });
 }
-
+// Define the default position
 const DEFAULT_POSITION = [51.0447, -114.0719];
 
 export default function RailwayMap() {
@@ -28,6 +36,7 @@ export default function RailwayMap() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
+// Fetch the GeoJSON data
   useEffect(() => {
     fetch("/Alberta.geojson")
       .then((response) => {
@@ -46,6 +55,7 @@ export default function RailwayMap() {
       });
   }, []);
 
+// Function to get the midpoint of a geometry
   const getMidpoint = (geometry) => {
     if (!geometry || !geometry.coordinates) return DEFAULT_POSITION;
 
@@ -71,6 +81,7 @@ export default function RailwayMap() {
     return DEFAULT_POSITION;
   };
 
+// Function to style the railway lines
   const railwayStyle = (feature) => {
     return {
       color: selectedFeature && selectedFeature.id === feature.id ? "blue" : "red",
@@ -78,7 +89,7 @@ export default function RailwayMap() {
       opacity: 0.8,
     };
   };
-
+// Function to handle feature click
   const onEachFeature = (feature, layer) => {
     layer.on({
       click: () => {
@@ -86,7 +97,8 @@ export default function RailwayMap() {
       },
     });
   };
-
+  
+// Render the map
   const geoJsonLayer = useMemo(() => {
     if (!railwayData || !railwayData.features || railwayData.features.length === 0) {
       return null;
@@ -94,6 +106,7 @@ export default function RailwayMap() {
     return <GeoJSON data={railwayData} style={railwayStyle} onEachFeature={onEachFeature} />;
   }, [railwayData, selectedFeature]);
 
+// Render the map component as well as popup
   return (
     <div>
       {isLoading && <div className="loading-spinner">Loading...</div>}

@@ -1,16 +1,23 @@
 "use client";
+
+import { useState, useEffect, useMemo } from "react";
+import { useNextCalendarApp, ScheduleXCalendar } from "@schedule-x/react";
+import {
+  createViewDay,
+  createViewMonthAgenda,
+  createViewMonthGrid,
+  createViewWeek,
+} from "@schedule-x/calendar";
+import { createEventsServicePlugin } from "@schedule-x/events-service";
+
+import "@schedule-x/theme-default/dist/index.css";
+
 import Modal from "@/components/modal";
-import moment from "moment";
-import Nav from "@/components/navbar";
-import React, { useState, FormEvent, useEffect } from "react";
-import { Calendar, momentLocalizer, Views } from "react-big-calendar";
-import "react-big-calendar/lib/css/react-big-calendar.css";
 import TaskDetailsModal from "@/components/detailsModal";
+import Nav from "@/components/navbar";
 
-// Initialize the localizer with moment
-const localizer = momentLocalizer(moment);
-
-type task = {
+// Task Type Definition
+type Task = {
   id: number;
   title: string;
   description: string;
@@ -26,21 +33,17 @@ type task = {
 };
 
 export default function Schedule() {
-  const [tasks, setTasks] = useState<task[]>([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false); // State for task details modal
-  const [selectedTask, setSelectedTask] = useState<task | null>(null); // State to store the selected task
-  const [selectedRange, setSelectedRange] = useState({
-    start: new Date(),
-    end: new Date(),
-  });
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
 
-  // Fetch tasks from the API
+  const eventsService = useState(() => createEventsServicePlugin())[0];
+
   useEffect(() => {
     const fetchTasks = async () => {
       const fetchedTasks = await getTasks();
-      console.log(fetchedTasks);
       setTasks(fetchedTasks);
       setLoading(false);
     };
@@ -49,14 +52,23 @@ export default function Schedule() {
   }, []);
 
   // Fetch all tasks
-  const getTasks = async (): Promise<task[]> => {
+  const getTasks = async (): Promise<Task[]> => {
     try {
       const response = await fetch("/api/tasks");
       if (!response.ok) {
         throw new Error("Failed to fetch tasks");
       }
       const data = await response.json();
-      return data;
+
+      // Format dates to match the calendar's expected format
+      const formattedTasks = data.map((task: Task) => ({
+        ...task,
+        start_date: task.start_date.split("T")[0], // Extract YYYY-MM-DD
+        end_date: task.end_date.split("T")[0], // Extract YYYY-MM-DD
+      }));
+
+      console.log("Formatted tasks:", formattedTasks); // Debugging
+      return formattedTasks;
     } catch (error) {
       console.error("Error fetching tasks:", error);
       return [];
@@ -75,95 +87,104 @@ export default function Schedule() {
     priority: string,
     status: string
   ) => {
-    // Combine date and time into a single due_date string
     const due_date = `${endDate}T${endTime}:00`;
 
-    // Create a new task object
     const newTask = {
-      title: title,
-      description: description,
-      status: status, // Include the status
-      assigned_to: assignedTo.toString(),
-      created_by: "Admin", // Replace with the actual creator
-      due_date: due_date,
+      title,
+      description,
+      status,
+      assigned_to: assignedTo,
+      created_by: "Admin",
+      due_date,
       start_date: startDate,
       start_time: startTime,
       end_date: endDate,
       end_time: endTime,
-      priority: priority,
+      priority,
     };
 
-    // Send the task to the API
-    const response = await fetch("/api/tasks", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newTask),
-    });
+    try {
+      const response = await fetch("/api/tasks", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newTask),
+      });
 
-    // Add the task to the state with the database-generated ID
-    const createdTask = await response.json();
-    setTasks((prevTasks) => [
-      ...prevTasks,
-      {
+      if (!response.ok) {
+        throw new Error("Failed to add task");
+      }
+
+      const createdTask = await response.json();
+
+      // Format the dates to match the calendar's expected format
+      const formattedTask = {
         ...createdTask,
-        start: new Date(
-          createdTask.start_date
-        ),
-        end: new Date(createdTask.end_date),
-      },
-    ]);
+        start_date: createdTask.start_date.split("T")[0], // Extract YYYY-MM-DD
+        end_date: createdTask.end_date.split("T")[0], // Extract YYYY-MM-DD
+      };
 
-    setIsModalOpen(false);
+      // Update the tasks state
+      setTasks((prevTasks) => [...prevTasks, formattedTask]);
+
+      // Update the events array for the calendar
+      const newEvent = {
+        id: formattedTask.id.toString(),
+        title: formattedTask.title,
+        start: formattedTask.start_date,
+        end: formattedTask.end_date,
+      };
+      eventsService.add(newEvent); // Add the new event to the calendar
+
+      setIsModalOpen(false);
+    } catch (error) {
+      console.error("Error adding task:", error);
+    }
   };
 
   const handleDeleteTask = async (taskId: number) => {
     try {
-      // Delete the task from the API
       const response = await fetch(`/api/tasks/${taskId}`, {
         method: "DELETE",
       });
 
       if (response.ok) {
-        // Remove the task from the state
         setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskId));
-        setIsDetailsModalOpen(false); // Close the details modal
+        setIsDetailsModalOpen(false);
       } else {
         console.error("Failed to delete task:", response.statusText);
-        console.log("Error deleting task:", taskId);
       }
     } catch (error) {
       console.error("Error deleting task:", error);
     }
   };
 
-  // Handle task click on the calendar
-  const handleSelectEvent = (task: any) => {
-    setSelectedTask(task); // Set the selected task
-    setIsDetailsModalOpen(true); // Open the task details modal
-  };
+  // Transform tasks for Schedule-X format
+  const events = useMemo(() => {
+    return tasks.map((task) => ({
+      id: task.id.toString(),
+      title: task.title,
+      start: task.start_date, // Already formatted as YYYY-MM-DD
+      end: task.end_date, // Already formatted as YYYY-MM-DD
+    }));
+  }, [tasks]);
 
-  // Handle date selection for new task
-  const handleSelectSlot = ({ start, end }: { start: Date; end: Date }) => {
-    setIsModalOpen(true);
-    setSelectedRange({ start, end });
-  };
-
-  // Transform tasks for the calendar
-  const calendarTasks = tasks.map((task) => ({
-    id: task.id,
-    title: task.title,
-    start: new Date(task.start_date), // Use start date and time
-    end: new Date(task.end_date), // Use end date and time
-    description: task.description,
-    assigned_to: task.assigned_to,
-    status: task.status,
-    priority: task.priority, // Include priority in the event object
-    due_date: task.due_date
-  }));
-
-  
+  const calendar = useNextCalendarApp({
+    views: [createViewDay(), createViewWeek(), createViewMonthGrid(), createViewMonthAgenda()],
+    events,
+    plugins: [eventsService],
+    callbacks: {
+      onRender: () => eventsService.getAll(),
+      onEventClick: (event) => {
+        const foundTask = tasks.find((task) => task.id.toString() === event.id);
+        if (foundTask) {
+          setSelectedTask(foundTask);
+          setIsDetailsModalOpen(true);
+        }
+      },
+    },
+  });
 
   if (loading) {
     return (
@@ -175,61 +196,37 @@ export default function Schedule() {
     return (
       <div>
         <Nav />
-        <div className="flex justify-end">
-          <div className="flex px-4">
-            <button
-              className="bg-blue-600 w-32 h-10 rounded-full cursor-pointer hover:bg-blue-500"
-              onClick={() => setIsModalOpen(true)}
-            >
-              Schedule
-            </button>
-          </div>
-
-          <div className="flex px-4">
-            <button className="bg-blue-600 rounded-full w-32 h-10">
-              Manage Users
-            </button>
-          </div>
-
-          {/* Modal for adding a task */}
-          <Modal
-            isOpen={isModalOpen}
-            onClose={() => setIsModalOpen(false)}
-            onAddTask={handleAddTask}
-          />
-
-          {/* Modal for task details */}
-          {selectedTask && (
-            <TaskDetailsModal
-              isOpen={isDetailsModalOpen}
-              onClose={() => setIsDetailsModalOpen(false)}
-              task={selectedTask}
-              onDelete={handleDeleteTask}
-            />
-          )}
+        <div className="flex justify-end p-4">
+          <button
+            className="bg-blue-600 w-32 h-10 rounded-full cursor-pointer hover:bg-blue-500"
+            onClick={() => setIsModalOpen(true)}
+          >
+            Schedule
+          </button>
         </div>
 
-        {/* Calendar Component */}
-        <div className="mt-8 h-[600px]">
-          <Calendar
-            localizer={localizer}
-            events={calendarTasks}
-            startAccessor="start"
-            endAccessor="end"
-            selectable
-            onSelectEvent={handleSelectEvent}
-            onSelectSlot={handleSelectSlot}
-            defaultView={Views.MONTH}
-            views={[Views.MONTH, Views.WEEK, Views.DAY]}
+        {/* Modal for adding a task */}
+        <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onAddTask={handleAddTask} />
+
+        {/* Modal for task details */}
+        {selectedTask && (
+          <TaskDetailsModal
+            isOpen={isDetailsModalOpen}
+            onClose={() => setIsDetailsModalOpen(false)}
+            task={selectedTask}
+            onDelete={handleDeleteTask}
           />
+        )}
+
+        {/* Schedule-X Calendar */}
+        <div className="sx-react-calendar-wrapper w-full h-[600px] mt-4">
+          <ScheduleXCalendar calendarApp={calendar} />
         </div>
 
         {/* Task Table */}
         <div className="mt-8">
-          <h1 className="text-2xl font-bold mb-4 text-white">
-            Scheduled Tasks
-          </h1>
-          <table className="border-collapse border border-gray-800 w-full justify-items-center">
+          <h1 className="text-2xl font-bold mb-4 text-white">Scheduled Tasks</h1>
+          <table className="border-collapse border border-gray-800 w-full">
             <thead>
               <tr>
                 <th className="border border-gray-800">Order ID</th>
@@ -237,9 +234,7 @@ export default function Schedule() {
                 <th className="border border-gray-800">Title</th>
                 <th className="border border-gray-800">Description</th>
                 <th className="border border-gray-800">Start Date</th>
-                <th className="border border-gray-800">Start Time</th>
                 <th className="border border-gray-800">End Date</th>
-                <th className="border border-gray-800">End Time</th>
                 <th className="border border-gray-800">Assigned To</th>
                 <th className="border border-gray-800">Priority</th>
               </tr>
@@ -252,9 +247,7 @@ export default function Schedule() {
                   <td className="border border-gray-300">{task.title}</td>
                   <td className="border border-gray-300">{task.description}</td>
                   <td className="border border-gray-300">{task.start_date}</td>
-                  <td className="border border-gray-300">{task.start_time}</td>
                   <td className="border border-gray-300">{task.end_date}</td>
-                  <td className="border border-gray-300">{task.end_time}</td>
                   <td className="border border-gray-300">{task.assigned_to}</td>
                   <td className="border border-gray-300">{task.priority}</td>
                 </tr>
