@@ -17,7 +17,7 @@ import TaskDetailsModal from "@/components/detailsModal";
 import Nav from "@/components/navbar";
 
 // Task Type Definition
-type Task = {
+ export type Task = {
   id: number;
   title: string;
   description: string;
