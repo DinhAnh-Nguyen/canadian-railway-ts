@@ -30,7 +30,7 @@ if (typeof window !== "undefined") {
 // Define the default position
 const DEFAULT_POSITION = [51.0447, -114.0719];
 
-export default function RailwayMap() {
+export default function RailwayMap({ onFeatureSelect }) {
   const [railwayData, setRailwayData] = useState(null);
   const [selectedFeature, setSelectedFeature] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -94,6 +94,7 @@ export default function RailwayMap() {
     layer.on({
       click: () => {
         setSelectedFeature(feature);
+        onFeatureSelect(feature);
       },
     });
   };
@@ -111,7 +112,7 @@ export default function RailwayMap() {
     <div>
       {isLoading && <div className="loading-spinner">Loading...</div>}
       {error && <div className="error-message">{error}</div>}
-      <MapContainer center={DEFAULT_POSITION} zoom={11} style={{ height: "500px", width: "100%" }} aria-label="Railway Map">
+      <MapContainer center={DEFAULT_POSITION} zoom={13} style={{ height: "500px", width: "100%" }} aria-label="Railway Map">
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>'

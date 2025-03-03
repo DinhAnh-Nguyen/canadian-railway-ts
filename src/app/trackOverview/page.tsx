@@ -17,6 +17,7 @@ export default function TrackOverview() {
   const [selectedTrack, setSelectedTrack] = useState<string>("Track 1");
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [favoriteTracks, setFavoriteTracks] = useState<string[]>([]);
+  const [selectedFeature, setSelectedFeature] = useState(null);
 
   // Handle toggling favorites
   const toggleFavorite = () => {
@@ -106,9 +107,9 @@ export default function TrackOverview() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-1 space-y-6">
             <TrackMaintenanceChart data={maintenanceHistoryData} options={CHART_OPTIONS} />  {/* ✅ Use imported chart options */}
-            {trackDetails[selectedTrack] ? (
+            {selectedFeature ? ( // Render TrackDetailsTable if a feature is selected
               <TrackDetailsTable
-                details={trackDetails[selectedTrack]}
+                details={selectedFeature.properties} // Pass GeoJSON properties
                 isFavorite={isFavorite}
                 onToggleFavorite={toggleFavorite}
               />
@@ -121,7 +122,7 @@ export default function TrackOverview() {
           {/* Right Column */}
           <div className="lg:col-span-2 space-y-6">
             <div className="h-80 rounded-md bg-gray-200">
-              <RailwayMap/>
+              <RailwayMap onFeatureSelect={setSelectedFeature}/>
             </div>
             <TrackCapacityChart data={trackCapacityData} options={CHART_OPTIONS} /> {/* ✅ Use imported chart options */}
           </div>
