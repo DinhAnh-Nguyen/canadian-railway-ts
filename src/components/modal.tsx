@@ -27,14 +27,14 @@ interface ModalProps {
 export default function Modal({ isOpen, onClose, onAddTask }: ModalProps) {
   const [inputValue, setInputValue] = useState("");
   const [textareaValue, setTextareaValue] = useState("");
-  const [trackId, setTrackId] = useState<number>(0);
+  const [trackId, setTrackId] = useState(0);
   const [priority, setPriority] = useState("");
   const [status, setStatus] = useState("");
   const [startDate, setStartDate] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endDate, setEndDate] = useState("");
   const [endTime, setEndTime] = useState("");
-  const [assignedTo, setAssignedTo] = useState<number>(0);
+  const [assignedTo, setAssignedTo] = useState(0);
   const [error, setError] = useState("");
   const [users, setUsers] = useState<User[]>([]);
 
@@ -45,7 +45,7 @@ export default function Modal({ isOpen, onClose, onAddTask }: ModalProps) {
       return;
     }
     setError("");
-    onAddTask(inputValue, textareaValue, trackId.toString(), startDate, startTime, endDate, endTime, assignedTo, priority, status);
+    onAddTask(inputValue, textareaValue, startDate, startTime, endDate, endTime, assignedTo, priority, status, trackId);
     setInputValue("");
     setTextareaValue("");
     setTrackId(0);
