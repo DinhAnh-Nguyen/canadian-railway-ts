@@ -30,7 +30,7 @@ type Task = {
   start_time: string;
   end_date: string;
   end_time: string;
-  track_Id: number;
+  track_id: number;
 };
 
 export default function Schedule() {
@@ -55,7 +55,12 @@ export default function Schedule() {
   // Fetch all tasks
   const getTasks = async (): Promise<Task[]> => {
     try {
-      const response = await fetch("/api/tasks");
+      const response = await fetch("/api/tasks", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
       if (!response.ok) {
         throw new Error("Failed to fetch tasks");
       }
@@ -175,7 +180,7 @@ export default function Schedule() {
 
   const calendar = useNextCalendarApp({
     views: [createViewDay(), createViewWeek(), createViewMonthGrid(), createViewMonthAgenda()],
-    defaultView: "monthGrid",
+    defaultView: "week",
     events,
     plugins: [eventsService],
     callbacks: {
@@ -248,7 +253,7 @@ export default function Schedule() {
               {tasks.map((task) => (
                 <tr key={task.id}>
                   <td className="border border-gray-300">#{task.id}</td>
-                  <td className="border border-gray-300">#{task.track_Id}</td>
+                  <td className="border border-gray-300">#{task.track_id}</td>
                   <td className="border border-gray-300">{task.status}</td>
                   <td className="border border-gray-300">{task.title}</td>
                   <td className="border border-gray-300">{task.description}</td>
