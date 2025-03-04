@@ -1,4 +1,3 @@
-
 "use client";
 import React, { useState } from "react";
 import Nav from "@/components/navbar";
@@ -8,9 +7,17 @@ import TrackMaintenanceChart from "@/components/trackOverViewComponents/TrackMai
 import TrackDetailsTable from "@/components/trackOverViewComponents/TrackDetailsTable";
 import TrackCapacityChart from "@/components/trackOverViewComponents/TrackCapacityChart";
 import SearchBar from "@/components/trackOverViewComponents/SearchBar";
-import { trackDetails, trackMaintenanceData, trackCapacityData } from "@/data/trackData";
+import {
+  trackDetails,
+  trackMaintenanceData,
+  trackCapacityData,
+} from "@/data/trackData";
 import { trackCoordinates } from "@/data/trackLocations";
-import { CHART_LABELS, CHART_BACKGROUND_COLORS, CHART_OPTIONS } from "@/data/chartConfig";  // ✅ Import constants
+import {
+  CHART_LABELS,
+  CHART_BACKGROUND_COLORS,
+  CHART_OPTIONS,
+} from "@/data/chartConfig"; // ✅ Import constants
 
 export default function TrackOverview() {
   const [selectedDate, setSelectedDate] = useState<string>("");
@@ -40,7 +47,7 @@ export default function TrackOverview() {
   // Prepare maintenance history data for the selected track
   const selectedMaintenanceData = trackMaintenanceData[selectedTrack];
   const maintenanceHistoryData = {
-    labels: CHART_LABELS,  // ✅ Use chart labels from config
+    labels: CHART_LABELS, // ✅ Use chart labels from config
     datasets: [
       {
         label: `${selectedTrack} Maintenance Count`,
@@ -51,46 +58,59 @@ export default function TrackOverview() {
   };
 
   return (
-<div className="flex">
+    <div className="flex">
       <Nav />
       <div className="p-6 bg-background text-foreground w-full">
-        <div className="mb-4">
-          <SearchBar
-            tracks={Object.keys(trackDetails)}
-            onTrackSelect={(track) => setSelectedTrack(track)}
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
-          />
-        </div>
-
-        <div className="mb-4 flex gap-4 items-center">
-          <div>
-            <label htmlFor="date" className="block mb-1 text-darkgrey font-medium">
-              Select Date:
-            </label>
-            <input
-              type="date"
-              id="date"
-              className="p-1.5 border rounded-md text-black"
-              value={selectedDate}
-              onChange={(e) => setSelectedDate(e.target.value)}
+        <div className="flex flex-row space-x-2">
+          <div className="mb-4 mt-7">
+            <SearchBar
+              tracks={Object.keys(trackDetails)}
+              onTrackSelect={(track) => setSelectedTrack(track)}
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
             />
           </div>
 
+          <div className="mb-4 flex gap-4 items-center">
+            <div>
+              <label
+                htmlFor="date"
+                className="block mb-1 text-darkgrey font-medium"
+              >
+                Select Date:
+              </label>
+              <input
+                type="date"
+                id="date"
+                className="p-1.5 border rounded-md text-black"
+                value={selectedDate}
+                onChange={(e) => setSelectedDate(e.target.value)}
+              />
+            </div>
+          </div>
+
           <div>
-            <label htmlFor="favorites" className="block mb-1 text-darkgrey font-medium">
+            <label
+              htmlFor="favorites"
+              className="block mb-1 text-darkgrey font-medium"
+            >
               Favorite Tracks:
             </label>
             <select
               id="favorites"
               className="p-2 border rounded-md text-black"
-              value={favoriteTracks.includes(selectedTrack) ? selectedTrack : ""}
+              value={
+                favoriteTracks.includes(selectedTrack) ? selectedTrack : ""
+              }
               onChange={(e) => handleFavoriteSelect(e.target.value)}
             >
-              {!favoriteTracks.includes(selectedTrack) && favoriteTracks.length > 0 && (
-                <option value="">Pick a Track</option>
+              {!favoriteTracks.includes(selectedTrack) &&
+                favoriteTracks.length > 0 && (
+                  <option value="">Pick a Track</option>
+                )}
+              {favoriteTracks.length === 0 && (
+                <option value="">No fav track</option>
               )}
-              {favoriteTracks.length === 0 && <option value="">No fav track</option>}
               {favoriteTracks.map((track) => (
                 <option key={track} value={track}>
                   {track}
@@ -102,7 +122,10 @@ export default function TrackOverview() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-1 space-y-6">
-            <TrackMaintenanceChart data={maintenanceHistoryData} options={CHART_OPTIONS} />
+            <TrackMaintenanceChart
+              data={maintenanceHistoryData}
+              options={CHART_OPTIONS}
+            />
             {selectedFeature ? (
               <TrackDetailsTable
                 details={selectedFeature.properties}
@@ -120,10 +143,13 @@ export default function TrackOverview() {
             <div className="h-[500px] rounded-md bg-gray-200 overflow-hidden">
               <RailwayMap onFeatureSelect={setSelectedFeature} />
             </div>
-              <TrackCapacityChart data={trackCapacityData} options={CHART_OPTIONS} />
-            </div>
+            <TrackCapacityChart
+              data={trackCapacityData}
+              options={CHART_OPTIONS}
+            />
           </div>
         </div>
       </div>
+    </div>
   );
 }
