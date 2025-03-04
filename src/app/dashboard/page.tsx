@@ -20,6 +20,7 @@ export default function Dashboard() {
     due_date: string;
     priority: string;
     date: string;
+    track_id: number;
   };
 
   const [tasks, setTasks] = useState<task[]>([]);
@@ -177,6 +178,7 @@ export default function Dashboard() {
               <thead>
                 <tr>
                   <th>Order #</th>
+                  <th>Track</th>
                   <th>Date</th>
                   <th>Assigned To</th>
                   <th>Progress</th>
@@ -186,6 +188,7 @@ export default function Dashboard() {
                 {tasks.map((task) => (
                   <tr key={task.id}>
                     <td>{task.id}</td>
+                    <td>{task.track_id}</td>
                     <td>{task.due_date}</td>
                     <td>{task.title}</td>
                     <td>{task.status}</td>

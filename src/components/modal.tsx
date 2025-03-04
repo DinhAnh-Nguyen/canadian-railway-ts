@@ -20,32 +20,35 @@ interface ModalProps {
     assignedTo: number,
     priority: string,
     status: string,
+    trackID: number
   ) => void;
 }
 
 export default function Modal({ isOpen, onClose, onAddTask }: ModalProps) {
   const [inputValue, setInputValue] = useState("");
   const [textareaValue, setTextareaValue] = useState("");
+  const [trackId, setTrackId] = useState(0);
   const [priority, setPriority] = useState("");
   const [status, setStatus] = useState("");
   const [startDate, setStartDate] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endDate, setEndDate] = useState("");
   const [endTime, setEndTime] = useState("");
-  const [assignedTo, setAssignedTo] = useState<number>(0);
+  const [assignedTo, setAssignedTo] = useState(0);
   const [error, setError] = useState("");
   const [users, setUsers] = useState<User[]>([]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!inputValue || !textareaValue || !startDate || !startTime || !endDate || !endTime || !assignedTo) {
+    if (!inputValue || !textareaValue || !trackId || !startDate || !startTime || !endDate || !endTime || !assignedTo || !priority || !status) {
       setError("Please fill in all fields");
       return;
     }
     setError("");
-    onAddTask(inputValue, textareaValue, startDate, startTime, endDate, endTime,  assignedTo, priority, status);
+    onAddTask(inputValue, textareaValue, startDate, startTime, endDate, endTime, assignedTo, priority, status, trackId);
     setInputValue("");
     setTextareaValue("");
+    setTrackId(0);
     setStartDate("");
     setStartTime("");
     setEndDate("");
@@ -113,6 +116,21 @@ export default function Modal({ isOpen, onClose, onAddTask }: ModalProps) {
                       value={textareaValue}
                       onChange={(e) => setTextareaValue(e.target.value)}
                       placeholder="Add task description"
+                    />
+                  </div>
+                </div>
+                <div className="col-span-full">
+                  <div className="mt-2">
+                    <label className="block text-sm font-medium leading-6 text-white">
+                      Track ID
+                    </label>
+                    <textarea
+                      id="trackID"
+                      name="trackID"
+                      rows={1}
+                      className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 placeholder:text-gray-800 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                      value={trackId}
+                      onChange={(e) => setTrackId(Number(e.target.value))}
                     />
                   </div>
                 </div>
