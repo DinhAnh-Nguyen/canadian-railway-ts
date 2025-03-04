@@ -84,7 +84,7 @@ export default function RailwayMap({ onFeatureSelect }) {
 // Function to style the railway lines
   const railwayStyle = (feature) => {
     return {
-      color: selectedFeature && selectedFeature.id === feature.id ? "blue" : "red",
+      color: selectedFeature && selectedFeature.id === feature.id ? "blue" : "#19a81c",
       weight: 3,
       opacity: 0.8,
     };
