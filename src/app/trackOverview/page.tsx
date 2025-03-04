@@ -51,10 +51,9 @@ export default function TrackOverview() {
   };
 
   return (
-    <div className="flex">
+<div className="flex">
       <Nav />
-      <div className="p-6 bg-background text-foreground">
-        {/* Search Bar */}
+      <div className="p-6 bg-background text-foreground w-full">
         <div className="mb-4">
           <SearchBar
             tracks={Object.keys(trackDetails)}
@@ -65,7 +64,6 @@ export default function TrackOverview() {
         </div>
 
         <div className="mb-4 flex gap-4 items-center">
-          {/* Select Date */}
           <div>
             <label htmlFor="date" className="block mb-1 text-darkgrey font-medium">
               Select Date:
@@ -79,7 +77,6 @@ export default function TrackOverview() {
             />
           </div>
 
-          {/* Favorite Tracks Dropdown */}
           <div>
             <label htmlFor="favorites" className="block mb-1 text-darkgrey font-medium">
               Favorite Tracks:
@@ -90,10 +87,9 @@ export default function TrackOverview() {
               value={favoriteTracks.includes(selectedTrack) ? selectedTrack : ""}
               onChange={(e) => handleFavoriteSelect(e.target.value)}
             >
-              {!favoriteTracks.includes(selectedTrack) &&
-                favoriteTracks.length > 0 && (
-                  <option value="">Pick a Track</option>
-                )}
+              {!favoriteTracks.includes(selectedTrack) && favoriteTracks.length > 0 && (
+                <option value="">Pick a Track</option>
+              )}
               {favoriteTracks.length === 0 && <option value="">No fav track</option>}
               {favoriteTracks.map((track) => (
                 <option key={track} value={track}>
@@ -106,10 +102,10 @@ export default function TrackOverview() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-1 space-y-6">
-            <TrackMaintenanceChart data={maintenanceHistoryData} options={CHART_OPTIONS} />  {/* ✅ Use imported chart options */}
-            {selectedFeature ? ( // Render TrackDetailsTable if a feature is selected
+            <TrackMaintenanceChart data={maintenanceHistoryData} options={CHART_OPTIONS} />
+            {selectedFeature ? (
               <TrackDetailsTable
-                details={selectedFeature.properties} // Pass GeoJSON properties
+                details={selectedFeature.properties}
                 isFavorite={isFavorite}
                 onToggleFavorite={toggleFavorite}
               />
@@ -119,15 +115,15 @@ export default function TrackOverview() {
               </div>
             )}
           </div>
-          {/* Right Column */}
+
           <div className="lg:col-span-2 space-y-6">
-            <div className="h-80 rounded-md bg-gray-200">
-              <RailwayMap onFeatureSelect={setSelectedFeature}/>
+            <div className="h-[500px] rounded-md bg-gray-200 overflow-hidden">
+              <RailwayMap onFeatureSelect={setSelectedFeature} />
             </div>
-            <TrackCapacityChart data={trackCapacityData} options={CHART_OPTIONS} /> {/* ✅ Use imported chart options */}
+              <TrackCapacityChart data={trackCapacityData} options={CHART_OPTIONS} />
+            </div>
           </div>
         </div>
       </div>
-    </div>
   );
 }
