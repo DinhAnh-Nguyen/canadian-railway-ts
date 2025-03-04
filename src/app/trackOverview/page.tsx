@@ -89,7 +89,7 @@ export default function TrackOverview() {
             </div>
           </div>
 
-          <div>
+          <div className="mt-1">
             <label
               htmlFor="favorites"
               className="block mb-1 text-darkgrey font-medium"
@@ -140,7 +140,7 @@ export default function TrackOverview() {
           </div>
 
           <div className="lg:col-span-2 space-y-6">
-            <div className="h-[500px] rounded-md bg-gray-200 overflow-hidden">
+            <div className="h-[400px] rounded-md bg-gray-200 overflow-hidden">
               <RailwayMap onFeatureSelect={setSelectedFeature} />
             </div>
             <TrackCapacityChart

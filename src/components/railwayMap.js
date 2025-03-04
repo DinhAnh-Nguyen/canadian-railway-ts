@@ -112,7 +112,7 @@ export default function RailwayMap({ onFeatureSelect }) {
     <div>
       {isLoading && <div className="loading-spinner">Loading...</div>}
       {error && <div className="error-message">{error}</div>}
-      <MapContainer center={DEFAULT_POSITION} zoom={13} style={{ height: "500px", width: "100%" }} aria-label="Railway Map">
+      <MapContainer center={DEFAULT_POSITION} zoom={13} style={{ height: "600px", width: "100%" }} aria-label="Railway Map">
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>'
