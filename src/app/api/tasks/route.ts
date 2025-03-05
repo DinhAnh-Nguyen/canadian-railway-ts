@@ -24,7 +24,7 @@ export async function POST(request: Request) {
     const databaseUrl = process.env.DATABASE_URL || "";
     const sql = neon(databaseUrl);
     // Validate request data
-    if (!requestData.title || !requestData.description || !requestData.status || !requestData.assigned_to || !requestData.created_by || !requestData.start_date || !requestData.start_time || !requestData.end_date || !requestData.end_time || !requestData.priority || !requestData.track_Id) {
+    if (!requestData.title || !requestData.description || !requestData.status || !requestData.assigned_to || !requestData.created_by || !requestData.start_date || !requestData.start_time || !requestData.end_date || !requestData.end_time || !requestData.priority || !requestData.track_id || !requestData.coordinates) {
       return NextResponse.json(
         { error: "Missing required fields." },
         { status: 400 }
@@ -33,8 +33,8 @@ export async function POST(request: Request) {
 
     // Insert the task into the database
     const response = await sql`
-      INSERT INTO tasks (title, description, status, assigned_to, created_by, start_date, start_time, end_date, end_time, priority, track_Id)
-      VALUES (${requestData.title}, ${requestData.description}, ${requestData.status}, ${requestData.assigned_to}, ${requestData.created_by}, ${requestData.start_date}, ${requestData.start_time}, ${requestData.end_date}, ${requestData.end_time}, ${requestData.priority}, ${requestData.track_Id})
+      INSERT INTO tasks (title, description, status, assigned_to, created_by, start_date, start_time, end_date, end_time, priority, track_Id, coordinates)
+      VALUES (${requestData.title}, ${requestData.description}, ${requestData.status}, ${requestData.assigned_to}, ${requestData.created_by}, ${requestData.start_date}, ${requestData.start_time}, ${requestData.end_date}, ${requestData.end_time}, ${requestData.priority}, ${requestData.track_Id}, ${requestData.coordinates})
       RETURNING *;
     `;
 
