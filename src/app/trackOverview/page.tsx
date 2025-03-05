@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import Nav from "@/components/navbar";
 // import CombinedMap from "@/components/trackOverViewComponents/CombinedMap";
 import RailwayMap from "@/components/railwayMap";
@@ -18,6 +18,7 @@ import {
   CHART_BACKGROUND_COLORS,
   CHART_OPTIONS,
 } from "@/data/chartConfig"; // ✅ Import constants
+import { Task } from "../schedule/page";
 
 export default function TrackOverview() {
   const [selectedDate, setSelectedDate] = useState<string>("");
@@ -25,6 +26,8 @@ export default function TrackOverview() {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [favoriteTracks, setFavoriteTracks] = useState<string[]>([]);
   const [selectedFeature, setSelectedFeature] = useState(null);
+
+  const [tasks, setTasks] = useState<Task[]>([]);
 
   // Handle toggling favorites
   const toggleFavorite = () => {
@@ -39,10 +42,10 @@ export default function TrackOverview() {
   const isFavorite = favoriteTracks.includes(selectedTrack);
 
   // Handle favorite track selection
-  const handleFavoriteSelect = (track: string) => {
-    setSelectedTrack(track);
-    setSearchTerm(""); // Clear the search bar
-  };
+  // const handleFavoriteSelect = (track: string) => {
+  //   setSelectedTrack(track);
+  //   setSearchTerm(""); // Clear the search bar
+  // };
 
   // Prepare maintenance history data for the selected track
   const selectedMaintenanceData = trackMaintenanceData[selectedTrack];
@@ -56,6 +59,21 @@ export default function TrackOverview() {
       },
     ],
   };
+
+  //Fetch Tasks
+  const fetchTasks = async () => {
+    const tasks = await fetch("/api/tasks").then((res) => res.json());
+    return tasks;
+  };
+
+  useEffect(() => {
+      const fetchAndSetTasks = async () => {
+        const tasks = await fetchTasks();
+        setTasks(tasks);
+      };
+      fetchAndSetTasks();
+    }, []);
+  
 
   return (
     <div className="flex">
@@ -99,21 +117,12 @@ export default function TrackOverview() {
             <select
               id="favorites"
               className="p-2 border rounded-md text-black"
-              value={
-                favoriteTracks.includes(selectedTrack) ? selectedTrack : ""
-              }
-              onChange={(e) => handleFavoriteSelect(e.target.value)}
+              value={selectedTrack}
+              onChange={(e) => setSelectedTrack(e.target.value)}
             >
-              {!favoriteTracks.includes(selectedTrack) &&
-                favoriteTracks.length > 0 && (
-                  <option value="">Pick a Track</option>
-                )}
-              {favoriteTracks.length === 0 && (
-                <option value="">No fav track</option>
-              )}
-              {favoriteTracks.map((track) => (
-                <option key={track} value={track}>
-                  {track}
+              {tasks.map((task) => (
+                <option key={task.track_id} value={task.track_id}>
+                  {task.track_id}
                 </option>
               ))}
             </select>
