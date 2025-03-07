@@ -168,7 +168,7 @@ export default function Dashboard() {
   const forecast = forecastData["Banff"];
 
   return (
-    <ProtectedRoute allowedRoles={["admin", "user"]}>
+    // <ProtectedRoute allowedRoles={["admin", "user"]}>
       <div className="flex">
         <Nav />
         <div className="px-6 bg-background text-foreground w-full h-screen flex flex-col">
@@ -247,6 +247,6 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
-    </ProtectedRoute>
+    // </ProtectedRoute>
   );
 }
