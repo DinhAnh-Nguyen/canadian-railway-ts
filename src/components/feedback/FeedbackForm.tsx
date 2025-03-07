@@ -8,35 +8,48 @@ interface FeedbackFormProps {
   onCancel: () => void;
 }
 
-const FeedbackForm: React.FC<FeedbackFormProps> = ({ initialData, onSubmit, onCancel }) => {
+const FeedbackForm: React.FC<FeedbackFormProps> = ({
+  initialData,
+  onSubmit,
+  onCancel,
+}) => {
   const [name, setName] = useState(initialData?.name || "");
-  const [message, setMessage] = useState(initialData?.message || "");
+  const [date, setDate] = useState(
+    initialData?.date || new Date().toLocaleDateString()
+  );
+  const [likes, setLikes] = useState(initialData?.likes || "");
+  const [improvements, setImprovements] = useState(
+    initialData?.improvements || ""
+  );
 
   useEffect(() => {
     if (initialData) {
       setName(initialData.name);
-      setMessage(initialData.message);
+      setDate(initialData.date);
+      setLikes(initialData.likes);
+      setImprovements(initialData.improvements);
     }
   }, [initialData]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !message) return;
+    if (!name || !likes || !improvements) return;
 
     onSubmit({
       id: initialData?.id || Date.now(),
       name,
-      message,
-      date: new Date().toLocaleDateString(),
-      views: initialData?.views || 0,
+      date,
+      likes,
+      improvements,
     });
 
     setName("");
-    setMessage("");
+    setLikes("");
+    setImprovements("");
   };
 
   return (
-    <div className="bg-[#1e1e1e] p-4 rounded-lg shadow-md">
+    <div className="bg-[#1e1e1e] p-4 rounded-lg shadow-md w-full max-w-lg">
       <h2 className="text-lg font-bold text-white mb-2">
         {initialData ? "Edit Feedback" : "Add Feedback"}
       </h2>
@@ -52,20 +65,39 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({ initialData, onSubmit, onCa
           />
         </div>
         <div>
-          <label className="block text-white mb-1">Feedback</label>
+          <label className="block text-white mb-1">
+            What do you like about the application?
+          </label>
           <textarea
             className="w-full p-2 bg-[#393A3E] text-white rounded-md border-none"
             rows={3}
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
+            value={likes}
+            onChange={(e) => setLikes(e.target.value)}
+            required
+          />
+        </div>
+        <div>
+          <label className="block text-white mb-1">How can we improve?</label>
+          <textarea
+            className="w-full p-2 bg-[#393A3E] text-white rounded-md border-none"
+            rows={3}
+            value={improvements}
+            onChange={(e) => setImprovements(e.target.value)}
             required
           />
         </div>
         <div className="flex space-x-2">
-          <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded-md">
+          <button
+            type="submit"
+            className="bg-blue-500 text-white px-4 py-2 rounded-md"
+          >
             {initialData ? "Update" : "Submit"}
           </button>
-          <button type="button" onClick={onCancel} className="bg-gray-500 text-white px-4 py-2 rounded-md">
+          <button
+            type="button"
+            onClick={onCancel}
+            className="bg-gray-500 text-white px-4 py-2 rounded-md"
+          >
             Cancel
           </button>
         </div>

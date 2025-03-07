@@ -1,32 +1,46 @@
 export interface FeedbackData {
-    id: number;
-    name: string;
-    date: string;
-    message: string;
-    views: number;
-  }
-  
-  export const initialFeedbackData: FeedbackData[] = [
-    {
-      id: 1,
-      name: "Tan Nguyen",
-      date: "2/25/2025",
-      message: "Great app! Very useful.",
-      views: 100,
-    },
-    {
-      id: 2,
-      name: "John Doe",
-      date: "2/20/2025",
-      message: "Would love to see more features.",
-      views: 75,
-    },
-    {
-      id: 3,
-      name: "Alice Smith",
-      date: "2/15/2025",
-      message: "The UI looks great!",
-      views: 50,
-    },
-  ];
-  
+  id: number;
+  name: string;
+  date: string;
+  likes: string;
+  improvements: string;
+}
+
+export const initialFeedbackData: FeedbackData[] = [
+  {
+    id: 1,
+    name: "Nathan Nguyen",
+    date: "01/01/24",
+    likes:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus interdum velit a tortor congue rutrum. Vivamus nec ullamcorper nisi, nec sollicitudin risus. Suspendisse potenti.",
+    improvements:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus interdum velit a tortor congue rutrum. Vivamus nec ullamcorper nisi, nec sollicitudin risus. Suspendisse potenti.",
+  },
+  {
+    id: 2,
+    name: "Chris William",
+    date: "01/01/24",
+    likes:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus interdum velit a tortor congue rutrum. Vivamus nec ullamcorper nisi, nec sollicitudin risus. Suspendisse potenti.",
+    improvements:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus interdum velit a tortor congue rutrum. Vivamus nec ullamcorper nisi, nec sollicitudin risus. Suspendisse potenti.",
+  },
+  {
+    id: 3,
+    name: "Daniel Nguyen",
+    date: "01/01/24",
+    likes:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus interdum velit a tortor congue rutrum. Vivamus nec ullamcorper nisi, nec sollicitudin risus. Suspendisse potenti.",
+    improvements:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus interdum velit a tortor congue rutrum. Vivamus nec ullamcorper nisi, nec sollicitudin risus. Suspendisse potenti.",
+  },
+  {
+    id: 4,
+    name: "Mark Nguyen",
+    date: "01/01/24",
+    likes:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus interdum velit a tortor congue rutrum. Vivamus nec ullamcorper nisi, nec sollicitudin risus. Suspendisse potenti.",
+    improvements:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus interdum velit a tortor congue rutrum. Vivamus nec ullamcorper nisi, nec sollicitudin risus. Suspendisse potenti.",
+  },
+];
