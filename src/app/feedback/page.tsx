@@ -3,7 +3,8 @@ import React, { useState } from "react";
 import FeedbackTable from "@/components/feedback/FeedbackTable";
 import FeedbackForm from "@/components/feedback/FeedbackForm";
 import { FeedbackData, initialFeedbackData } from "@/data/feedbackData";
-import { PlusCircle, Search } from "lucide-react";
+import { PlusCircle } from "lucide-react";
+import Nav from "@/components/navbar";
 
 export default function FeedbackPage() {
   const [feedbackList, setFeedbackList] =
@@ -12,7 +13,7 @@ export default function FeedbackPage() {
     null
   );
   const [showForm, setShowForm] = useState(false);
-  const [filter, setFilter] = useState("");
+  const [sort, setSort] = useState("date");
 
   const handleAddFeedback = (feedback: FeedbackData) => {
     setFeedbackList((prev) =>
@@ -39,59 +40,66 @@ export default function FeedbackPage() {
     setFeedbackList((prev) => prev.filter((f) => f.id !== id));
   };
 
-  // Filter feedback based on search input
-  const filteredFeedbackList = feedbackList.filter(
-    (f) =>
-      f.name.toLowerCase().includes(filter.toLowerCase()) ||
-      f.message.toLowerCase().includes(filter.toLowerCase())
-  );
+  // Sorting function
+  const sortedFeedbackList = [...feedbackList].sort((a, b) => {
+    if (sort === "date") {
+      return new Date(b.date).getTime() - new Date(a.date).getTime();
+    } else if (sort === "actor") {
+      return a.name.localeCompare(b.name);
+    } else if (sort === "relevance") {
+      return b.likes.length - a.likes.length;
+    }
+    return 0;
+  });
 
   return (
-    <div className="p-6 bg-[#1e1e1e] text-white relative">
-      <h1 className="text-2xl font-bold mb-4">User Feedback</h1>
-
-      {/* Search Bar */}
-      <div className="relative mb-4">
-        <input
-          type="text"
-          className="w-300 p-2 bg-[#393A3E] text-white rounded-md border-none pl-10"
-          placeholder="Filter Feedback"
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
-        />
-        <Search className="absolute left-3 top-3 text-gray-400" size={20} />
-      </div>
-
-      <FeedbackTable
-        feedbackList={filteredFeedbackList}
-        onEdit={handleEditFeedback}
-        onDelete={handleDeleteFeedback}
-      />
-
-      {/* Floating Add Feedback Button (Bottom Right) */}
-      <div className="flex justify-end">
-        <button
-          onClick={() => {
-            setSelectedFeedback(null);
-            setShowForm(true);
-          }}
-          className="bg-blue-600 text-white p-4 rounded-full shadow-lg flex items-center justify-center"
-          style={{ width: "56px", height: "56px", zIndex: 50 }}
-        >
-          <PlusCircle size={24} />
-        </button>
-      </div>
-
-      {/* Feedback Form Modal */}
-      {showForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center p-4">
-          <FeedbackForm
-            initialData={selectedFeedback}
-            onSubmit={handleAddFeedback}
-            onCancel={() => setShowForm(false)}
-          />
+    <div className="flex">
+      <Nav />
+      <div className="px-6 bg-[#1e1e1e] text-white w-full min-h-screen">
+        <div className="flex justify-between items-center mb-4">
+          <h1 className="text-2xl font-bold">User Feedback</h1>
+          {/* Add Feedback Button */}
+          <button
+            onClick={() => {
+              setSelectedFeedback(null);
+              setShowForm(true);
+            }}
+            className="bg-blue-600 text-white p-3 rounded-md shadow-md flex items-center justify-center hover:bg-blue-700"
+          >
+            <PlusCircle size={20} className="mr-2" /> Add Feedback
+          </button>
         </div>
-      )}
+
+        {/* Sort Dropdown */}
+        <div className="mb-4">
+          <select
+            className="p-2 bg-[#393A3E] text-white rounded-md border-none"
+            value={sort}
+            onChange={(e) => setSort(e.target.value)}
+          >
+            <option value="date">Sort by Date</option>
+            <option value="actor">Sort by Actor</option>
+            <option value="relevance">Sort by Most Relevant</option>
+          </select>
+        </div>
+
+        <FeedbackTable
+          feedbackList={sortedFeedbackList}
+          onEdit={handleEditFeedback}
+          onDelete={handleDeleteFeedback}
+        />
+
+        {/* Feedback Form Modal */}
+        {showForm && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center p-4">
+            <FeedbackForm
+              initialData={selectedFeedback}
+              onSubmit={handleAddFeedback}
+              onCancel={() => setShowForm(false)}
+            />
+          </div>
+        )}
+      </div>
     </div>
   );
 }
