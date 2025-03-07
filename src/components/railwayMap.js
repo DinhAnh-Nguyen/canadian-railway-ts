@@ -95,13 +95,14 @@ const RailwayMap = ({ onFeatureSelect }) => {
   const railwayStyle = (feature) => {
     return {
       color:
-        selectedFeature && selectedFeature.id === feature.id
+        selectedFeature && selectedFeature.properties["@id"] === feature.properties["@id"]
           ? "blue"
           : "#19a81c",
       weight: 3,
       opacity: 0.8,
     };
   };
+
   // Function to handle feature click
   const onEachFeature = useMemo(() => {
     return (feature, layer) => {
@@ -128,7 +129,7 @@ const RailwayMap = ({ onFeatureSelect }) => {
         <GeoJSON data={railwayData} style={railwayStyle} onEachFeature={onEachFeature} />
       </MarkerClusterGroup>
     );
-  }, [railwayData]);
+  }, [railwayData, selectedFeature]);
 
   // Render the map component as well as popup
   return (
