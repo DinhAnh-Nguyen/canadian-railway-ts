@@ -1,20 +1,30 @@
 /**
- * Sources used: chatGPT-o4  
- * Prompted used: How do I intergrate leaflet with nextjs and get track details on the map. 
+ * Sources used: chatGPT-o4
+ * Prompted used: How do I intergrate leaflet with nextjs and get track details on the map.
  */
-
 
 "use client";
 
 import dynamic from "next/dynamic";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, memo } from "react";
 import "leaflet/dist/leaflet.css";
-
+import MarkerClusterGroup from "react-leaflet-markercluster";
 // Dynamic imports
-const MapContainer = dynamic(() => import("react-leaflet").then((mod) => mod.MapContainer), { ssr: false });
-const TileLayer = dynamic(() => import("react-leaflet").then((mod) => mod.TileLayer), { ssr: false });
-const GeoJSON = dynamic(() => import("react-leaflet").then((mod) => mod.GeoJSON), { ssr: false });
-const Popup = dynamic(() => import("react-leaflet").then((mod) => mod.Popup), { ssr: false });
+const MapContainer = dynamic(
+  () => import("react-leaflet").then((mod) => mod.MapContainer),
+  { ssr: false }
+);
+const TileLayer = dynamic(
+  () => import("react-leaflet").then((mod) => mod.TileLayer),
+  { ssr: false }
+);
+const GeoJSON = dynamic(
+  () => import("react-leaflet").then((mod) => mod.GeoJSON),
+  { ssr: false }
+);
+const Popup = dynamic(() => import("react-leaflet").then((mod) => mod.Popup), {
+  ssr: false,
+});
 
 // Initialize Leaflet
 let L;
@@ -30,13 +40,13 @@ if (typeof window !== "undefined") {
 // Define the default position
 const DEFAULT_POSITION = [51.0447, -114.0719];
 
-export default function RailwayMap({ onFeatureSelect }) {
+const RailwayMap = ({ onFeatureSelect }) => {
   const [railwayData, setRailwayData] = useState(null);
   const [selectedFeature, setSelectedFeature] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-// Fetch the GeoJSON data
+  // Fetch the GeoJSON data
   useEffect(() => {
     fetch("/Alberta.geojson")
       .then((response) => {
@@ -55,7 +65,7 @@ export default function RailwayMap({ onFeatureSelect }) {
       });
   }, []);
 
-// Function to get the midpoint of a geometry
+  // Function to get the midpoint of a geometry
   const getMidpoint = (geometry) => {
     if (!geometry || !geometry.coordinates) return DEFAULT_POSITION;
 
@@ -81,53 +91,80 @@ export default function RailwayMap({ onFeatureSelect }) {
     return DEFAULT_POSITION;
   };
 
-// Function to style the railway lines
+  // Function to style the railway lines
   const railwayStyle = (feature) => {
     return {
-      color: selectedFeature && selectedFeature.id === feature.id ? "blue" : "#19a81c",
+      color:
+        selectedFeature && selectedFeature.id === feature.id
+          ? "blue"
+          : "#19a81c",
       weight: 3,
       opacity: 0.8,
     };
   };
-// Function to handle feature click
-  const onEachFeature = (feature, layer) => {
-    layer.on({
-      click: () => {
-        setSelectedFeature(feature);
-        onFeatureSelect(feature);
-      },
-    });
-  };
-  
-// Render the map
+  // Function to handle feature click
+  const onEachFeature = useMemo(() => {
+    return (feature, layer) => {
+      layer.on({
+        click: () => {
+          setSelectedFeature(feature);
+          onFeatureSelect(feature);
+        },
+      });
+    };
+  }, [onFeatureSelect]);
+
+  // Render the map
   const geoJsonLayer = useMemo(() => {
-    if (!railwayData || !railwayData.features || railwayData.features.length === 0) {
+    if (
+      !railwayData ||
+      !railwayData.features ||
+      railwayData.features.length === 0
+    ) {
       return null;
     }
-    return <GeoJSON data={railwayData} style={railwayStyle} onEachFeature={onEachFeature} />;
-  }, [railwayData, selectedFeature]);
+    return (
+      <MarkerClusterGroup chunkedLoading>
+        <GeoJSON data={railwayData} style={railwayStyle} onEachFeature={onEachFeature} />
+      </MarkerClusterGroup>
+    );
+  }, [railwayData]);
 
-// Render the map component as well as popup
+  // Render the map component as well as popup
   return (
     <div>
       {isLoading && <div className="loading-spinner">Loading...</div>}
       {error && <div className="error-message">{error}</div>}
-      <MapContainer center={DEFAULT_POSITION} zoom={13} style={{ height: "600px", width: "100%" }} aria-label="Railway Map">
+      <MapContainer
+        center={DEFAULT_POSITION}
+        zoom={13}
+        zoomControl={false}
+        preferCanvas={true}
+        updateWhenIdle={true}
+        attributionControl={false}
+        style={{ height: "600px", width: "100%" }}
+        aria-label="Railway Map"
+      >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>'
         />
         {geoJsonLayer}
         {selectedFeature && selectedFeature.geometry && (
-          <Popup position={getMidpoint(selectedFeature.geometry)} onClose={() => setSelectedFeature(null)}>
+          <Popup
+            position={getMidpoint(selectedFeature.geometry)}
+            onClose={() => setSelectedFeature(null)}
+          >
             <div>
               <h3>Railway Details</h3>
               <ul>
-                {Object.entries(selectedFeature.properties).map(([key, value]) => (
-                  <li key={key}>
-                    <strong>{key}:</strong> {value}
-                  </li>
-                ))}
+                {Object.entries(selectedFeature.properties).map(
+                  ([key, value]) => (
+                    <li key={key}>
+                      <strong>{key}:</strong> {value}
+                    </li>
+                  )
+                )}
               </ul>
             </div>
           </Popup>
@@ -135,4 +172,5 @@ export default function RailwayMap({ onFeatureSelect }) {
       </MapContainer>
     </div>
   );
-}
+};
+export default memo(RailwayMap);
