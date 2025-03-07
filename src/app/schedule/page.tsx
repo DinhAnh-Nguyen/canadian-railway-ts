@@ -17,7 +17,7 @@ import TaskDetailsModal from "@/components/detailsModal";
 import Nav from "@/components/navbar";
 
 // Task Type Definition
- export type Task = {
+export type Task = {
   id: number;
   title: string;
   description: string;
@@ -30,7 +30,8 @@ import Nav from "@/components/navbar";
   start_time: string;
   end_date: string;
   end_time: string;
-  track_id: number;
+  track_id: string;
+  coordinates: [number, number][];
 };
 
 export default function Schedule() {
@@ -39,7 +40,7 @@ export default function Schedule() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
-
+  const [trackCoordinates, setTrackCoordinates] = useState<{ [key: string]: [number, number][] }>({});
   const eventsService = useState(() => createEventsServicePlugin())[0];
 
   useEffect(() => {
@@ -80,76 +81,133 @@ export default function Schedule() {
       return [];
     }
   };
-
-  // Handle adding a new task
-  const handleAddTask = async (
-    title: string,
-    description: string,
-    startDate: string,
-    startTime: string,
-    endDate: string,
-    endTime: string,
-    assignedTo: number,
-    priority: string,
-    status: string,
-    trackID: number
-  ) => {
-    const due_date = `${endDate}T${endTime}:00`;
-
-    const newTask = {
-      title,
-      description,
-      status,
-      assigned_to: assignedTo,
-      created_by: "Admin",
-      due_date,
-      start_date: startDate,
-      start_time: startTime,
-      end_date: endDate,
-      end_time: endTime,
-      priority,
-      track_Id: trackID
-    };
-
-    try {
-      const response = await fetch("/api/tasks", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newTask),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to add task");
+  useEffect(() => {
+    const fetchGeoJSON = async () => {
+      try {
+        const response = await fetch("/Alberta.geojson");
+        if (!response.ok) throw new Error("Failed to fetch GeoJSON data");
+  
+        const albertaGeoJSON = await response.json();
+  
+        const coordinatesMap = albertaGeoJSON.features.reduce((acc, feature) => {
+          const trackId = feature.properties["@id"];
+          acc[trackId] = feature.geometry.coordinates;
+          return acc;
+        }, {});
+  
+        setTrackCoordinates(coordinatesMap);
+      } catch (error) {
+        console.error("Error fetching GeoJSON:", error);
       }
+    };
+  
+    fetchGeoJSON();
+  }, []);
 
-      const createdTask = await response.json();
-
-      // Format the dates to match the calendar's expected format
-      const formattedTask = {
-        ...createdTask,
-        start_date: createdTask.start_date.split("T")[0], // Extract YYYY-MM-DD
-        end_date: createdTask.end_date.split("T")[0], // Extract YYYY-MM-DD
-      };
-
-      // Update the tasks state
-      setTasks((prevTasks) => [...prevTasks, formattedTask]);
-
-      // Update the events array for the calendar
-      const newEvent = {
-        id: formattedTask.id.toString(),
-        title: formattedTask.title,
-        start: formattedTask.start_date,
-        end: formattedTask.end_date,
-      };
-      eventsService.add(newEvent); // Add the new event to the calendar
-
-      setIsModalOpen(false);
-    } catch (error) {
-      console.error("Error adding task:", error);
+  const calculateMidpoint = (coordinates: [number, number][]) => {
+    if (!coordinates || coordinates.length === 0) return null;
+  
+    const numCoordinates = coordinates.length;
+  
+    if (numCoordinates % 2 === 1) {
+      // Odd number of coordinates: return the middle coordinate
+      return coordinates[Math.floor(numCoordinates / 2)];
+    } else {
+      // Even number of coordinates: average the two middle coordinates
+      const mid1 = coordinates[numCoordinates / 2 - 1];
+      const mid2 = coordinates[numCoordinates / 2];
+      return [(mid1[0] + mid2[0]) / 2, (mid1[1] + mid2[1]) / 2];
     }
   };
+  
+
+  // Handle adding a new task
+const handleAddTask = async (
+  title: string,
+  description: string,
+  startDate: string,
+  startTime: string,
+  endDate: string,
+  endTime: string,
+  assignedTo: number,
+  priority: string,
+  status: string,
+  trackId: string // User inputs this
+) => {
+  const due_date = `${endDate}T${endTime}:00`;
+  console.log("Selected Track ID:", trackId);
+  console.log("Available Track IDs:", Object.keys(trackCoordinates));
+
+  if (!trackCoordinates || Object.keys(trackCoordinates).length === 0) {
+    console.error("Track data not loaded yet");
+    return;
+  }
+
+  const formattedTrackId = trackId.startsWith("node/")
+      ? trackId
+      : trackId.startsWith("way/")
+      ? trackId
+      : `way/${trackId}`;
+    console.log("Formatted Track ID:", formattedTrackId);
+
+  // Fetch coordinates for the selected track
+  const coordinates = trackCoordinates[trackId.toString()];
+  if (!coordinates) {
+    console.error("Invalid Track ID: Coordinates not found");
+    return;
+  }
+
+  console.log("Coordinates for selected track:", coordinates);
+
+  // Calculate the midpoint
+  const midpoint = calculateMidpoint(coordinates);
+  console.log("Midpoint calculated:", midpoint);
+  if (!midpoint) {
+    console.error("No valid midpoint found for the selected track");
+    return;
+  }
+  
+
+  const newTask = {
+    title,
+    description,
+    status,
+    assigned_to: assignedTo,
+    created_by: "Admin",
+    due_date,
+    start_date: startDate,
+    start_time: startTime,
+    end_date: endDate,
+    end_time: endTime,
+    priority,
+    track_id: trackId, // Save the track ID
+    coordinates: [midpoint], // Save the midpoint
+  };
+
+  try {
+    const response = await fetch("/api/tasks", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newTask),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to add task");
+    }
+
+    const createdTask = await response.json();
+
+    setTasks((prevTasks) => [...prevTasks, createdTask]);
+
+    setIsModalOpen(false);
+  } catch (error) {
+    console.error("Error adding task:", error);
+  }
+  console.log("Request data being sent:", JSON.stringify(newTask, null, 2));
+
+};
 
   const handleDeleteTask = async (taskId: number) => {
     try {
@@ -247,6 +305,7 @@ export default function Schedule() {
                 <th className="border border-gray-800">End Date</th>
                 <th className="border border-gray-800">Assigned To</th>
                 <th className="border border-gray-800">Priority</th>
+                <th className="border border-gray-800">Midpoint Coordinates</th>
               </tr>
             </thead>
             <tbody>
@@ -261,6 +320,7 @@ export default function Schedule() {
                   <td className="border border-gray-300">{task.end_date}</td>
                   <td className="border border-gray-300">{task.assigned_to}</td>
                   <td className="border border-gray-300">{task.priority}</td>
+                  <td>{task.coordinates ? JSON.stringify(task.coordinates) : "N/A"}</td>
                 </tr>
               ))}
             </tbody>
