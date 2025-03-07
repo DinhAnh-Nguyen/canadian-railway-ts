@@ -73,7 +73,7 @@ export default function TrackOverview() {
       };
       fetchAndSetTasks();
     }, []);
-  
+
 
   return (
     <div className="flex">
@@ -112,7 +112,7 @@ export default function TrackOverview() {
               htmlFor="favorites"
               className="block mb-1 text-darkgrey font-medium"
             >
-              Favorite Tracks:
+              Current Tracks:
             </label>
             <select
               id="favorites"

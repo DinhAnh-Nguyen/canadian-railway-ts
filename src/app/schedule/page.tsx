@@ -143,8 +143,12 @@ const handleAddTask = async (
     return;
   }
 
-  const formattedTrackId = trackId.startsWith("way/") ? trackId : `way/${trackId}`;
-  console.log("Formatted Track ID:", formattedTrackId);
+  const formattedTrackId = trackId.startsWith("node/")
+      ? trackId
+      : trackId.startsWith("way/")
+      ? trackId
+      : `way/${trackId}`;
+    console.log("Formatted Track ID:", formattedTrackId);
 
   // Fetch coordinates for the selected track
   const coordinates = trackCoordinates[trackId.toString()];
