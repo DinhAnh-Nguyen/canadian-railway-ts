@@ -1,8 +1,8 @@
-// types/user.ts
-import { User } from "firebase/auth";
-
-export interface CustomUser extends User {
-    roles?: string[];
+export interface CustomUser {
+    uid: string;
+    email: string | null;
+    emailVerified: boolean;
+    roles: string[];
     firstName?: string;
     lastName?: string;
 }

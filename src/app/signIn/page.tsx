@@ -27,8 +27,8 @@ export default function SignInPage() {
     setError(null);
     setMessage(null);
 
-    const requirements = [password.length >= 6];
-    const isValid = requirements.every(Boolean);
+    const requirements = [password.length >= 6]; // Set requeriments for password
+    const isValid = requirements.every(Boolean); // Check if all requirements are met
 
     if (isValid) {
       if (password !== confirmPassword) {
