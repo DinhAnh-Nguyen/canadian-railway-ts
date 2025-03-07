@@ -1,46 +1,73 @@
 import { neon } from "@neondatabase/serverless";
 import { NextResponse } from "next/server";
 
-/**
- * 
- * Sources used: 
- * https://webdev2-git-dv-dereksaits-projects.vercel.app/week-12/api-implementation#api-implementation-with-nextjs 
- * https://github.com/warsylewicz/webdev2/blob/main/pages/week-12/api-implementation.mdx 
- */
-
-
-//Fetch a user by id
-export async function GET({ params }: { params: { id: Number | String } }) {
-    const databaseUrl = process.env.DATABASE_URL || ""; // Set a default value if DATABASE_URL is not defined
+// Fetch a user by id
+export async function GET({ params }: { params: { id: string | number } }) {
+    const databaseUrl = process.env.DATABASE_URL || "";
     const sql = neon(databaseUrl);
-    //PostgresQL
     const id = Number(params.id);
     const response = await sql`SELECT * FROM users WHERE id = ${id};`;
-    const user = response[0];
+    const user = response[0] as any;
 
     if (!user) {
         return new Response(null, { status: 404 });
     }
 
-    return new Response(JSON.stringify(response), { status: 200 });
+    // If user has a "role" field, convert it into a "roles" array.
+    let modifiedUser;
+    if (user.role) {
+        modifiedUser = { ...user, roles: [user.role] };
+        delete modifiedUser.role;
+    } else {
+        modifiedUser = user;
+    }
+
+    return NextResponse.json(modifiedUser, { status: 200 });
 }
 
-//Update all the information of a user
-export async function PUT(request: Request, { params }: { params: { id: Number | String } }) {
-    const databaseUrl = process.env.DATABASE_URL || ""; // Set a default value if DATABASE_URL is not defined
+// Update all the information of a user
+export async function PUT(
+    request: Request,
+    { params }: { params: { id: string | number } }
+) {
+    const databaseUrl = process.env.DATABASE_URL || "";
     const sql = neon(databaseUrl);
-    //PostgresQL
     const id = Number(params.id);
     const requestData = await request.json();
-    const response = await sql`UPDATE users SET email = ${requestData.email}, name = ${requestData.name}, role = ${requestData.role} WHERE id = ${id};`;
-    return new Response(JSON.stringify(response), { status: 200 });
+
+    // Update the user and return the updated row
+    const response = await sql`
+    UPDATE users 
+    SET email = ${requestData.email}, name = ${requestData.name}, role = ${requestData.role} 
+    WHERE id = ${id}
+    RETURNING *;
+  `;
+    const updatedUser = response[0] as any;
+
+    if (!updatedUser) {
+        return new Response(null, { status: 404 });
+    }
+
+    let modifiedUser;
+    if (updatedUser.role) {
+        modifiedUser = { ...updatedUser, roles: [updatedUser.role] };
+        delete modifiedUser.role;
+    } else {
+        modifiedUser = updatedUser;
+    }
+
+    return NextResponse.json(modifiedUser, { status: 200 });
 }
 
-//Delete a user by id
-export async function DELETE(request: Request, { params }: { params: { id: Number } }) {
-    const databaseUrl = process.env.DATABASE_URL || ""; // Set a default value if DATABASE_URL is not defined
+// Delete a user by id
+export async function DELETE(
+    request: Request,
+    { params }: { params: { id: string | number } }
+) {
+    const databaseUrl = process.env.DATABASE_URL || "";
     const sql = neon(databaseUrl);
-    const response = await sql`DELETE FROM users WHERE id = ${params.id};`;
+    const id = Number(params.id);
+    const response = await sql`DELETE FROM users WHERE id = ${id};`;
 
     if (!response) {
         return new Response(null, { status: 404 });

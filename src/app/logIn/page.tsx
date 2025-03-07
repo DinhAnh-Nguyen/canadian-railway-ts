@@ -7,6 +7,7 @@ import { doc, getDoc, setDoc } from "firebase/firestore";
 import Link from "next/link";
 import Image from "next/image";
 import { FirebaseError } from "firebase/app";
+import { useAuth } from "@/app/context/AuthContext";
 
 export default function LogInPage() {
   const [email, setEmail] = useState("");
@@ -14,6 +15,7 @@ export default function LogInPage() {
   const [error, setError] = useState<string | null>(null);
   const [visible, setVisible] = useState(false);
   const router = useRouter();
+  const { setUser } = useAuth();
 
   const handleLogIn = async (event: FormEvent) => {
     event.preventDefault();
@@ -29,24 +31,44 @@ export default function LogInPage() {
       const user = userCredential.user;
       console.log(user);
 
-      if (user.emailVerified) {
+      if (!user.emailVerified) {
+        setError("Please verify your email before logging in.");
+        return;
+      }
+
+      const userDoc = await getDoc(doc(firestore, "users", user.uid));
+      let roles = ["user"];
+
+      if (userDoc.exists()) {
+        roles = userDoc.data()?.roles || ["users"];
+      } else {
         const registrationData = localStorage.getItem("registrationData");
         const { firstName = "", lastName = "" } = registrationData
           ? JSON.parse(registrationData)
           : {};
 
-        const userDoc = await getDoc(doc(firestore, "users", user.uid));
-        if (!userDoc.exists()) {
-          await setDoc(doc(firestore, "users", user.uid), {
-            firstName,
-            lastName,
-            email: user.email,
-          });
-        }
-        router.push("/dashboard");
-      } else {
-        setError("Please verify your email before logging in.");
+        await setDoc(doc(firestore, "users", user.uid), {
+          firstName,
+          lastName,
+          email: user.email,
+          roles: ["user"],
+          createdAt: new Date().toISOString(),
+        });
       }
+
+      setUser({
+        uid: user.uid,
+        email: user.email,
+        roles,
+        emailVerified: user.emailVerified,
+      });
+
+      if (roles.includes("admin")) {
+        router.push("/admin");
+      } else {
+        router.push("/dashboard");
+      }
+
     } catch (error) {
       if (error instanceof FirebaseError) {
         switch (error.code) {

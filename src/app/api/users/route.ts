@@ -1,37 +1,43 @@
 import { neon } from "@neondatabase/serverless";
 
 /**
- * 
  * Sources used: 
  * https://webdev2-git-dv-dereksaits-projects.vercel.app/week-12/api-implementation#api-implementation-with-nextjs 
  * https://github.com/warsylewicz/webdev2/blob/main/pages/week-12/api-implementation.mdx 
  */
 
-
-//Fetch all users
+// Fetch all users
 export async function GET() {
-    const databaseUrl = process.env.DATABASE_URL || ""; // Set a default value if DATABASE_URL is not defined
+    const databaseUrl = process.env.DATABASE_URL || "";
     const sql = neon(databaseUrl);
-    //PostgresQL
     const response = await sql`SELECT * FROM users;`;
-    return new Response(JSON.stringify(response), { status: 200 });
+
+    // Convert each user's singular "role" field into a "roles" array
+    const modifiedUsers = response.map((user: any) => {
+        const { role, ...rest } = user;
+        return { ...rest, roles: role ? [role] : [] };
+    });
+
+    console.log("API Response:", JSON.stringify(response, null, 2));
+
+
+    return new Response(JSON.stringify(modifiedUsers), { status: 200 });
 }
 
-//Add a user
+// Add a user
 export async function POST(request: Request) {
-    const resquestData = await request.json();
-    const databaseUrl = process.env.DATABASE_URL || ""; // Set a default value if DATABASE_URL is not defined
+    const requestData = await request.json();
+    const databaseUrl = process.env.DATABASE_URL || "";
     const sql = neon(databaseUrl);
-    //PostgresQL
-    const response = await sql`INSERT INTO users (name, email, role) VALUES (${resquestData.name}, ${resquestData.email}, ${resquestData.role});`;
+    // Insert the user with the singular "role" field (your frontend will convert it)
+    const response = await sql`INSERT INTO users (name, email, role) VALUES (${requestData.name}, ${requestData.email}, ${requestData.role});`;
     return new Response(JSON.stringify(response), { status: 200 });
 }
 
-//Delete a all users
+// Delete all users
 export async function DELETE() {
-    const databaseUrl = process.env.DATABASE_URL || ""; // Set a default value if DATABASE_URL is not defined
+    const databaseUrl = process.env.DATABASE_URL || "";
     const sql = neon(databaseUrl);
-    //PostgresQL
     const response = await sql`DELETE FROM users;`;
     return new Response(null, { status: 200 });
 }
