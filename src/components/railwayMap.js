@@ -96,8 +96,8 @@ const RailwayMap = ({ onFeatureSelect }) => {
     return {
       color:
         selectedFeature && selectedFeature.properties["@id"] === feature.properties["@id"]
-          ? "blue"
-          : "#19a81c",
+          ? "#ed9e1f"
+          : "#2b35f0",
       weight: 3,
       opacity: 0.8,
     };
