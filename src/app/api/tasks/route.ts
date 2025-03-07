@@ -1,6 +1,13 @@
 import { neon } from "@neondatabase/serverless";
 import { NextResponse } from "next/server";
 
+/**
+ * 
+ * Sources used: 
+ * https://webdev2-git-dv-dereksaits-projects.vercel.app/week-12/api-implementation#api-implementation-with-nextjs 
+ * https://github.com/warsylewicz/webdev2/blob/main/pages/week-12/api-implementation.mdx 
+ */
+
 //Fetch All tasks - Mark
 export async function GET() {
   const databaseUrl = process.env.DATABASE_URL || ""; // Set a default value if DATABASE_URL is not defined
@@ -17,7 +24,7 @@ export async function POST(request: Request) {
     const databaseUrl = process.env.DATABASE_URL || "";
     const sql = neon(databaseUrl);
     // Validate request data
-    if (!requestData.title || !requestData.description || !requestData.status || !requestData.assigned_to || !requestData.created_by || !requestData.start_date || !requestData.start_time || !requestData.end_date || !requestData.end_time || !requestData.priority) {
+    if (!requestData.title || !requestData.description || !requestData.status || !requestData.assigned_to || !requestData.created_by || !requestData.start_date || !requestData.start_time || !requestData.end_date || !requestData.end_time || !requestData.priority || !requestData.track_Id) {
       return NextResponse.json(
         { error: "Missing required fields." },
         { status: 400 }
@@ -26,8 +33,8 @@ export async function POST(request: Request) {
 
     // Insert the task into the database
     const response = await sql`
-      INSERT INTO tasks (title, description, status, assigned_to, created_by, start_date, start_time, end_date, end_time, priority)
-      VALUES (${requestData.title}, ${requestData.description}, ${requestData.status}, ${requestData.assigned_to}, ${requestData.created_by}, ${requestData.start_date}, ${requestData.start_time}, ${requestData.end_date}, ${requestData.end_time}, ${requestData.priority})
+      INSERT INTO tasks (title, description, status, assigned_to, created_by, start_date, start_time, end_date, end_time, priority, track_Id)
+      VALUES (${requestData.title}, ${requestData.description}, ${requestData.status}, ${requestData.assigned_to}, ${requestData.created_by}, ${requestData.start_date}, ${requestData.start_time}, ${requestData.end_date}, ${requestData.end_time}, ${requestData.priority}, ${requestData.track_Id})
       RETURNING *;
     `;
 

@@ -4,6 +4,14 @@ import React, { useState, FormEvent } from "react";
 import { useEffect } from "react";
 import Nav from "@/components/navbar";
 
+/**
+ * 
+ * Sources used: 
+ * https://webdev2-git-dv-dereksaits-projects.vercel.app/week-12/api-implementation 
+ * https://github.com/warsylewicz/webdev2/blob/main/pages/week-12/api-implementation.mdx 
+ */
+
+
 type User = {
   id: number;
   name: string;

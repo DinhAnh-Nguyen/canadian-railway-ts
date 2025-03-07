@@ -20,9 +20,11 @@ export default function Dashboard() {
     due_date: string;
     priority: string;
     date: string;
+    track_id: number;
   };
 
   const [tasks, setTasks] = useState<task[]>([]);
+  // const [loading, setLoading] = useState(true);
   const { forecastData } = useForecast();
   const router = useRouter();
 
@@ -55,7 +57,9 @@ export default function Dashboard() {
   };
 
   const handleDeleteTask = async (taskId: number) => {
-    const confirmed = window.confirm("Are you sure you want to delete this task?");
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this task?"
+    );
     if (!confirmed) return;
     try {
       const response = await fetch(`/api/tasks/${taskId}`, {
@@ -136,78 +140,85 @@ export default function Dashboard() {
 
   const forecast = forecastData["Banff"];
 
+  // if (loading) {
+  //   return <p>Loading...</p>;
+  // }
+
   return (
     <div className="flex">
       <Nav />
-      <div className="px-6 bg-background text-foreground w-full">
+      <div className="px-6 bg-background text-foreground w-full h-screen flex flex-col">
         {/* Main Content Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 lg:grid-rows-2 gap-7 h-full">
           {/* Left Column */}
-          <div className="lg:col-span-1 space-y-6">
-            <div className="space-y-6 rounded-md p-2 bg-[#393A3E] h-80 hover:cursor-pointer" onClick={() => router.push("/weather")}>
-              <h3 className="text-center text-lg font-bold mb-4">Weather Overview</h3>
-              <h3>Banff</h3>
-              <p>Wind: {forecast?.list[0].wind.speed ?? "-"} km/h</p>
-              <p>Temperature: {forecast?.list[0].main.temp ?? "-"}°C</p>
-              <p>Humidity: {forecast?.list[0].main.humidity ?? "-"}%</p>
-            </div>
-            <div className="space-y-6 rounded-md p-2 bg-[#393A3E] h-80 hover:cursor-pointer" onClick={() => router.push("/schedule")}>
-              <h3 className="text-center text-lg font-bold">Schedules</h3>
-              <h3
-                className="text-center text-sm font-bold"
-                style={{ marginTop: 1 }}
-              >
-                Wednesday
-              </h3>
-              <table className="border-collapse border border-gray-800 w-full">
-                <thead>
-                  <tr>
-                    <th>Order #</th>
-                    <th>Date</th>
-                    <th>Assigned To</th>
-                    <th>Progress</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {tasks.map((task) => (
-                    <tr key={task.id}>
-                      <td>{task.id}</td>
-                      <td>{task.due_date}</td>
-                      <td>{task.title}</td>
-                      <td>{task.status}</td>
-                      <td>
-                        <button
-                          className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
-                          onClick={() => handleDeleteTask(task.id)}
+          <div
+            className="lg:col-span-1 lg:row-span-1 flex flex-col space-y-3 h-full rounded-md p-2 bg-[#393A3E] flex-grow hover:cursor-pointer"
+            onClick={() => router.push("/weather")}
+          >
+            <h3 className="text-center text-lg font-bold">Weather Overview</h3>
+            <h3>Banff</h3>
+            <p>Wind: {forecast?.list[0].wind.speed ?? "-"} km/h</p>
+            <p>Temperature: {forecast?.list[0].main.temp ?? "-"}°C</p>
+            <p>Humidity: {forecast?.list[0].main.humidity ?? "-"}%</p>
+          </div>
+          <div
+            className="lg:col-span-1 lg:row-span-1 flex flex-col space-y-3 h-full rounded-md p-2 bg-[#393A3E] hover:cursor-pointer"
+            onClick={() => router.push("/trackOverview")}
+          >
+            <h3 className="text-center text-lg font-bold">Track Capacity</h3>
+            <Line data={trackCapacityData} options={chartOptions} />
+          </div>
+          <div
+            className="lg:col-span-1 lg:row-span-1 flex flex-col space-y-3 h-full rounded-md p-2 bg-[#393A3E] flex-grow hover:cursor-pointer"
+            onClick={() => router.push("/schedule")}
+          >
+            <h3 className="text-center text-lg font-bold">Schedules</h3>
+            <h3 className="text-center text-sm font-bold">Wednesday</h3>
+            <table className="border-collapse border border-gray-800 w-full">
+              <thead>
+                <tr>
+                  <th>Order #</th>
+                  <th>Track</th>
+                  <th>Date</th>
+                  <th>Assigned To</th>
+                  <th>Progress</th>
+                </tr>
+              </thead>
+              <tbody>
+                {tasks.map((task) => (
+                  <tr key={task.id}>
+                    <td>{task.id}</td>
+                    <td>{task.track_id}</td>
+                    <td>{task.due_date}</td>
+                    <td>{task.title}</td>
+                    <td>{task.status}</td>
+                    <td>
+                      <button
+                        className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
+                        onClick={() => handleDeleteTask(task.id)}
+                      >
+                        Delete
+                      </button>
+                      <button>
+                        <Link
+                          href={`/task/${task.id}`}
+                          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded"
                         >
-                          Delete
-                        </button>
-                        <button>
-                          <Link
-                            href={`/task/${task.id}`}
-                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded"
-                          >
-                            Edit
-                          </Link>
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                          Edit
+                        </Link>
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
           {/* Right Column */}
-          <div className="lg:col-span-1 space-y-6">
-            <div className="space-y-6 rounded-md p-2 bg-[#393A3E] h-80 hover:cursor-pointer" onClick={() => router.push("/trackOverview")}>
-              <h3 className="text-center text-lg font-bold mb-4">
-                Track Capacity
-              </h3>
-              <Line data={trackCapacityData} options={chartOptions} />
-            </div>
-            <div className="space-y-6 rounded-md p-2 bg-[#393A3E] h-80 hover:cursor-pointer" onClick={() => router.push("/trackOverview")}>
-              <CombinedMap />
-            </div>
+          <div
+            className="lg:col-span-1 lg:row-span-1 flex flex-col space-y-3 h-full rounded-md bg-[#393A3E] hover:cursor-pointer"
+            onClick={() => router.push("/trackOverview")}
+          >
+            <CombinedMap selectedTrack="defaultTrack" />
           </div>
         </div>
       </div>
