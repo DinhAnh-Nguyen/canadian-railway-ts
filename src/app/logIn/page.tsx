@@ -5,11 +5,14 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth, firestore } from "@/app/_utils/firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import Link from "next/link";
+import Image from "next/image";
+import { FirebaseError } from "firebase/app";
 
 export default function LogInPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [visible, setVisible] = useState(false);
   const router = useRouter();
 
   const handleLogIn = async (event: FormEvent) => {
@@ -45,7 +48,20 @@ export default function LogInPage() {
         setError("Please verify your email before logging in.");
       }
     } catch (error) {
-      if (error instanceof Error) {
+      if (error instanceof FirebaseError) {
+        switch (error.code) {
+          case "auth/invalid-credential":
+            setError("Incorrect email or password. Please try again.");
+            break;
+          case "auth/network-request-failed":
+            setError(
+              "Network request failed. Please check your internet connection."
+            );
+            break;
+          default:
+            setError(error.message);
+        }
+      } else if (error instanceof Error) {
         setError(error.message);
       } else {
         setError("An unknown error occurred");
@@ -84,17 +100,31 @@ export default function LogInPage() {
             >
               Password
             </label>
-            <input
-              type="password"
-              id="password"
-              placeholder="••••••••••••••"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              className="w-full p-2.5 mb-2 bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-              required
-            />
+            <div className="relative w-full">
+              <input
+                type={visible ? "text" : "password"}
+                id="password"
+                placeholder="••••••••••••••"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                className="w-full p-2.5 mb-2 bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                required
+              />
+              <span className="absolute inset-y-0 right-3 flex items-center pb-2 cursor-pointer">
+                <Image
+                  src={
+                    visible
+                      ? "/icons/password-show.svg"
+                      : "/icons/password-hide.svg"
+                  }
+                  alt=""
+                  width={20}
+                  height={20}
+                  onClick={() => setVisible(!visible)}
+                />
+              </span>
+            </div>
           </div>
-          <Link href="/changePassword" className="text-sm hover:underline">Change Password</Link>
           {error && <p className="text-red-500 text-sm ">{error}</p>}
           <button
             type="submit"
@@ -106,7 +136,7 @@ export default function LogInPage() {
         <div className="flex justify-center mt-6">
           <p>
             Don&apos;t have an account?{" "}
-            <Link href="/signIn" className="hover:underline">
+            <Link href="/signIn" className="hover:underline text-blue-400">
               Sign Up here!
             </Link>
           </p>
