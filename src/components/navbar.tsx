@@ -108,34 +108,37 @@ export default function Nav() {
         <BsArrowLeftShort
           className={`bg-white text-dark-purple text-3xl rounded-full absolute -right-3 top-9 border border-dark-purple cursor-pointer ${!isMenuOpen && "rotate-180"} active:outline-2`}
           onClick={() => setIsMenuOpen(!isMenuOpen)}
-        ></BsArrowLeftShort>
-        <div className="inline-flex">
-          <FcEnteringHeavenAlive className="text-4xl text-black rounded cursor-pointer block float-left mr-2"></FcEnteringHeavenAlive>
-          <h1
-            className={`text-white origin-left font-medium text-2xl ${!isMenuOpen && "scale-0"} cursor-pointer`}
-            onClick={() => router.push("/dashboard")}
-          >
-            RAILLY
-          </h1>
-        </div>
-        <ul className="pt-2">
-          {Menus.map((menu) => {
-            const isActive = pathName === menu.path;
-            return (
-              <li
-                key={menu.id}
-                className={`text-gray-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-slate-500 rounded-md mt-2 ${isActive && "bg-slate-500"}`}
-                onClick={() => router.push(menu.path)}
-              >
-                <span className="text-2xl block float-left">{menu.icon}</span>
-                <span
-                  className={`text-base font-medium flex-1 duration-300 ${!isMenuOpen && "hidden"}`}
+        />
+        <div className="flex flex-col justify-between h-full">
+          <div className="inline-flex">
+            <FcEnteringHeavenAlive className="text-4xl text-black rounded cursor-pointer block float-left mr-2"></FcEnteringHeavenAlive>
+            <h1
+              className={`text-white origin-left font-medium text-2xl ${!isMenuOpen && "scale-0"} cursor-pointer`}
+              onClick={() => router.push("/dashboard")}
+            >
+              RAILLY
+            </h1>
+          </div>
+          <ul className="pt-2">
+            {Menus.map((menu) => {
+              const isActive = pathName === menu.path;
+              return (
+                <li
+                  key={menu.id}
+                  className={`text-gray-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-slate-500 rounded-md mt-2 ${isActive && "bg-slate-500"}`}
+                  onClick={() => router.push(menu.path)}
                 >
-                  {menu.title}
-                </span>
-              </li>
-            );
-          })}
+                  <span className="text-2xl block float-left">{menu.icon}</span>
+                  <span
+                    className={`text-base font-medium flex-1 duration-300 ${!isMenuOpen && "hidden"}`}
+                  >
+                    {menu.title}
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
+
           <div
             className={`text-gray-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-slate-500 rounded-md mt-9`}
             onClick={handleSignOut}
@@ -149,7 +152,7 @@ export default function Nav() {
               Sign Out
             </span>
           </div>
-        </ul>
+        </div>
       </div>
     </div>
   );

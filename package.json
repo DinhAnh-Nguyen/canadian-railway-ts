@@ -24,6 +24,7 @@
     "firebase": "^11.0.2",
     "leaflet": "^1.9.4",
     "leaflet.gridlayer.googlemutant": "^0.14.1",
+    "lucide-react": "^0.476.0",
     "moment": "^2.30.1",
     "next": "^15.1.6",
     "pgshims": "github:neondatabase/serverless",
@@ -35,9 +36,11 @@
     "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^19.0.0",
     "react-icon": "^1.0.0",
+
     "react-icons": "^5.4.0",
     "react-leaflet": "^5.0.0",
     "simplify-geojson": "^1.0.5"
+
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
