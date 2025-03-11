@@ -33,18 +33,18 @@ const FeedbackTable: React.FC<FeedbackTableProps> = ({
                 <td className="p-2">{feedback.date}</td>
                 <td className="p-2">{feedback.likes}</td>
                 <td className="p-2">{feedback.improvements}</td>
-                <td className="p-2">
+                <td className="p-2 flex flex-col gap-2">
                   <button
-                    className="text-blue-400 hover:underline"
-                    onClick={() => onEdit(feedback)}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    className="ml-2 text-red-400 hover:underline"
+                    className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
                     onClick={() => onDelete(feedback.id)}
                   >
                     Delete
+                  </button>
+                  <button
+                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded"
+                    onClick={() => onEdit(feedback)}
+                  >
+                    Edit
                   </button>
                 </td>
               </tr>
