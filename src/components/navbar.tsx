@@ -17,12 +17,9 @@ import { MdOutlineManageAccounts, MdOutlineFeedback } from "react-icons/md";
 import { usePathname } from "next/navigation";
 
 export default function Nav() {
-  const [user, setUser] = useState<User | null>(null);
-  const [userName, setUserName] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
   const router = useRouter();
   const pathName = usePathname();
-  const [isMenuOpen, setIsMenuOpen] = useState(true);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const Menus = [
     {
@@ -65,24 +62,6 @@ export default function Nav() {
     },
   ];
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        setUser(user);
-        const userDoc = await getDoc(doc(firestore, "users", user.uid));
-        if (userDoc.exists()) {
-          const userData = userDoc.data();
-          setUserName(`${userData.firstName} ${userData.lastName}`);
-        }
-      } else {
-        router.push("/logIn");
-      }
-      setLoading(false);
-    });
-
-    return () => unsubscribe();
-  }, [router]);
-
   const handleSignOut = async () => {
     try {
       await signOut(auth);
@@ -92,66 +71,63 @@ export default function Nav() {
     }
   };
 
-  // const handlePasswordChange = () => {
-  //   router.push("/changePassword");
-  // };
-
-  // if (loading) {
-  //   return <p>Loading...</p>;
-  // }
-
   return (
-    <div className="flex">
-      <div
-        className={`bg-[#393A3E] h-screen p-5 pt-8 ${isMenuOpen ? "w-52" : "w-20"} duration-300 rounded-md sticky top-0`}
-      >
-        <BsArrowLeftShort
-          className={`bg-white text-dark-purple text-3xl rounded-full absolute -right-3 top-9 border border-dark-purple cursor-pointer ${!isMenuOpen && "rotate-180"} active:outline-2`}
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-        />
-        <div className="flex flex-col justify-between h-full">
-          <div className="inline-flex">
-            <FcEnteringHeavenAlive className="text-4xl text-black rounded cursor-pointer block float-left mr-2"></FcEnteringHeavenAlive>
-            <h1
-              className={`text-white origin-left font-medium text-2xl ${!isMenuOpen && "scale-0"} cursor-pointer`}
-              onClick={() => router.push("/dashboard")}
-            >
-              RAILLY
-            </h1>
-          </div>
-          <ul className="pt-2">
-            {Menus.map((menu) => {
-              const isActive = pathName === menu.path;
-              return (
-                <li
-                  key={menu.id}
-                  className={`text-gray-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-slate-500 rounded-md mt-2 ${isActive && "bg-slate-500"}`}
-                  onClick={() => router.push(menu.path)}
-                >
-                  <span className="text-2xl block float-left">{menu.icon}</span>
-                  <span
-                    className={`text-base font-medium flex-1 duration-300 ${!isMenuOpen && "hidden"}`}
-                  >
-                    {menu.title}
-                  </span>
-                </li>
-              );
-            })}
-          </ul>
-
-          <div
-            className={`text-gray-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-slate-500 rounded-md mt-9`}
-            onClick={handleSignOut}
+    <div
+      className={`bg-[#393A3E] h-screen p-5 ${
+        isMenuOpen ? "w-72" : "w-20"
+      } duration-300 rounded-md sticky top-0`}
+      onMouseEnter={() => setIsMenuOpen(true)}
+      onMouseLeave={() => setIsMenuOpen(false)}
+    >
+      <div className="flex flex-col justify-between h-full">
+        <div onClick={() => router.push("/dashboard")}>
+          <FcEnteringHeavenAlive className="text-4xl cursor-pointer float-left block mr-3" />
+          <h1
+            className={`text-white font-medium text-2xl ${
+              !isMenuOpen && "hidden"
+            } cursor-pointer`}
           >
-            <span className="text-2xl block float-left">
-              <RiLogoutCircleRLine />
-            </span>
-            <span
-              className={`text-base font-medium flex-1 duration-300 ${!isMenuOpen && "hidden"}`}
-            >
-              Sign Out
-            </span>
-          </div>
+            RAILLY
+          </h1>
+        </div>
+        <ul>
+          {Menus.map((menu) => {
+            const isActive = pathName === menu.path;
+            return (
+              <li
+                key={menu.id}
+                className={`text-gray-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-slate-500 rounded-md mt-2 ${
+                  isActive && "bg-slate-500"
+                }`}
+                onClick={() => router.push(menu.path)}
+              >
+                <span className="text-2xl">{menu.icon}</span>
+                <span
+                  className={`text-base font-medium flex-1 duration-300 ${
+                    !isMenuOpen && "hidden"
+                  }`}
+                >
+                  {menu.title}
+                </span>
+              </li>
+            );
+          })}
+        </ul>
+
+        <div
+          className={`text-gray-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-slate-500 rounded-md`}
+          onClick={handleSignOut}
+        >
+          <span className="text-2xl">
+            <RiLogoutCircleRLine />
+          </span>
+          <span
+            className={`text-base font-medium flex-1 duration-300 ${
+              !isMenuOpen && "hidden"
+            }`}
+          >
+            Sign Out
+          </span>
         </div>
       </div>
     </div>
