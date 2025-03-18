@@ -1,97 +1,84 @@
 "use client";
 import { createContext, useContext, useEffect, useState } from "react";
-import { onAuthStateChanged, signOut, setPersistence, browserLocalPersistence } from "firebase/auth";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth, firestore } from "@/app/_utils/firebase";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import { CustomUser } from "../types/user";
 
 type AuthContextType = {
     user: CustomUser | null;
+    role: string | null;
     isLoading: boolean;
     setUser: (user: CustomUser | null) => void;
+    logout: () => Promise<void>;
+    getAuthToken: () => Promise<string | null>;
 };
 
-const AuthContext = createContext<AuthContextType>({
-    user: null,
-    isLoading: true,
-    setUser: () => { },
-});
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<CustomUser | null>(null);
+    const [role, setRole] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
+    const getAuthToken = async (): Promise<string | null> => {
+        if (!auth.currentUser) return null;
+        try {
+            const token = await auth.currentUser.getIdToken(true);
+            return token;
+        } catch (tokenError) {
+            return null;
+        }
+    };
+
     useEffect(() => {
-        const initializeAuth = async () => {
-            try {
-                await setPersistence(auth, browserLocalPersistence);
-
-                const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-                    try {
-                        if (firebaseUser) {
-                            // 1. Create document reference using UID
-                            const userRef = doc(firestore, "users", firebaseUser.uid);
-
-                            // 2. Create document if it doesn't exist and re-fetch data
-                            let userData: any;
-                            const userDoc = await getDoc(userRef);
-                            if (!userDoc.exists()) {
-                                await setDoc(userRef, {
-                                    email: firebaseUser.email,
-                                    firstName: "",
-                                    lastName: "",
-                                    roles: ["user"] // Default role
-                                });
-                                // Re-fetch the document to obtain the updated data
-                                const newUserDoc = await getDoc(userRef);
-                                userData = newUserDoc.data();
-                            } else {
-                                userData = userDoc.data();
-                            }
-
-                            // 3. Validate document structure
-                            if (!userData?.roles || !Array.isArray(userData.roles)) {
-                                throw new Error("Invalid roles format in Firestore document");
-                            }
-
-                            // 4. Set user state with validated data
-                            setUser({
-                                uid: firebaseUser.uid,
-                                email: firebaseUser.email!,
-                                emailVerified: firebaseUser.emailVerified,
-                                roles: userData.roles,
-                                firstName: userData.firstName || "",
-                                lastName: userData.lastName || ""
-                            });
-                        } else {
-                            setUser(null);
-                            console.log("Checking roles:", user?.roles);
-
-                        }
-                    } catch (error) {
-                        console.error("Auth error:", error);
-                        await signOut(auth);
+        const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+            if (currentUser) {
+                try {
+                    const userDoc = await getDoc(doc(firestore, "users", currentUser.uid));
+                    if (userDoc.exists()) {
+                        const userRole = userDoc.data().role || "user";
+                        setUser({
+                            ...currentUser,
+                            roles: [userRole],
+                        } as CustomUser);
+                        setRole(userRole);
+                    } else {
                         setUser(null);
-                    } finally {
-                        setIsLoading(false);
+                        setRole(null);
                     }
-                });
-
-                return unsubscribe;
-            } catch (error) {
-                console.error("Persistence setup error:", error);
-                setIsLoading(false);
+                } catch (error) {
+                    setUser(null);
+                    setRole(null);
+                }
+            } else {
+                setUser(null);
+                setRole(null);
             }
-        };
-
-        initializeAuth();
+            setIsLoading(false);
+        });
+        return () => unsubscribe();
     }, []);
 
+    const logout = async () => {
+        try {
+            await signOut(auth);
+            setUser(null);
+            setRole(null);
+        } catch (error) {
+            // Optionally handle logout error
+        }
+    };
+
     return (
-        <AuthContext.Provider value={{ user, isLoading, setUser }}>
+        <AuthContext.Provider value={{ user, role, isLoading, setUser, logout, getAuthToken }}>
             {children}
         </AuthContext.Provider>
     );
-}
+};
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => {
+    const context = useContext(AuthContext);
+    if (!context) throw new Error("useAuth must be used within an AuthProvider");
+    return context;
+};
