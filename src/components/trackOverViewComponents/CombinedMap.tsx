@@ -4,24 +4,24 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "leaflet.gridlayer.googlemutant";
 import { trackCoordinates } from "@/data/trackLocations";
- 
+
 interface CombinedMapProps {
   selectedTrack: string;
 }
- 
+
 const CombinedMap: React.FC<CombinedMapProps> = ({ selectedTrack }) => {
   useEffect(() => {
     let map: L.Map | null = L.map("combined-map").setView(
       trackCoordinates[selectedTrack] || { lat: 51.0447, lng: -114.0719 }, // Default to Calgary
       10
     );
- 
     // Add Google Maps layer
-    const googleLayer = L.gridLayer.googleMutant({
-      type: "roadmap", // Options: roadmap, satellite, terrain, hybrid
+    const googleLayer = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+      maxZoom: 20,
+      subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
     });
     googleLayer.addTo(map);
- 
+
     // Add railway WMS layer
     L.tileLayer.wms("https://maps.geogratis.gc.ca/wms/railway_en?", {
       layers: "railway.track",
@@ -30,14 +30,14 @@ const CombinedMap: React.FC<CombinedMapProps> = ({ selectedTrack }) => {
       attribution:
         "Map data © <a href='https://open.canada.ca/'>Government of Canada</a>",
     }).addTo(map);
- 
+
     return () => {
       if (map) {
         map.remove();
       }
     };
   }, [selectedTrack]);
- 
+
   return (
     <div
       id="combined-map"
@@ -45,5 +45,5 @@ const CombinedMap: React.FC<CombinedMapProps> = ({ selectedTrack }) => {
     ></div>
   );
 };
- 
+
 export default CombinedMap;
