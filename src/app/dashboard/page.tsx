@@ -8,6 +8,7 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import useForecast from "../hooks/useForecast";
 import { useRouter } from "next/navigation";
+import ProtectedRoute from "@/components/ProtectedRoute";
 // import ProtectedRoute from "@/components/ProtectedRoute";
 
 export default function Dashboard() {

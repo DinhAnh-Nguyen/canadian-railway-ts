@@ -40,7 +40,7 @@ export default function Schedule() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
-
+  const [viewMode, setViewMode] = useState("calendar"); // Default view mode
   const eventsService = useState(() => createEventsServicePlugin())[0];
 
   useEffect(() => {
@@ -109,7 +109,7 @@ export default function Schedule() {
       end_date: endDate,
       end_time: endTime,
       priority,
-      track_Id: trackID
+      track_Id: trackID,
     };
 
     try {
@@ -180,7 +180,12 @@ export default function Schedule() {
   }, [tasks]);
 
   const calendar = useNextCalendarApp({
-    views: [createViewDay(), createViewWeek(), createViewMonthGrid(), createViewMonthAgenda()],
+    views: [
+      createViewDay(),
+      createViewWeek(),
+      createViewMonthGrid(),
+      createViewMonthAgenda(),
+    ],
     defaultView: "week",
     events,
     plugins: [eventsService],
@@ -204,71 +209,101 @@ export default function Schedule() {
     );
   } else {
     return (
-      <div className="flex" >
+      <div className="flex h-screen overflow-hidden">
+        {/* Sidebar Navigation */}
         <Nav />
-        <div className="flex justify-end p-4">
-          <button
-            className="bg-blue-600 w-32 h-10 rounded-full cursor-pointer hover:bg-blue-500"
-            onClick={() => setIsModalOpen(true)}
-          >
-            Schedule
-          </button>
-        </div>
 
-        {/* Modal for adding a task */}
-        <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onAddTask={handleAddTask} />
-
-        {/* Modal for task details */}
-        {selectedTask && (
-          <TaskDetailsModal
-            isOpen={isDetailsModalOpen}
-            onClose={() => setIsDetailsModalOpen(false)}
-            task={selectedTask}
-            onDelete={handleDeleteTask}
-          />
-        )}
-        <div className=" text-white min-h-screen p-6 w-full max-h-12">
-          {/* Schedule-X Calendar */}
-          <div className="sx-react-calendar-wrapper w-full h-[600px] mt-4">
-            <ScheduleXCalendar calendarApp={calendar} />
+        {/* Main Content */}
+        <div className="bg-black text-white w-full flex flex-col px-6 mt-4">
+          {/* Header */}
+          <div className="flex justify-between items-center mb-4">
+            <button
+              className="bg-blue-600 w-32 h-10 rounded-full cursor-pointer hover:bg-blue-500"
+              onClick={() => setIsModalOpen(true)}
+            >
+              Schedule
+            </button>
+            <button
+              className="bg-gray-700 px-6 py-2 rounded-full cursor-pointer hover:bg-gray-600"
+              onClick={() =>
+                setViewMode(viewMode === "calendar" ? "table" : "calendar")
+              }
+            >
+              {viewMode === "calendar" ? "Switch to Table View" : "Switch to Calendar View"}
+            </button>
           </div>
 
-          {/* Task Table */}
-          <div className="mt-8">
-            <h1 className="text-2xl font-bold mb-4 text-white">Scheduled Tasks</h1>
-            <table className="border-collapse border border-gray-800 w-full ">
-              <thead>
-                <tr>
-                  <th className="border border-gray-800">Order ID</th>
-                  <th className="border border-gray-800">Track ID</th>
-                  <th className="border border-gray-800">Status</th>
-                  <th className="border border-gray-800">Title</th>
-                  <th className="border border-gray-800">Description</th>
-                  <th className="border border-gray-800">Start Date</th>
-                  <th className="border border-gray-800">End Date</th>
-                  <th className="border border-gray-800">Assigned To</th>
-                  <th className="border border-gray-800">Priority</th>
-                </tr>
-              </thead>
-              <tbody>
-                {tasks.map((task) => (
-                  <tr key={task.id}>
-                    <td className="border border-gray-300">#{task.id}</td>
-                    <td className="border border-gray-300">#{task.track_id}</td>
-                    <td className="border border-gray-300">{task.status}</td>
-                    <td className="border border-gray-300">{task.title}</td>
-                    <td className="border border-gray-300">{task.description}</td>
-                    <td className="border border-gray-300">{task.start_date}</td>
-                    <td className="border border-gray-300">{task.end_date}</td>
-                    <td className="border border-gray-300">{task.assigned_to}</td>
-                    <td className="border border-gray-300">{task.priority}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          {/* Modal for adding a task */}
+          <Modal
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            onAddTask={handleAddTask}
+          />
+
+          {/* Modal for task details */}
+          {selectedTask && (
+            <TaskDetailsModal
+              isOpen={isDetailsModalOpen}
+              onClose={() => setIsDetailsModalOpen(false)}
+              task={selectedTask}
+              onDelete={handleDeleteTask}
+            />
+          )}
+
+          {/* Dynamic View: Calendar or Table */}
+          <div className="flex-grow overflow-auto">
+            {viewMode === "calendar" ? (
+              <div className="sx-react-calendar-wrapper h-full w-full max-h-[600px]">
+                <ScheduleXCalendar calendarApp={calendar} />
+              </div>
+            ) : (
+              <div className="overflow-auto max-h-[600px]">
+                <h1 className="text-2xl font-bold mb-4 text-white">
+                  Scheduled Tasks
+                </h1>
+                <table className="border-collapse border border-gray-800 w-full">
+                  <thead>
+                    <tr>
+                      <th className="border border-gray-800">Order ID</th>
+                      <th className="border border-gray-800">Track ID</th>
+                      <th className="border border-gray-800">Status</th>
+                      <th className="border border-gray-800">Title</th>
+                      <th className="border border-gray-800">Description</th>
+                      <th className="border border-gray-800">Start Date</th>
+                      <th className="border border-gray-800">End Date</th>
+                      <th className="border border-gray-800">Assigned To</th>
+                      <th className="border border-gray-800">Priority</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {tasks?.length > 0 ? (
+                      tasks.map((task) => (
+                        <tr key={task.id}>
+                          <td className="border border-gray-300">#{task.id}</td>
+                          <td className="border border-gray-300">#{task.track_id}</td>
+                          <td className="border border-gray-300">{task.status}</td>
+                          <td className="border border-gray-300">{task.title}</td>
+                          <td className="border border-gray-300">{task.description}</td>
+                          <td className="border border-gray-300">{task.start_date}</td>
+                          <td className="border border-gray-300">{task.end_date}</td>
+                          <td className="border border-gray-300">{task.assigned_to}</td>
+                          <td className="border border-gray-300">{task.priority}</td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td className="border border-gray-300 text-center py-4">
+                          No tasks available.
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         </div>
       </div>
     );
   }
-}
+};  
