@@ -12,7 +12,7 @@ const CombinedMap: React.FC<CombinedMapProps> = ({ selectedTrack }) => {
   const mapRef = useRef<L.Map | null>(null);
 
   useEffect(() => {
-    // Ensure this code only runs in the browser
+    // Ensure this code only runs in the 
     if (typeof window === "undefined") return;
 
     // Dynamically import the Google Mutant plugin
