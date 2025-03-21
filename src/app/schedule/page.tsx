@@ -15,7 +15,6 @@ import "@schedule-x/theme-default/dist/index.css";
 import Modal from "@/components/modal";
 import TaskDetailsModal from "@/components/detailsModal";
 import Nav from "@/components/navbar";
-import ProtectedRoute from "@/components/ProtectedRoute";
 
 // Task Type Definition
 export type Task = {
@@ -31,7 +30,8 @@ export type Task = {
   start_time: string;
   end_date: string;
   end_time: string;
-  track_id: number;
+  track_id: string;
+  coordinates: [number, number][];
 };
 
 export default function Schedule() {
@@ -40,7 +40,8 @@ export default function Schedule() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
-
+  const [trackCoordinates, setTrackCoordinates] = useState<{ [key: string]: [number, number][] }>({});
+  const [viewMode, setViewMode] = useState("calendar"); // Default view mode
   const eventsService = useState(() => createEventsServicePlugin())[0];
 
   useEffect(() => {
@@ -82,6 +83,45 @@ export default function Schedule() {
     }
   };
 
+  useEffect(() => {
+    const fetchGeoJSON = async () => {
+      try {
+        const response = await fetch("/Alberta.geojson");
+        if (!response.ok) throw new Error("Failed to fetch GeoJSON data");
+
+        const albertaGeoJSON = await response.json();
+
+        const coordinatesMap = albertaGeoJSON.features.reduce((acc, feature) => {
+          const trackId = feature.properties["@id"];
+          acc[trackId] = feature.geometry.coordinates;
+          return acc;
+        }, {});
+
+        setTrackCoordinates(coordinatesMap);
+      } catch (error) {
+        console.error("Error fetching GeoJSON:", error);
+      }
+    };
+
+    fetchGeoJSON();
+  }, []);
+
+  const calculateMidpoint = (coordinates: [number, number][]) => {
+    if (!coordinates || coordinates.length === 0) return null;
+
+    const numCoordinates = coordinates.length;
+
+    if (numCoordinates % 2 === 1) {
+      // Odd number of coordinates: return the middle coordinate
+      return coordinates[Math.floor(numCoordinates / 2)];
+    } else {
+      // Even number of coordinates: average the two middle coordinates
+      const mid1 = coordinates[numCoordinates / 2 - 1];
+      const mid2 = coordinates[numCoordinates / 2];
+      return [(mid1[0] + mid2[0]) / 2, (mid1[1] + mid2[1]) / 2];
+    }
+  };
+
   // Handle adding a new task
   const handleAddTask = async (
     title: string,
@@ -93,9 +133,40 @@ export default function Schedule() {
     assignedTo: number,
     priority: string,
     status: string,
-    trackID: number
+    trackId: string // User inputs this
   ) => {
     const due_date = `${endDate}T${endTime}:00`;
+    console.log("Selected Track ID:", trackId);
+    console.log("Available Track IDs:", Object.keys(trackCoordinates));
+
+    if (!trackCoordinates || Object.keys(trackCoordinates).length === 0) {
+      console.error("Track data not loaded yet");
+      return;
+    }
+
+    const formattedTrackId = trackId.startsWith("node/")
+      ? trackId
+      : trackId.startsWith("way/")
+      ? trackId
+      : `way/${trackId}`;
+    console.log("Formatted Track ID:", formattedTrackId);
+
+    // Fetch coordinates for the selected track
+    const coordinates = trackCoordinates[trackId.toString()];
+    if (!coordinates) {
+      console.error("Invalid Track ID: Coordinates not found");
+      return;
+    }
+
+    console.log("Coordinates for selected track:", coordinates);
+
+    // Calculate the midpoint
+    const midpoint = calculateMidpoint(coordinates);
+    console.log("Midpoint calculated:", midpoint);
+    if (!midpoint) {
+      console.error("No valid midpoint found for the selected track");
+      return;
+    }
 
     const newTask = {
       title,
@@ -109,7 +180,8 @@ export default function Schedule() {
       end_date: endDate,
       end_time: endTime,
       priority,
-      track_Id: trackID
+      track_id: trackId, // Save the track ID
+      coordinates: [midpoint], // Save the midpoint
     };
 
     try {
@@ -127,29 +199,13 @@ export default function Schedule() {
 
       const createdTask = await response.json();
 
-      // Format the dates to match the calendar's expected format
-      const formattedTask = {
-        ...createdTask,
-        start_date: createdTask.start_date.split("T")[0], // Extract YYYY-MM-DD
-        end_date: createdTask.end_date.split("T")[0], // Extract YYYY-MM-DD
-      };
-
-      // Update the tasks state
-      setTasks((prevTasks) => [...prevTasks, formattedTask]);
-
-      // Update the events array for the calendar
-      const newEvent = {
-        id: formattedTask.id.toString(),
-        title: formattedTask.title,
-        start: formattedTask.start_date,
-        end: formattedTask.end_date,
-      };
-      eventsService.add(newEvent); // Add the new event to the calendar
+      setTasks((prevTasks) => [...prevTasks, createdTask]);
 
       setIsModalOpen(false);
     } catch (error) {
       console.error("Error adding task:", error);
     }
+    console.log("Request data being sent:", JSON.stringify(newTask, null, 2));
   };
 
   const handleDeleteTask = async (taskId: number) => {
@@ -204,15 +260,73 @@ export default function Schedule() {
     );
   } else {
     return (
-      <div className="flex" >
+      <div className="flex">
         <Nav />
-        <div className="flex justify-end p-4">
-          <button
-            className="bg-blue-600 w-32 h-10 rounded-full cursor-pointer hover:bg-blue-500"
-            onClick={() => setIsModalOpen(true)}
-          >
-            Schedule
-          </button>
+        <div className="bg-black text-white w-full min-h-screen px-6 mt-4">
+          {/* Header */}
+          <div className="flex justify-between items-center mb-4">
+            <button
+              className="bg-blue-600 px-6 py-2 rounded-full cursor-pointer hover:bg-blue-500"
+              onClick={() => setIsModalOpen(true)}
+            >
+              Schedule
+            </button>
+            <button
+              className="bg-gray-700 px-6 py-2 rounded-full cursor-pointer hover:bg-gray-600"
+              onClick={() =>
+                setViewMode(viewMode === "calendar" ? "table" : "calendar")
+              }
+            >
+              {viewMode === "calendar"
+                ? "Switch to Table View"
+                : "Switch to Calendar View"}
+            </button>
+          </div>
+
+          {/* Conditional Rendering for Calendar or Table View */}
+          {viewMode === "calendar" ? (
+            <div className="sx-react-calendar-wrapper w-full h-[600px] mt-4">
+              <ScheduleXCalendar calendarApp={calendar} />
+            </div>
+          ) : (
+            <div className="mt-8">
+              <h1 className="text-2xl font-bold mb-4 text-white">
+                Scheduled Tasks
+              </h1>
+              <table className="border-collapse border border-gray-800 w-full">
+                <thead>
+                  <tr>
+                    <th className="border border-gray-800">Order ID</th>
+                    <th className="border border-gray-800">Track ID</th>
+                    <th className="border border-gray-800">Status</th>
+                    <th className="border border-gray-800">Title</th>
+                    <th className="border border-gray-800">Description</th>
+                    <th className="border border-gray-800">Start Date</th>
+                    <th className="border border-gray-800">End Date</th>
+                    <th className="border border-gray-800">Assigned To</th>
+                    <th className="border border-gray-800">Priority</th>
+                    <th className="border border-gray-800">Midpoint Coordinates</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {tasks.map((task) => (
+                    <tr key={task.id}>
+                      <td className="border border-gray-300">#{task.id}</td>
+                      <td className="border border-gray-300">#{task.track_id}</td>
+                      <td className="border border-gray-300">{task.status}</td>
+                      <td className="border border-gray-300">{task.title}</td>
+                      <td className="border border-gray-300">{task.description}</td>
+                      <td className="border border-gray-300">{task.start_date}</td>
+                      <td className="border border-gray-300">{task.end_date}</td>
+                      <td className="border border-gray-300">{task.assigned_to}</td>
+                      <td className="border border-gray-300">{task.priority}</td>
+                      <td>{task.coordinates ? JSON.stringify(task.coordinates) : "N/A"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
 
         {/* Modal for adding a task */}
@@ -227,47 +341,6 @@ export default function Schedule() {
             onDelete={handleDeleteTask}
           />
         )}
-        <div className=" text-white min-h-screen p-6 w-full max-h-12">
-          {/* Schedule-X Calendar */}
-          <div className="sx-react-calendar-wrapper w-full h-[600px] mt-4">
-            <ScheduleXCalendar calendarApp={calendar} />
-          </div>
-
-          {/* Task Table */}
-          <div className="mt-8">
-            <h1 className="text-2xl font-bold mb-4 text-white">Scheduled Tasks</h1>
-            <table className="border-collapse border border-gray-800 w-full ">
-              <thead>
-                <tr>
-                  <th className="border border-gray-800">Order ID</th>
-                  <th className="border border-gray-800">Track ID</th>
-                  <th className="border border-gray-800">Status</th>
-                  <th className="border border-gray-800">Title</th>
-                  <th className="border border-gray-800">Description</th>
-                  <th className="border border-gray-800">Start Date</th>
-                  <th className="border border-gray-800">End Date</th>
-                  <th className="border border-gray-800">Assigned To</th>
-                  <th className="border border-gray-800">Priority</th>
-                </tr>
-              </thead>
-              <tbody>
-                {tasks.map((task) => (
-                  <tr key={task.id}>
-                    <td className="border border-gray-300">#{task.id}</td>
-                    <td className="border border-gray-300">#{task.track_id}</td>
-                    <td className="border border-gray-300">{task.status}</td>
-                    <td className="border border-gray-300">{task.title}</td>
-                    <td className="border border-gray-300">{task.description}</td>
-                    <td className="border border-gray-300">{task.start_date}</td>
-                    <td className="border border-gray-300">{task.end_date}</td>
-                    <td className="border border-gray-300">{task.assigned_to}</td>
-                    <td className="border border-gray-300">{task.priority}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
       </div>
     );
   }
