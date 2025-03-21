@@ -1,7 +1,8 @@
 "use client";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import "leaflet.gridlayer.googlemutant";
 import { trackCoordinates } from "@/data/trackLocations";
 
 interface CombinedMapProps {
@@ -9,8 +10,6 @@ interface CombinedMapProps {
 }
 
 const CombinedMap: React.FC<CombinedMapProps> = ({ selectedTrack }) => {
-  const mapRef = useRef<L.Map | null>(null);
-
   useEffect(() => {
     // Ensure this code only runs in the 
     if (typeof window === "undefined") return;
@@ -38,12 +37,20 @@ const CombinedMap: React.FC<CombinedMapProps> = ({ selectedTrack }) => {
           "Map data © <a href='https://open.canada.ca/'>Government of Canada</a>",
       }).addTo(mapRef.current);
     });
+    googleLayer.addTo(map);
 
-    // Cleanup on unmount
+    // Add railway WMS layer
+    L.tileLayer.wms("https://maps.geogratis.gc.ca/wms/railway_en?", {
+      layers: "railway.track",
+      format: "image/png",
+      transparent: true,
+      attribution:
+        "Map data © <a href='https://open.canada.ca/'>Government of Canada</a>",
+    }).addTo(map);
+
     return () => {
-      if (mapRef.current) {
-        mapRef.current.remove();
-        mapRef.current = null;
+      if (map) {
+        map.remove();
       }
     };
   }, [selectedTrack]);

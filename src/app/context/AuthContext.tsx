@@ -1,97 +1,136 @@
 "use client";
 import { createContext, useContext, useEffect, useState } from "react";
-import { onAuthStateChanged, signOut, setPersistence, browserLocalPersistence } from "firebase/auth";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth, firestore } from "@/app/_utils/firebase";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import { CustomUser } from "../types/user";
 
 type AuthContextType = {
     user: CustomUser | null;
+    role: string | null;
+    permissions: string[];
     isLoading: boolean;
     setUser: (user: CustomUser | null) => void;
+    logout: () => Promise<void>;
+    getAuthToken: () => Promise<string | null>;
+    hasPermission: (permission: string) => boolean;
 };
 
-const AuthContext = createContext<AuthContextType>({
-    user: null,
-    isLoading: true,
-    setUser: () => { },
-});
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<CustomUser | null>(null);
+    const [role, setRole] = useState<string | null>(null);
+    const [permissions, setPermissions] = useState<string[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
+    // Helper function to check if a user has a specific permission
+    const hasPermission = (permission: string): boolean => {
+        return permissions.includes(permission);
+    };
+
+    const getAuthToken = async (): Promise<string | null> => {
+        if (!auth.currentUser) return null;
+        try {
+            const token = await auth.currentUser.getIdToken(true);
+            return token;
+        } catch (tokenError) {
+            return null;
+        }
+    };
+
     useEffect(() => {
-        const initializeAuth = async () => {
-            try {
-                await setPersistence(auth, browserLocalPersistence);
+        const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+            if (currentUser) {
+                try {
+                    const userDoc = await getDoc(doc(firestore, "users", currentUser.uid));
+                    if (userDoc.exists()) {
+                        const userData = userDoc.data();
 
-                const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-                    try {
-                        if (firebaseUser) {
-                            // 1. Create document reference using UID
-                            const userRef = doc(firestore, "users", firebaseUser.uid);
+                        // Get role from either singular role field or roles array
+                        let userRole = userData.role;
 
-                            // 2. Create document if it doesn't exist and re-fetch data
-                            let userData: any;
-                            const userDoc = await getDoc(userRef);
-                            if (!userDoc.exists()) {
-                                await setDoc(userRef, {
-                                    email: firebaseUser.email,
-                                    firstName: "",
-                                    lastName: "",
-                                    roles: ["user"] // Default role
-                                });
-                                // Re-fetch the document to obtain the updated data
-                                const newUserDoc = await getDoc(userRef);
-                                userData = newUserDoc.data();
+                        // If no singular role field but has roles array
+                        if (!userRole && Array.isArray(userData.roles) && userData.roles.length > 0) {
+                            // Prefer admin role if present
+                            if (userData.roles.includes("admin")) {
+                                userRole = "admin";
                             } else {
-                                userData = userDoc.data();
+                                userRole = userData.roles[0]; // Use first role
                             }
-
-                            // 3. Validate document structure
-                            if (!userData?.roles || !Array.isArray(userData.roles)) {
-                                throw new Error("Invalid roles format in Firestore document");
-                            }
-
-                            // 4. Set user state with validated data
-                            setUser({
-                                uid: firebaseUser.uid,
-                                email: firebaseUser.email!,
-                                emailVerified: firebaseUser.emailVerified,
-                                roles: userData.roles,
-                                firstName: userData.firstName || "",
-                                lastName: userData.lastName || ""
-                            });
-                        } else {
-                            setUser(null);
-                            console.log("Checking roles:", user?.roles);
-
                         }
-                    } catch (error) {
-                        console.error("Auth error:", error);
-                        await signOut(auth);
-                        setUser(null);
-                    } finally {
-                        setIsLoading(false);
-                    }
-                });
 
-                return unsubscribe;
-            } catch (error) {
-                console.error("Persistence setup error:", error);
+                        // Default to user if still no role
+                        userRole = userRole || "user";
+
+                        setUser({
+                            ...currentUser,
+                            roles: Array.isArray(userData.roles) ? userData.roles : [userRole],
+                        } as CustomUser);
+
+                        setRole(userRole);
+
+                        // Set permissions based on role
+                        if (userRole === "admin") {
+                            setPermissions([
+                                "users:read", "users:write", "users:delete",
+                                "tracks:read", "tracks:write"
+                            ]);
+                        } else {
+                            setPermissions(["tracks:read"]);
+                        }
+                    } else {
+                        setUser(null);
+                        setRole(null);
+                        setPermissions([]);
+                    }
+                } catch (error) {
+                    console.error("Error fetching user data:", error);
+                    setUser(null);
+                    setRole(null);
+                    setPermissions([]);
+                }
+                setIsLoading(false);
+            } else {
+                setUser(null);
+                setRole(null);
+                setPermissions([]);
                 setIsLoading(false);
             }
-        };
+        });
 
-        initializeAuth();
+        return () => unsubscribe();
     }, []);
 
+    const logout = async () => {
+        try {
+            await signOut(auth);
+            setUser(null);
+            setRole(null);
+            setPermissions([]);
+        } catch (error) {
+            // Optionally handle logout error
+        }
+    };
+
     return (
-        <AuthContext.Provider value={{ user, isLoading, setUser }}>
+        <AuthContext.Provider value={{
+            user,
+            role,
+            permissions,
+            isLoading,
+            setUser,
+            logout,
+            getAuthToken,
+            hasPermission
+        }}>
             {children}
         </AuthContext.Provider>
     );
-}
+};
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => {
+    const context = useContext(AuthContext);
+    if (!context) throw new Error("useAuth must be used within an AuthProvider");
+    return context;
+};

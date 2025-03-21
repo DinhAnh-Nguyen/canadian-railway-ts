@@ -10,6 +10,10 @@ import useForecast from "../hooks/useForecast";
 import { useRouter } from "next/navigation";
 import ProtectedRoute from "@/components/ProtectedRoute";
 
+// import ProtectedRoute from "@/components/ProtectedRoute";
+import WeatherWidget from "@/components/weather/WeatherWidget";
+
+
 export default function Dashboard() {
   type Task = {
     id: number;
@@ -172,18 +176,12 @@ export default function Dashboard() {
       <div className="flex">
         <Nav />
         <div className="px-6 bg-background text-foreground w-full h-screen flex flex-col">
-          {/* Main Content Layout */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 lg:grid-rows-2 gap-7 h-full">
-            {/* Left Column */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 lg:grid-rows-2 gap-6 h-full">
             <div
-              className="lg:col-span-1 lg:row-span-1 flex flex-col space-y-3 h-full rounded-md p-2 bg-[#393A3E] flex-grow hover:cursor-pointer"
+              className="lg:col-span-1 lg:row-span-1 flex flex-col space-y-3 h-full rounded-md p-2 bg-[#393A3E] flex-grow hover:cursor-pointer items-center justify-center overflow-hidden"
               onClick={() => router.push("/weather")}
             >
-              <h3 className="text-center text-lg font-bold">Weather Overview</h3>
-              <h3>Banff</h3>
-              <p>Wind: {forecast?.list[0].wind.speed ?? "-"} km/h</p>
-              <p>Temperature: {forecast?.list[0].main.temp ?? "-"}°C</p>
-              <p>Humidity: {forecast?.list[0].main.humidity ?? "-"}%</p>
+              <WeatherWidget />
             </div>
             <div
               className="lg:col-span-1 lg:row-span-1 flex flex-col space-y-3 h-full rounded-md p-2 bg-[#393A3E] hover:cursor-pointer"
@@ -196,8 +194,7 @@ export default function Dashboard() {
               className="lg:col-span-1 lg:row-span-1 flex flex-col space-y-3 h-full rounded-md p-2 bg-[#393A3E] flex-grow hover:cursor-pointer"
               onClick={() => router.push("/schedule")}
             >
-              <h3 className="text-center text-lg font-bold">Schedules</h3>
-              <h3 className="text-center text-sm font-bold">Wednesday</h3>
+              <h3 className="text-center text-lg font-bold">Schedules</h3>{" "}
               <table className="border-collapse border border-gray-800 w-full">
                 <thead>
                   <tr>
@@ -219,7 +216,10 @@ export default function Dashboard() {
                       <td>
                         <button
                           className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
-                          onClick={() => handleDeleteTask(task.id)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteTask(task.id);
+                          }}
                         >
                           Delete
                         </button>
@@ -237,7 +237,6 @@ export default function Dashboard() {
                 </tbody>
               </table>
             </div>
-            {/* Right Column */}
             <div
               className="lg:col-span-1 lg:row-span-1 flex flex-col space-y-3 h-full rounded-md bg-[#393A3E] hover:cursor-pointer"
               onClick={() => router.push("/trackOverview")}

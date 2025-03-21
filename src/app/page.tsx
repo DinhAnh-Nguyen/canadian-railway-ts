@@ -9,6 +9,7 @@ import type { User } from "firebase/auth";
 export default function Home() {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<User | null>(null);
+  const [role, setRole] = useState<string | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -17,24 +18,20 @@ export default function Home() {
         if (user.emailVerified) {
           const userDoc = await getDoc(doc(firestore, "users", user.uid));
           if (!userDoc.exists()) {
-            // Retrieve user data from local storage
             const registrationData = localStorage.getItem("registrationData");
-            const { firstName = "", lastName = "" } = registrationData
-              ? JSON.parse(registrationData)
-              : {};
-
+            const { firstName = "", lastName = "" } = registrationData ? JSON.parse(registrationData) : {};
             await setDoc(doc(firestore, "users", user.uid), {
               firstName,
               lastName,
               email: user.email,
+              role: "user",
             });
-
-            // Clear registration data from local storage
             localStorage.removeItem("registrationData");
           }
-
+          const roleData = userDoc.exists() ? userDoc.data().role : "user";
           setUser(user);
-          router.push("/dashboard");
+          setRole(roleData);
+          router.push(roleData === "admin" ? "/admin" : "/dashboard");
         } else {
           setUser(null);
           router.push("/logIn");
@@ -45,7 +42,6 @@ export default function Home() {
       }
       setLoading(false);
     });
-
     return () => unsubscribe();
   }, [router]);
 
@@ -53,9 +49,5 @@ export default function Home() {
     return <p>Loading...</p>;
   }
 
-  return (
-    <div>
-      {user ? "Redirecting to dashboard..." : "Redirecting to login..."}
-    </div>
-  );
+  return <div>{user ? "Redirecting to dashboard..." : "Redirecting to login..."}</div>;
 }
