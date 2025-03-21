@@ -1,7 +1,7 @@
 "use client";
 
 import React, { JSX } from "react";
-import SelectLocation from "../../components/SelectLocation";
+import SelectLocation from "../../components/weather/SelectLocation";
 import useForecast from "../hooks/useForecast";
 import Nav from "@/components/navbar";
 

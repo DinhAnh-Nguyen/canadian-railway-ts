@@ -9,7 +9,7 @@ import dynamic from "next/dynamic";
 import useForecast from "../hooks/useForecast";
 import { useRouter } from "next/navigation";
 import ProtectedRoute from "@/components/ProtectedRoute";
-
+import WeatherWidget from "@/components/weather/WeatherWidget";
 export default function Dashboard() {
   type Task = {
     id: number;
@@ -174,14 +174,10 @@ export default function Dashboard() {
         <div className="px-6 bg-background text-foreground w-full h-screen flex flex-col">
           <div className="grid grid-cols-1 lg:grid-cols-2 lg:grid-rows-2 gap-6 h-full">
             <div
-              className="lg:col-span-1 lg:row-span-1 flex flex-col space-y-3 h-full rounded-md p-2 bg-[#393A3E] flex-grow hover:cursor-pointer"
+              className="lg:col-span-1 lg:row-span-1 flex flex-col space-y-3 h-full rounded-md p-2 bg-[#393A3E] flex-grow hover:cursor-pointer items-center justify-center overflow-hidden"
               onClick={() => router.push("/weather")}
             >
-              <h3 className="text-center text-lg font-bold">Weather Overview</h3>
-              <h3>Banff</h3>
-              <p>Wind: {forecast?.list[0].wind.speed ?? "-"} km/h</p>
-              <p>Temperature: {forecast?.list[0].main.temp ?? "-"}°C</p>
-              <p>Humidity: {forecast?.list[0].main.humidity ?? "-"}%</p>
+              <WeatherWidget />
             </div>
             <div
               className="lg:col-span-1 lg:row-span-1 flex flex-col space-y-3 h-full rounded-md p-2 bg-[#393A3E] hover:cursor-pointer"
