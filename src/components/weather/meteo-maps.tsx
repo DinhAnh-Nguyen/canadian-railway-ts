@@ -33,8 +33,8 @@ export default function WeatherMap({ track }: WeathermapProps) {
     const selectedMap = meteoMaps.find((map) => map.city === track)?.link;
 
     return (
-        <div className="col-span-6 row-span-2 h-full p-4 rounded">
-            <h2 className="text-lg font-semibold bg-emerald-950 px-4 py-2 rounded-2xl">
+        <div className="col-span-6 h-full">
+            <h2 className="text-lg font-semibold bg-emerald-950 px-4 py-2 rounded">
                 Map View for Selected Track
             </h2>
             <div className="mt-4">

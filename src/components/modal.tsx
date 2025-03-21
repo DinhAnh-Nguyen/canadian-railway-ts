@@ -20,14 +20,14 @@ interface ModalProps {
     assignedTo: number,
     priority: string,
     status: string,
-    trackID: number
+    trackID: string
   ) => void;
 }
 
 export default function Modal({ isOpen, onClose, onAddTask }: ModalProps) {
   const [inputValue, setInputValue] = useState("");
   const [textareaValue, setTextareaValue] = useState("");
-  const [trackId, setTrackId] = useState(0);
+  const [trackId, setTrackId] = useState("");
   const [priority, setPriority] = useState("");
   const [status, setStatus] = useState("");
   const [startDate, setStartDate] = useState("");
@@ -48,7 +48,7 @@ export default function Modal({ isOpen, onClose, onAddTask }: ModalProps) {
     onAddTask(inputValue, textareaValue, startDate, startTime, endDate, endTime, assignedTo, priority, status, trackId);
     setInputValue("");
     setTextareaValue("");
-    setTrackId(0);
+    setTrackId("");
     setStartDate("");
     setStartTime("");
     setEndDate("");
@@ -130,7 +130,7 @@ export default function Modal({ isOpen, onClose, onAddTask }: ModalProps) {
                       rows={1}
                       className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 placeholder:text-gray-800 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                       value={trackId}
-                      onChange={(e) => setTrackId(Number(e.target.value))}
+                      onChange={(e) => setTrackId(e.target.value)}
                     />
                   </div>
                 </div>

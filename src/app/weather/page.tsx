@@ -16,7 +16,7 @@ const App = (): JSX.Element => {
   return (
     <div className="flex">
       <Nav />
-      <div className="bg-black text-white min-h-screen p-6">
+      <div className="bg-black text-white w-full min-h-screen px-6">
         <SelectLocation
           track={selectedTrack}
           forecastData={forecastData}
