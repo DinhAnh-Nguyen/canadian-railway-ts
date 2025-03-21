@@ -9,7 +9,10 @@ import dynamic from "next/dynamic";
 import useForecast from "../hooks/useForecast";
 import { useRouter } from "next/navigation";
 import ProtectedRoute from "@/components/ProtectedRoute";
+
+// import ProtectedRoute from "@/components/ProtectedRoute";
 import WeatherWidget from "@/components/weather/WeatherWidget";
+
 
 export default function Dashboard() {
   type Task = {
