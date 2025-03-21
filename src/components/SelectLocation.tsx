@@ -44,9 +44,8 @@ const SelectLocation = ({
             const forecast = forecastData[trackName];
             return (
               <div key={i} className="bg-gray-800 p-4 rounded-[10px]">
-                <h3 className="font-bold">{`Track ${i + 1} - ${trackName} (${
-                  forecast?.list[0].weather.main ?? "-"
-                })`}</h3>
+                <h3 className="font-bold">{`Track ${i + 1} - ${trackName} (${forecast?.list[0].weather.main ?? "-"
+                  })`}</h3>
                 <p>
                   Wind Speed: {forecast?.list?.[0]?.wind?.speed ?? "-"} km/h
                 </p>
@@ -96,8 +95,8 @@ const SelectLocation = ({
               <div className="font-bold text-5xl h-40 bg-gray-800 rounded-[10px] mt-4 flex items-center justify-center">
                 {selectedForecast?.list?.[0]?.wind?.deg !== undefined
                   ? `${getWindDirection(
-                      Math.round(selectedForecast.list[0].wind.deg)
-                    )}`
+                    Math.round(selectedForecast.list[0].wind.deg)
+                  )}`
                   : "No data"}
               </div>
               {/* Wind Speed */}
