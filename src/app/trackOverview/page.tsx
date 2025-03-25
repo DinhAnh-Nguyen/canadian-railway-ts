@@ -1,5 +1,5 @@
 "use client";
-import React, { use, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Nav from "@/components/navbar";
 // import CombinedMap from "@/components/trackOverViewComponents/CombinedMap";
 import RailwayMap from "@/components/railwayMap";
@@ -12,12 +12,12 @@ import {
   trackMaintenanceData,
   trackCapacityData,
 } from "@/data/trackData";
-import { trackCoordinates } from "@/data/trackLocations";
+// import { trackCoordinates } from "@/data/trackLocations";
 import {
   CHART_LABELS,
   CHART_BACKGROUND_COLORS,
   CHART_OPTIONS,
-} from "@/data/chartConfig"; // ✅ Import constants
+} from "@/data/chartConfig";
 import { Task } from "../schedule/page";
 
 export default function TrackOverview() {
@@ -67,20 +67,19 @@ export default function TrackOverview() {
   };
 
   useEffect(() => {
-      const fetchAndSetTasks = async () => {
-        const tasks = await fetchTasks();
-        setTasks(tasks);
-      };
-      fetchAndSetTasks();
-    }, []);
-
+    const fetchAndSetTasks = async () => {
+      const tasks = await fetchTasks();
+      setTasks(tasks);
+    };
+    fetchAndSetTasks();
+  }, []);
 
   return (
     <div className="flex">
       <Nav />
-      <div className="p-6 bg-background text-foreground w-full">
-        <div className="flex flex-row space-x-2">
-          <div className="mb-4 mt-7">
+      <div className="px-6 bg-background text-foreground w-full">
+        <div className="flex flex-row space-x-4">
+          <div className="mb-6 mt-7">
             <SearchBar
               tracks={Object.keys(trackDetails)}
               onTrackSelect={(track) => setSelectedTrack(track)}
@@ -89,7 +88,7 @@ export default function TrackOverview() {
             />
           </div>
 
-          <div className="mb-4 flex gap-4 items-center">
+          <div className="mb-6 flex gap-4 items-center">
             <div>
               <label
                 htmlFor="date"
@@ -107,7 +106,7 @@ export default function TrackOverview() {
             </div>
           </div>
 
-          <div className="mt-1">
+          <div>
             <label
               htmlFor="favorites"
               className="block mb-1 text-darkgrey font-medium"
@@ -116,7 +115,7 @@ export default function TrackOverview() {
             </label>
             <select
               id="favorites"
-              className="p-2 border rounded-md text-black"
+              className="px-1.5 py-[9.2px] border rounded-md text-black"
               value={selectedTrack}
               onChange={(e) => setSelectedTrack(e.target.value)}
             >
@@ -129,7 +128,7 @@ export default function TrackOverview() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-1 space-y-6">
             <TrackMaintenanceChart
               data={maintenanceHistoryData}
@@ -152,10 +151,12 @@ export default function TrackOverview() {
             <div className="h-[400px] rounded-md bg-gray-200 overflow-hidden">
               <RailwayMap onFeatureSelect={setSelectedFeature} />
             </div>
-            <TrackCapacityChart
-              data={trackCapacityData}
-              options={CHART_OPTIONS}
-            />
+            <div className="rounded-md pb-12 pt-2 pr-2 pl-2 bg-[#393A3E] h-80">
+              <TrackCapacityChart
+                data={trackCapacityData}
+                options={CHART_OPTIONS}
+              />
+            </div>
           </div>
         </div>
       </div>
