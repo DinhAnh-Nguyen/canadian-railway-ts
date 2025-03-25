@@ -14,7 +14,6 @@ import Modal from "@/components/modal";
 import TaskDetailsModal from "@/components/detailsModal";
 import Nav from "@/components/navbar";
 import "./schedule.css"
-
 // Task Type Definition
 export type Task = {
   id: number;
@@ -29,7 +28,8 @@ export type Task = {
   start_time: string;
   end_date: string;
   end_time: string;
-  track_id: number;
+  track_id: string;
+  coordinates: [number, number][];
 };
 
 export default function Schedule() {
@@ -41,6 +41,10 @@ export default function Schedule() {
   const [trackCoordinates, setTrackCoordinates] = useState<{
     [key: string]: [number, number][];
   }>({});
+
+  const [trackCoordinates, setTrackCoordinates] = useState<{ [key: string]: [number, number][] }>({});
+  const [viewMode, setViewMode] = useState("calendar"); // Default view mode
+
   const eventsService = useState(() => createEventsServicePlugin())[0];
 
   useEffect(() => {
@@ -97,6 +101,45 @@ export default function Schedule() {
           },
           {}
         );
+
+        setTrackCoordinates(coordinatesMap);
+      } catch (error) {
+        console.error("Error fetching GeoJSON:", error);
+      }
+    };
+
+    fetchGeoJSON();
+  }, []);
+
+  const calculateMidpoint = (coordinates: [number, number][]) => {
+    if (!coordinates || coordinates.length === 0) return null;
+
+    const numCoordinates = coordinates.length;
+
+    if (numCoordinates % 2 === 1) {
+      // Odd number of coordinates: return the middle coordinate
+      return coordinates[Math.floor(numCoordinates / 2)];
+    } else {
+      // Even number of coordinates: average the two middle coordinates
+      const mid1 = coordinates[numCoordinates / 2 - 1];
+      const mid2 = coordinates[numCoordinates / 2];
+      return [(mid1[0] + mid2[0]) / 2, (mid1[1] + mid2[1]) / 2];
+    }
+  };
+
+  useEffect(() => {
+    const fetchGeoJSON = async () => {
+      try {
+        const response = await fetch("/Alberta.geojson");
+        if (!response.ok) throw new Error("Failed to fetch GeoJSON data");
+
+        const albertaGeoJSON = await response.json();
+
+        const coordinatesMap = albertaGeoJSON.features.reduce((acc, feature) => {
+          const trackId = feature.properties["@id"];
+          acc[trackId] = feature.geometry.coordinates;
+          return acc;
+        }, {});
 
         setTrackCoordinates(coordinatesMap);
       } catch (error) {
@@ -268,6 +311,7 @@ export default function Schedule() {
     return (
       <div className="flex">
         <Nav />
+
         <div className="flex flex-col px-6 w-full">
           <div className="text-white">
             {/* Schedule-X Calendar */}
@@ -341,6 +385,75 @@ export default function Schedule() {
           onClose={() => setIsModalOpen(false)}
           onAddTask={handleAddTask}
         />
+        <div className="bg-black text-white w-full min-h-screen px-6 mt-4">
+          {/* Header */}
+          <div className="flex justify-between items-center mb-4">
+            <button
+              className="bg-blue-600 px-6 py-2 rounded-full cursor-pointer hover:bg-blue-500"
+              onClick={() => setIsModalOpen(true)}
+            >
+              Schedule
+            </button>
+            <button
+              className="bg-gray-700 px-6 py-2 rounded-full cursor-pointer hover:bg-gray-600"
+              onClick={() =>
+                setViewMode(viewMode === "calendar" ? "table" : "calendar")
+              }
+            >
+              {viewMode === "calendar"
+                ? "Switch to Table View"
+                : "Switch to Calendar View"}
+            </button>
+          </div>
+
+          {/* Conditional Rendering for Calendar or Table View */}
+          {viewMode === "calendar" ? (
+            <div className="sx-react-calendar-wrapper w-full h-[600px] mt-4">
+              <ScheduleXCalendar calendarApp={calendar} />
+            </div>
+          ) : (
+            <div className="mt-8">
+              <h1 className="text-2xl font-bold mb-4 text-white">
+                Scheduled Tasks
+              </h1>
+              <table className="border-collapse border border-gray-800 w-full">
+                <thead>
+                  <tr>
+                    <th className="border border-gray-800">Order ID</th>
+                    <th className="border border-gray-800">Track ID</th>
+                    <th className="border border-gray-800">Status</th>
+                    <th className="border border-gray-800">Title</th>
+                    <th className="border border-gray-800">Description</th>
+                    <th className="border border-gray-800">Start Date</th>
+                    <th className="border border-gray-800">End Date</th>
+                    <th className="border border-gray-800">Assigned To</th>
+                    <th className="border border-gray-800">Priority</th>
+                    <th className="border border-gray-800">Midpoint Coordinates</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {tasks.map((task) => (
+                    <tr key={task.id}>
+                      <td className="border border-gray-300">#{task.id}</td>
+                      <td className="border border-gray-300">#{task.track_id}</td>
+                      <td className="border border-gray-300">{task.status}</td>
+                      <td className="border border-gray-300">{task.title}</td>
+                      <td className="border border-gray-300">{task.description}</td>
+                      <td className="border border-gray-300">{task.start_date}</td>
+                      <td className="border border-gray-300">{task.end_date}</td>
+                      <td className="border border-gray-300">{task.assigned_to}</td>
+                      <td className="border border-gray-300">{task.priority}</td>
+                      <td>{task.coordinates ? JSON.stringify(task.coordinates) : "N/A"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+
+        {/* Modal for adding a task */}
+        <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onAddTask={handleAddTask} />
 
         {/* Modal for task details */}
         {selectedTask && (

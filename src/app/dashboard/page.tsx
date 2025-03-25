@@ -12,6 +12,8 @@ import { CHART_OPTIONS } from "@/data/chartConfig";
 import { trackCapacityData } from "@/data/trackData";
 import AIchatbot from "@/components/AIchatbot";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import WeatherWidget from "@/components/weather/WeatherWidget";
+
 
 export default function Dashboard() {
   type Task = {
@@ -116,13 +118,13 @@ export default function Dashboard() {
   const forecast = forecastData["Banff"];
 
   return (
-    <ProtectedRoute allowedRoles={["admin", "user"]}>
+    // <ProtectedRoute allowedRoles={["admin", "user"]}>
       <div className="flex">
         <Nav />
         <div className="px-6 bg-background text-foreground w-full h-screen flex flex-col">
           <div className="grid grid-cols-1 lg:grid-cols-2 lg:grid-rows-2 gap-6 h-full">
             <div
-              className="lg:col-span-1 lg:row-span-1 flex flex-col space-y-3 h-full rounded-md p-2 bg-[#393A3E] flex-grow hover:cursor-pointer"
+              className="lg:col-span-1 lg:row-span-1 flex flex-col space-y-3 h-full rounded-md p-2 bg-[#393A3E] flex-grow hover:cursor-pointer items-center justify-center overflow-hidden"
               onClick={() => router.push("/weather")}
             >
               <h3 className="text-center text-lg font-bold">
@@ -132,6 +134,7 @@ export default function Dashboard() {
               <p>Wind: {forecast?.list[0].wind.speed ?? "-"} km/h</p>
               <p>Temperature: {forecast?.list[0].main.temp ?? "-"}°C</p>
               <p>Humidity: {forecast?.list[0].main.humidity ?? "-"}%</p>
+              <WeatherWidget />
             </div>
             <div
               className="lg:col-span-1 lg:row-span-1 flex flex-col space-y-3 h-full rounded-md pb-12 pt-2 pr-2 pl-2 bg-[#393A3E] flex-grow hover:cursor-pointer"
@@ -199,6 +202,6 @@ export default function Dashboard() {
         </div>
         <AIchatbot />
       </div>
-    </ProtectedRoute>
+    // </ProtectedRoute>
   );
 }

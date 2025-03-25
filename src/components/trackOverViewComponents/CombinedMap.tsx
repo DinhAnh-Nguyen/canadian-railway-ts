@@ -11,14 +11,31 @@ interface CombinedMapProps {
 
 const CombinedMap: React.FC<CombinedMapProps> = ({ selectedTrack }) => {
   useEffect(() => {
-    let map: L.Map | null = L.map("combined-map").setView(
-      trackCoordinates[selectedTrack] || { lat: 51.0447, lng: -114.0719 }, // Default to Calgary
-      10
-    );
-    // Add Google Maps layer
-    const googleLayer = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
-      maxZoom: 20,
-      subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+    // Ensure this code only runs in the 
+    if (typeof window === "undefined") return;
+
+    // Dynamically import the Google Mutant plugin
+    import("leaflet.gridlayer.googlemutant").then((googleMutant) => {
+      // Initialize the map
+      mapRef.current = L.map("combined-map").setView(
+        trackCoordinates[selectedTrack] || { lat: 51.0447, lng: -114.0719 }, // Default to Calgary
+        10
+      );
+
+      // Add Google Maps layer
+      const googleLayer = (googleMutant as any).googleMutant({
+        type: "roadmap", // Options: roadmap, satellite, terrain, hybrid
+      });
+      googleLayer.addTo(mapRef.current);
+
+      // Add railway WMS layer
+      L.tileLayer.wms("https://maps.geogratis.gc.ca/wms/railway_en?", {
+        layers: "railway.track",
+        format: "image/png",
+        transparent: true,
+        attribution:
+          "Map data © <a href='https://open.canada.ca/'>Government of Canada</a>",
+      }).addTo(mapRef.current);
     });
     googleLayer.addTo(map);
 
